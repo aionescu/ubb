@@ -1,0 +1,6 @@
+.vscode/
+__pycache__/
+.coverage
+*.lst
+*.obj
+*.exe
