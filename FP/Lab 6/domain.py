@@ -62,6 +62,12 @@ class Rental:
   def return_date(self):
     return self.__return_date
 
+  def returned(self):
+    return self.__return_date is not None
+
+  def with_returned(self, return_date):
+    return Rental(self.__id, self.__movie_id, self.__client_id, self.__rented_date, self.__due_date, return_date)
+
   def __eq__(self, rhs):
     return self.__id == rhs.__id
 

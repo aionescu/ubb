@@ -1,4 +1,5 @@
-from domain import populate_rand
+from datetime import datetime
+from domain import *
 from exn import *
 from action import *
 
@@ -6,6 +7,15 @@ class Services:
   def __init__(self, populate = False):
     self.__movies, self.__clients, self.__rentals = populate_rand() if populate else {}, {}, {}
     self.__done_actions, self.__undone_actions = [], []
+
+  def next_client_id(self):
+    return max(k for k, v in self.__clients)
+
+  def next_movie_id(self):
+    return max(k for k, v in self.__movies)
+
+  def next_rental_id(self):
+    return max(k for k, v in self.__rentals)
 
   def __do(self, action):
     action.apply()
@@ -61,3 +71,22 @@ class Services:
       raise InexistentItemError()
     else:
       self.__do(RemoveAction(d, movie))
+
+  def has_late_movies(self, client):
+    today = datetime.today()
+
+    for rental in self.__rentals:
+      if rental.client_id() == client.id() and not rental.returned() and today < rental.due_date():
+        return False
+
+    return True
+
+  def rent_movie(self, client, movie, rented_date, due_date):
+    if self.has_late_movies(client):
+      raise InvalidRentalException()
+
+    rental = Rental(self.next_rental_id(), movie.id(), client.id(), rented_date, due_date, None)
+    self.__do(AddAction(self.__rentals, rental))
+
+  def return_movie(self, rental):
+    

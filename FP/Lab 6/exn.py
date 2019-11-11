@@ -6,3 +6,6 @@ class InexistentItemError(Exception):
 
 class MovieNotAvailableError(Exception):
   pass
+
+class InvalidRentalException(Exception):
+  pass
