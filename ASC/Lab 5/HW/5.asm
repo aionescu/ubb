@@ -1,3 +1,4 @@
+; Assignment 5
 ; A character string S is given. Obtain the string D containing all small letters from the string S.
 bits 32
 
@@ -14,10 +15,11 @@ segment data use32 class=data
 segment  code use32 class=code
 start:
   mov ecx, len ; loop counter
-  mov esi, 0 ; s idx
-  mov eax, 0 ; d idx
+  mov esi, 0 ; s index
+  mov eax, 0 ; d index
 
 looop:
+  ; Move the current byte of s into bl
   mov bl, [s + esi]
 
   ; if (char < 'a') contiinue;
@@ -28,7 +30,7 @@ looop:
   cmp bl, 'z'
   jg continue
 
-  ; Set the next byte of d to the current char
+  ; Set the current byte of d to the current char, then move to the next byte of d
   mov [d + eax], bl
   inc eax
   
