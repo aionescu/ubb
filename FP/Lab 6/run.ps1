@@ -1,4 +1,4 @@
-& mypy --strict $PSScriptRoot | Out-Default
+& mypy $PSScriptRoot | Out-Default
 
 if ($?) {
   & py test.py | Out-Default

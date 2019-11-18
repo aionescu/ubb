@@ -81,12 +81,24 @@ class Services:
 
     return True
 
-  def rent_movie(self, client, movie, rented_date, due_date):
+  def rent_movie(self, client_id, movie_id, rented_date, due_date):
+    if client_id not in self.__clients
+      or movie_id not in self.__movies:
+        raise InexistentItemError()
+
+    client = self.__clients[client_id]
+    movie = self.__movies[movie_id]
+
     if self.has_late_movies(client):
       raise InvalidRentalException()
 
-    rental = Rental(self.next_rental_id(), movie.id(), client.id(), rented_date, due_date, None)
+    rental = Rental(self.next_rental_id(), movie_id, client_id, rented_date, due_date, None)
     self.__do(AddAction(self.__rentals, rental))
 
-  def return_movie(self, rental):
-    pass
+  def return_movie(self, rental_id):
+    if rental_id not in self.__rentals:
+      raise InexistentItemError()
+
+    rental = self.__rentals[rental_id]
+    new = rental.with_returned(datetime.today())
+    self.__do(UpdateAction(self.__rentals, rental, new))
