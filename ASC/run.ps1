@@ -2,12 +2,12 @@ param($src)
 
 $tools = $env:ASM_TOOLS_PATH
 
-$nasmPath = $tools + "nasm\"
-$nasm = $tools + "nasm\nasm.exe"
-$alink = $tools + "nasm\alink.exe"
-$ollydbg = $tools + "ollydbg\ollydbg.exe"
+$nasmPath = $tools + "nasm/"
+$nasm = $tools + "nasm/nasm.exe"
+$alink = $tools + "nasm/alink.exe"
+$ollydbg = $tools + "ollydbg/ollydbg.exe"
 
-$relSrc = ($PSScriptRoot + "\" + $src)
+$relSrc = ($PSScriptRoot + "/" + $src)
 if (Test-Path $relSrc) {
   $src = $relSrc
 }
