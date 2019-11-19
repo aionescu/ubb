@@ -1,5 +1,5 @@
 import unittest
-from domain import Movie, Client, Rental
+from domain import *
 
 class DomainTestCase(unittest.TestCase):
   def test_eq(self):

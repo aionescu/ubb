@@ -1,53 +1,55 @@
-from typing import Dict, Tuple
-
-class HasId:
-  def id(self) -> str:
-    pass
+from datetime import datetime
   
-class Movie(HasId):
-  def __init__(self, id: str, title: str, description: str, genre: str) -> None:
+class Movie:
+  def __init__(self, id, title, desc, genre):
     self.__id = id
     self.__title = title
-    self.__description = description
+    self.__desc = desc
     self.__genre = genre
 
-  def id(self) -> str:
+  def id(self):
     return self.__id
 
-  def title(self) -> str:
+  def title(self):
     return self.__title
 
-  def description(self) -> str:
-    return self.__description
+  def desc(self):
+    return self.__desc
 
-  def genre(self) -> str:
+  def genre(self):
     return self.__genre
 
-  def __eq__(self, rhs: object) -> bool:
+  def __eq__(self, rhs):
     if not isinstance(rhs, Movie):
       return NotImplemented
 
     return self.__id == rhs.__id
 
-class Client(HasId):
-  def __init__(self, id: str, name: str) -> None:
+  def __str__(self):
+    return f"[Movie {self.id()}] {self.title().replace('+', ' ')} (Desc: {self.desc().replace('+', ' ')}) (Genre: {self.genre().replace('+', ' ')})"
+
+class Client:
+  def __init__(self, id, name):
     self.__id = id
     self.__name = name
 
-  def id(self) -> str:
+  def id(self):
     return self.__id
 
-  def name(self) -> str:
+  def name(self):
     return self.__name
 
-  def __eq__(self, rhs: object) -> bool:
+  def __eq__(self, rhs):
     if not isinstance(rhs, Client):
       return NotImplemented
 
     return self.__id == rhs.__id
 
-class Rental(HasId):
-  def __init__(self, id: str, movie_id: str, client_id: str, rented_date: str, due_date: str, return_date: str) -> None:
+  def __str__(self):
+    return f"[Client {self.id()}] {self.name().replace('+', ' ')}"
+
+class Rental:
+  def __init__(self, id, movie_id, client_id, rented_date, due_date, return_date):
     self.__id = id
     self.__movie_id = movie_id
     self.__client_id = client_id
@@ -56,46 +58,55 @@ class Rental(HasId):
     self.__due_date = due_date
     self.__return_date = return_date
 
-  def id(self) -> str:
+  def id(self):
     return self.__id
 
-  def movie_id(self) -> str:
+  def movie_id(self):
     return self.__movie_id
 
-  def client_id(self) -> str:
+  def client_id(self):
     return self.__client_id
 
-  def rented_date(self) -> str:
+  def rented_date(self):
     return self.__rented_date
 
-  def due_date(self) -> str:
+  def due_date(self):
     return self.__due_date
 
-  def return_date(self) -> str:
+  def return_date(self):
     return self.__return_date
 
-  def returned(self) -> bool:
+  def returned(self):
     return self.__return_date is not None
 
-  def with_returned(self, return_date: str) -> Rental:
+  def with_returned(self, return_date):
     return Rental(self.__id, self.__movie_id, self.__client_id, self.__rented_date, self.__due_date, return_date)
 
-  def __eq__(self, rhs: object) -> bool:
+  def days_rented(self):
+    return (self.due_date() - self.rented_date()).days
+
+  def is_late(self):
+    return datetime.today() > self.due_date()
+
+  def days_late(self):
+    return (datetime.today() - self.due_date()).days
+
+  def __eq__(self, rhs):
     if not isinstance(rhs, Rental):
       return NotImplemented
 
     return self.__id == rhs.__id
 
-def rand_movies() -> Dict[str, Movie]:
-  pass
+def rand_movies():
+  return {}
 
-def rand_clients() -> Dict[str, Client]:
-  pass
+def rand_clients():
+  return {}
 
-def rand_rentals(movies: Dict[str, Movie], clients: Dict[str, Client]) -> Dict[str, Rental]:
-  pass
+def rand_rentals(movies, clients):
+  return {}
 
-def populate_rand() -> Tuple[Dict[str, Movie], Dict[str, Client], Dict[str, Rental]]:
+def populate_rand():
   movies = rand_movies()
   clients = rand_clients()
   return movies, clients, rand_rentals(movies, clients)

@@ -1,6 +1,3 @@
-class DuplicateIdError(Exception):
-  pass
-
 class InexistentItemError(Exception):
   pass
 
