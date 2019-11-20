@@ -14,3 +14,9 @@ def main() -> None:
 
 if __name__ == "__main__":
   main()
+
+# TODO: Procedurally generate stuff
+# TODO: Only rent if not rented
+# TODO: Fix stats-m
+# TODO: Fix tests
+# TODO: Property for getters

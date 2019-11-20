@@ -8,7 +8,7 @@ class Client:
   def __init__(self, id, name):
     self.__id = id
     self.__name = name
-
+    
   def id(self):
     return self.__id
 
