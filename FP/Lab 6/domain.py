@@ -26,7 +26,7 @@ class Movie:
     return self.__id == rhs.__id
 
   def __str__(self):
-    return f"[Movie {self.id()}] {self.title().replace('+', ' ')} (Desc: {self.desc().replace('+', ' ')}) (Genre: {self.genre().replace('+', ' ')})"
+    return f"[Movie {self.id()}] {self.title()} (Desc: {self.desc()}) (Genre: {self.genre()})"
 
 class Client:
   def __init__(self, id, name):
@@ -46,7 +46,7 @@ class Client:
     return self.__id == rhs.__id
 
   def __str__(self):
-    return f"[Client {self.id()}] {self.name().replace('+', ' ')}"
+    return f"[Client {self.id()}] {self.name()}"
 
 class Rental:
   def __init__(self, id, movie_id, client_id, rented_date, due_date, return_date):
@@ -97,16 +97,5 @@ class Rental:
 
     return self.__id == rhs.__id
 
-def rand_movies():
-  return {}
-
-def rand_clients():
-  return {}
-
-def rand_rentals(movies, clients):
-  return {}
-
-def populate_rand():
-  movies = rand_movies()
-  clients = rand_clients()
-  return movies, clients, rand_rentals(movies, clients)
+  def __str__(self):
+    return f"[Rental {self.id()}] Client {self.client_id()} rented Movie {self.movie_id()} from {self.rented_date()} to {self.due_date()} [Returned: {self.return_date()}]"

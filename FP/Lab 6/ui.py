@@ -1,14 +1,15 @@
 from datetime import datetime
 from domain import *
+from exn import *
 from services import *
 
 class Ui:
   def __init__(self):
-    self.__srv = Services(True)
+    self.__srv = Services()
 
-  def handle(self, args):
+  def handle(self, cmd, args):
     try:
-      getattr(self, args[0].replace('-', '_'))(args[1:])
+      getattr(self, cmd.replace('-', '_'))(args)
     except AttributeError as ae:
       if str(ae).startswith("'Ui'"):
         print("Command not recognized.")
@@ -25,16 +26,36 @@ class Ui:
     self.__srv.add_movie(args[0], args[1], args[2])
 
   def update_c(self, args):
-    self.__srv.update_client(int(args[0]), args[1])
+    try:
+      self.__srv.update_client(int(args[0]), args[1])
+    except InexistentItemError:
+      print("Client does not exist.")
+    except ValueError:
+      print("ID must be an integer.")
 
   def update_m(self, args):
-    self.__srv.update_movie(int(args[0]), args[1], args[2], args[3])
+    try:
+      self.__srv.update_movie(int(args[0]), args[1], args[2], args[3])
+    except InexistentItemError:
+      print("Movie does not exist.")
+    except ValueError:
+      print("ID must be an integer.")
 
   def remove_c(self, args):
-    self.__srv.remove_client(int(args[0]))
+    try:
+      self.__srv.remove_client(int(args[0]))
+    except InexistentItemError:
+      print("Client does not exist.")
+    except ValueError:
+      print("ID must be an integer.")
 
   def remove_m(self, args):
-    self.__srv.remove_movie(int(args[0]))
+    try:
+      self.__srv.remove_movie(int(args[0]))
+    except InexistentItemError:
+      print("Movie does not exist.")
+    except ValueError:
+      print("ID must be an integer.")
 
   def list_c(self, args):
     print(self.__srv.list_clients())
@@ -42,14 +63,29 @@ class Ui:
   def list_m(self, args):
     print(self.__srv.list_movies())
 
+  def list_r(self, args):
+    print(self.__srv.list_rentals())
+
   def rent(self, args):
     def to_d(s):
       return datetime.strptime(s, "%Y-%m-%d")
 
-    self.__srv.rent_movie(int(args[0]), int(args[1]), to_d(args[2]), to_d(args[3]))
+    try:
+      self.__srv.rent_movie(int(args[0]), int(args[1]), to_d(args[2]), to_d(args[3]))
+    except InexistentItemError:
+      print("Both client and movie must exist.")
+    except InvalidRentalException:
+      print("Client has late rentals.")
+    except ValueError:
+      print("All IDs must be integers.")
 
   def return_m(self, args):
-    self.__srv.return_movie(int(args[0]))
+    try:
+      self.__srv.return_movie(int(args[0]))
+    except InexistentItemError:
+      print("Rental does not exist.")
+    except ValueError:
+      print("ID must be an integer.")
 
   def search_c(self, args):
     print(self.__srv.search_clients(args[0], args[1]))
