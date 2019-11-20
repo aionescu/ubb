@@ -1,35 +1,27 @@
 from datetime import datetime
 from domain import *
-from exn import *
 from action import *
+from exn import *
+from repo import *
 
 class Services:
-  def __init__(self):
-    self.__movies, self.__clients, self.__rentals = {}, {}, {}
-    self.__done_actions, self.__undone_actions = [], []
-    self.__crr_client_id, self.__crr_movie_id, self.__crr_rental_id = 0, 0, 0
-
-    def to_d(s):
-      return datetime.strptime(s, "%Y-%m-%d")
-
-    for i in range(1, 11):
-      self.add_client(f"Client {i}")
-      self.add_movie(f"Movie {i}", f"Desc {i}", f"Genre {i}")
-      self.rent_movie(i, i, to_d(f"2019-11-{i}"), to_d(f"2019-11-{i + 5}"))
-
-    self.__done_actions, self.__undone_actions = [], []
+  def __init__(self, populate = False):
+    self.__clients = ClientRepo()
+    self.__movies = MovieRepo()
+    self.__rentals = RentalRepo()
     
-  def next_client_id(self):
-    self.__crr_client_id += 1
-    return self.__crr_client_id
+    self.__done_actions, self.__undone_actions = [], []
 
-  def next_movie_id(self):
-    self.__crr_movie_id += 1
-    return self.__crr_movie_id
+    if populate:
+      def to_d(s):
+        return datetime.strptime(s, "%Y-%m-%d")
 
-  def next_rental_id(self):
-    self.__crr_rental_id += 1
-    return self.__crr_rental_id
+      for i in range(1, 11):
+        self.add_client(f"Client Name #{i}")
+        self.add_movie(f"Movie Title #{i}", f"Movie Desc #{i}", f"Movie Genre #{i}")
+        self.rent_movie(i, i, to_d(f"2019-11-{i}"), to_d(f"2019-11-{i + 5}"))
+
+      self.__done_actions, self.__undone_actions = [], []
 
   def __do(self, action):
     action.apply()
@@ -42,9 +34,9 @@ class Services:
   # Postconditions: The client has been added to the app's state.
   # Raises: -
   def add_client(self, name):
-    d = self.__clients
-    client = Client(self.next_client_id(), name)
-    self.__do(AddAction(d, client.id(), client))
+    repo = self.__clients
+    client = repo.create(name)
+    self.__do(AddAction(repo, client))
 
   # Function that adds a movie to the app's state.
   # Input: title - The title of the movie, desc - The description of the movie, genre - The genre of the movie
@@ -52,9 +44,9 @@ class Services:
   # Postconditions: The movie has been added to the app's state.
   # Raises: -
   def add_movie(self, title, desc, genre):
-    d = self.__movies
-    movie = Movie(self.next_movie_id(), title, desc, genre)
-    self.__do(AddAction(d, movie.id(), movie))
+    repo = self.__movies
+    movie = repo.create(title, desc, genre)
+    self.__do(AddAction(repo, movie))
 
   # Function that updates a client's information
   # Input: id - The ID of the client to update, name - The name of the client
@@ -62,14 +54,11 @@ class Services:
   # Postconditions: The client's information has been updated.
   # Raises: InexistentItemError if a client with the specified ID does not exist.
   def update_client(self, id, name):
-    d = self.__clients
+    repo = self.__clients
     client = Client(id, name)
+    old = repo.get(client.id())
 
-    if client.id() not in d:
-      raise InexistentItemError()
-    else:
-      old = d[client.id()]
-      self.__do(UpdateAction(d, client.id(), old, client))
+    self.__do(UpdateAction(repo, old, client))
       
   # Function that updates a movie's information
   # Input: id - The ID of the movie to update, details - The movie's details
@@ -77,14 +66,11 @@ class Services:
   # Postconditions: The movie's information has been updated.
   # Raises: InexistentItemError if a movie with the specified ID does not exist.
   def update_movie(self, id, title, desc, genre):
-    d = self.__movies
+    repo = self.__movies
     movie = Movie(id, title, desc, genre)
+    old = repo.get(movie.id())
 
-    if movie.id() not in d:
-      raise InexistentItemError()
-    else:
-      old = d[movie.id()]
-      self.__do(UpdateAction(d, movie.id(), old, movie))
+    self.__do(UpdateAction(repo, old, movie))
 
   # Function that removes a client from the app's state.
   # Input: id - The ID of the client
@@ -92,12 +78,10 @@ class Services:
   # Postconditions: The client has been removed from the app's state.
   # Raises: InexistentItemError if a client with the specified ID does not exist.
   def remove_client(self, id):
-    d = self.__clients
+    repo = self.__clients
+    client = repo.get(id)
 
-    if id not in d:
-      raise InexistentItemError()
-    else:
-      self.__do(RemoveAction(d, id, d[id]))
+    self.__do(RemoveAction(repo, client))
 
   # Function that removes a movie from the app's state.
   # Input: id - The ID of the movie
@@ -105,12 +89,10 @@ class Services:
   # Postconditions: The movie has been removed from the app's state.
   # Raises: InexistentItemError if a movie with the specified ID does not exist.
   def remove_movie(self, id):
-    d = self.__movies
+    repo = self.__movies
+    movie = repo.get(id)
 
-    if id not in d:
-      raise InexistentItemError()
-    else:
-      self.__do(RemoveAction(d, id, d[id]))
+    self.__do(RemoveAction(repo, movie))
 
   # Function that returns a formatted list of all the clients.
   # Input: -
@@ -136,8 +118,8 @@ class Services:
   def list_rentals(self):
     return '\n'.join(map(str, self.__rentals.values()))
 
-  def __has_late_movies(self, client_id):
-    client = self.__clients[client_id]
+  def __has_late_movies(self, id):
+    client = self.__clients.get(id)
 
     for rental in self.__rentals.values():
       if rental.client_id() == client.id() and not rental.returned() and rental.is_late():
@@ -146,25 +128,22 @@ class Services:
     return False
 
   def rent_movie(self, client_id, movie_id, rented_date, due_date):
-    if client_id not in self.__clients:
-      raise InexistentItemError()
-
-    if movie_id not in self.__movies:
-      raise MovieNotAvailableError()
+    client = self.__clients.get(client_id)
+    movie = self.__movies.get(movie_id)
 
     if self.__has_late_movies(client_id):
       raise InvalidRentalException()
 
-    rental = Rental(self.next_rental_id(), movie_id, client_id, rented_date, due_date, None)
-    self.__do(AddAction(self.__rentals, rental.id(), rental))
+    repo = self.__rentals
+    rental = repo.create(client_id, movie_id, rented_date, due_date)
+    self.__do(AddAction(repo, rental))
 
   def return_movie(self, rental_id):
-    if rental_id not in self.__rentals:
-      raise InexistentItemError()
+    repo = self.__rentals
+    rental = repo.get(rental_id)
 
-    rental = self.__rentals[rental_id]
     new = rental.with_returned(datetime.today())
-    self.__do(UpdateAction(self.__rentals, rental_id, rental, new))
+    self.__do(UpdateAction(repo, rental, new))
 
   def search_clients(self, field, value):
     def getter(c):
@@ -196,14 +175,17 @@ class Services:
       return x[1]
 
     def of_tuple(x):
-      return self.__movies[x[0]]
+      return self.__movies.get(x[0])
+
+    def gt0(x):
+      return x[1] > 0
 
     movie_days = dict(map(with_snd, self.__movies.keys()))
 
     for r in self.__rentals.values():
       movie_days[r.movie_id()] += r.days_rented()
 
-    movies = map(of_tuple, sorted(movie_days.items(), key = snd, reverse = True))
+    movies = map(of_tuple, filter(gt0, sorted(movie_days.items(), key = snd, reverse = True)))
     return '\n'.join(map(str, movies))
 
   def stats_most_active(self):
@@ -214,14 +196,17 @@ class Services:
       return x[1]
 
     def of_tuple(x):
-      return self.__clients[x[0]]
+      return self.__clients.get(x[0])
+
+    def gt0(x):
+      return x[1] > 0
 
     client_days = dict(map(with_snd, self.__clients.keys()))
 
     for r in self.__rentals.values():
       client_days[r.client_id()] += r.days_rented()
 
-    clients = map(of_tuple, sorted(client_days.items(), key = snd, reverse = True))
+    clients = map(of_tuple, filter(gt0, sorted(client_days.items(), key = snd, reverse = True)))
     return '\n'.join(map(str, clients))
 
   def distinct(self, iterable):
@@ -242,7 +227,7 @@ class Services:
       return x.movie_id()
     
     def of_id(x):
-      return self.__movies[x]
+      return self.__movies.get(x)
 
     movies = map(of_id, self.distinct(map(movie_id, sorted(filter(is_late, self.__rentals.values()), key = days_late, reverse = True))))
     return '\n'.join(map(str, movies))

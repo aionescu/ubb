@@ -1,7 +1,7 @@
 from ui import *
 
 def main() -> None:
-  ui = Ui()
+  ui = Ui(True)
 
   while True:
     raw = input("rentals> ")

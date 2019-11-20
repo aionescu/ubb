@@ -4,8 +4,8 @@ from exn import *
 from services import *
 
 class Ui:
-  def __init__(self):
-    self.__srv = Services()
+  def __init__(self, populate = False):
+    self.__srv = Services(populate)
 
   def handle(self, cmd, args):
     try:
@@ -73,9 +73,7 @@ class Ui:
     try:
       self.__srv.rent_movie(int(args[0]), int(args[1]), to_d(args[2]), to_d(args[3]))
     except InexistentItemError:
-      print("Client does not exist.")
-    except MovieNotAvailableError:
-      print("Movie not available.")
+      print("Both client and movie must exist.")
     except InvalidRentalException:
       print("Client has late rentals.")
     except ValueError:

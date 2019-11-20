@@ -1,9 +1,9 @@
 class Action:
-  def __init__(self, dict):
-    self.__dict = dict
+  def __init__(self, repo):
+    self.__repo = repo
 
-  def dict(self):
-    return self.__dict
+  def repo(self):
+    return self.__repo
     
   def apply(self):
     pass
@@ -12,38 +12,35 @@ class Action:
     pass
   
 class AddAction(Action):
-  def __init__(self, dict, id, val):
-    Action.__init__(self, dict)
-    self.__id = id
+  def __init__(self, repo, val):
+    Action.__init__(self, repo)
     self.__val = val
 
   def apply(self):
-    self.dict()[self.__id] = self.__val
+    self.repo().add(self.__val)
 
   def roll_back(self):
-    del self.dict()[self.__id]
+    self.repo().remove(self.__val)
 
 class RemoveAction(Action):
-  def __init__(self, dict, id, val):
-    Action.__init__(self, dict)
-    self.__id = id
+  def __init__(self, repo, val):
+    Action.__init__(self, repo)
     self.__val = val
 
   def apply(self):
-    del self.dict()[self.__id]
+    self.repo().remove(self.__val)
 
   def roll_back(self):
-    self.dict()[self.__id] = self.__val
+    self.repo().add(self.__val)
 
 class UpdateAction(Action):
-  def __init__(self, dict, id, old_val, new_val):
-    Action.__init__(self, dict)
-    self.__id = id
+  def __init__(self, repo, old_val, new_val):
+    Action.__init__(self, repo)
     self.__old_val = old_val
     self.__new_val = new_val
 
   def apply(self):
-    self.dict()[self.__id] = self.__new_val
+    self.repo().update(self.__new_val)
 
   def roll_back(self):
-    self.dict()[self.__id] = self.__old_val
+    self.repo().update(self.__old_val)
