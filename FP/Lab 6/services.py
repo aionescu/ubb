@@ -17,6 +17,8 @@ class Services:
       self.add_movie(f"Movie {i}", f"Desc {i}", f"Genre {i}")
       self.rent_movie(i, i, to_d(f"2019-11-{i}"), to_d(f"2019-11-{i + 5}"))
 
+    self.__done_actions, self.__undone_actions = [], []
+    
   def next_client_id(self):
     self.__crr_client_id += 1
     return self.__crr_client_id
@@ -144,8 +146,11 @@ class Services:
     return False
 
   def rent_movie(self, client_id, movie_id, rented_date, due_date):
-    if client_id not in self.__clients or movie_id not in self.__movies:
-        raise InexistentItemError()
+    if client_id not in self.__clients:
+      raise InexistentItemError()
+
+    if movie_id not in self.__movies:
+      raise MovieNotAvailableError()
 
     if self.__has_late_movies(client_id):
       raise InvalidRentalException()
@@ -241,3 +246,21 @@ class Services:
 
     movies = map(of_id, self.distinct(map(movie_id, sorted(filter(is_late, self.__rentals.values()), key = days_late, reverse = True))))
     return '\n'.join(map(str, movies))
+
+  def undo(self):
+    try:
+      last = self.__done_actions.pop()
+    except:
+      raise InvalidUndoError()
+    
+    last.roll_back()
+    self.__undone_actions.append(last)
+
+  def redo(self):
+    try:
+      last = self.__undone_actions.pop()
+    except:
+      raise InvalidRedoError()
+    
+    last.apply()
+    self.__done_actions.append(last)

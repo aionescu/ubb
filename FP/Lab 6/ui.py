@@ -73,7 +73,9 @@ class Ui:
     try:
       self.__srv.rent_movie(int(args[0]), int(args[1]), to_d(args[2]), to_d(args[3]))
     except InexistentItemError:
-      print("Both client and movie must exist.")
+      print("Client does not exist.")
+    except MovieNotAvailableError:
+      print("Movie not available.")
     except InvalidRentalException:
       print("Client has late rentals.")
     except ValueError:
@@ -101,3 +103,15 @@ class Ui:
 
   def stats_late(self, args):
     print(self.__srv.stats_late())
+
+  def undo(self, args):
+    try:
+      self.__srv.undo()
+    except InvalidUndoError:
+      print("Nothing to undo.")
+
+  def redo(self, args):
+    try:
+      self.__srv.redo()
+    except InvalidRedoError:
+      print("Nothing to redo.")

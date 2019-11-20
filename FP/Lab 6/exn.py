@@ -6,3 +6,9 @@ class MovieNotAvailableError(Exception):
 
 class InvalidRentalException(Exception):
   pass
+
+class InvalidUndoError(Exception):
+  pass
+
+class InvalidRedoError(Exception):
+  pass
