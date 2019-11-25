@@ -1,4 +1,5 @@
-from datetime import datetime
+from datetime import datetime, timedelta
+from random import randint
 
 # Class that holds information about a client
 # Fields:
@@ -117,3 +118,77 @@ class Rental:
 
   def __str__(self):
     return f"[Rental {self.id()}] Client {self.client_id()} rented Movie {self.movie_id()} from {self.rented_date()} to {self.due_date()} [Returned: {self.return_date()}]"
+
+def populate_rand():
+  fst_names = ["Alex", "Dan", "Mihai", "Ioana", "Florina", "Aurica"]
+  lst_names = ["Ionescu", "Rotaru", "Oltean", "Georgescu", "Ionita"]
+
+  names = []
+
+  while len(names) < 10:
+    f = fst_names[randint(0, len(fst_names) - 1)]
+    l = lst_names[randint(0, len(lst_names) - 1)]
+
+    n = f + " " + l
+    if n not in names:
+      names.append(n)
+
+  nouns1 = ["Wrath", "Secrets", "Mystery", "Game"]
+  nouns2 = ["Mushroom", "Librarian", "Programmer", "Bird"]
+  descs = ["A nice family-friendly movie for a weekend night", "Blood and gore. Not suitable for minors.", "Not suitable for children under 12."]
+  genres = ["Action", "Thriller", "Comedy", "Sci-Fi", "Documentary"]
+  fmt1 = "%s of the %s"
+  fmt2 = "Of %ss and %ss"
+  fmt3 = "The %s"
+
+  movie_names = []
+  movies = []
+
+  while len(movies) < 10:
+    fmt = randint(1, 3)
+    movie = "<No title>"
+
+    if fmt == 1:
+      n1 = nouns1[randint(0, len(nouns1) - 1)]
+      n2 = nouns2[randint(0, len(nouns2) - 1)]
+      movie = fmt1 % (n1, n2)
+    elif fmt == 2:
+      n1 = nouns2[randint(0, len(nouns2) - 1)]
+      n2 = nouns2[randint(0, len(nouns2) - 1)]
+
+      while n1 == n2:
+        n2 = nouns2[randint(0, len(nouns2) - 1)]
+
+      movie = fmt2 % (n1, n2)
+    else:
+      n1 = nouns2[randint(0, len(nouns2) - 1)]
+      movie = fmt3 % n1
+
+    if movie not in movie_names:
+      movie_names.append(movie)
+      desc = descs[randint(0, len(descs) - 1)]
+      genre = genres[randint(0, len(genres) - 1)]
+      movies.append((movie, desc, genre))
+
+  rent_clients = []
+  rent_movies = []
+  rents = []
+  today = datetime.today()
+  init_date = today - timedelta(days = 15)
+
+  while len(rents) < 5:
+    p1 = randint(1, 10)
+    p2 = randint(1, 10)
+
+    if p1 not in rent_clients and p2 not in rent_movies:
+      rent_clients.append(p1)
+      rent_movies.append(p2)
+
+      d = randint(-5, 5)
+      rd = randint(-3, 3)
+      rent_date = init_date + timedelta(days = rd)
+      due_date = today + timedelta(days = d)
+
+      rents.append((p1, p2, rent_date, due_date))
+
+  return (names, movies, rents)

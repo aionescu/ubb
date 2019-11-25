@@ -13,13 +13,16 @@ class Services:
     self.__done_actions, self.__undone_actions = [], []
 
     if populate:
-      def to_d(s):
-        return datetime.strptime(s, "%Y-%m-%d")
+      (clients, movies, rents) = populate_rand()
 
-      for i in range(1, 11):
-        self.add_client(f"Client Name #{i}")
-        self.add_movie(f"Movie Title #{i}", f"Movie Desc #{i}", f"Movie Genre #{i}")
-        self.rent_movie(i, i, to_d(f"2019-11-{i}"), to_d(f"2019-11-{i + 5}"))
+      for client in clients:
+        self.add_client(client)
+
+      for (title, desc, genre) in movies:
+        self.add_movie(title, desc, genre)
+
+      for (cid, mid, rented, due) in rents:
+        self.rent_movie(cid, mid, rented, due)
 
       self.__done_actions, self.__undone_actions = [], []
 
@@ -128,13 +131,20 @@ class Services:
     return False
 
   def rent_movie(self, client_id, movie_id, rented_date, due_date):
-    client = self.__clients.get(client_id)
-    movie = self.__movies.get(movie_id)
+    self.__clients.must_exist(client_id)
+    self.__movies.must_exist(movie_id)
 
     if self.__has_late_movies(client_id):
       raise InvalidRentalException()
 
     repo = self.__rentals
+
+    def predicate(r):
+      return r.movie_id() == movie_id and not r.returned()
+
+    if any(map(predicate, repo.values())):
+      raise MovieNotAvailableError()
+
     rental = repo.create(client_id, movie_id, rented_date, due_date)
     self.__do(AddAction(repo, rental))
 

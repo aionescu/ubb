@@ -11,7 +11,7 @@ class Repo:
     self.__crr_id += 1
     return self.__crr_id
 
-  def __must_exist(self, id):
+  def must_exist(self, id):
     if id not in self.__data:
       raise InexistentItemError()
 
@@ -21,7 +21,7 @@ class Repo:
   # Postconditions: -
   # Raises: InexistentItemError if there no value has the specified id
   def get(self, id):
-    self.__must_exist(id)
+    self.must_exist(id)
     return self.__data[id]
 
   # Method that adds the value to the repository
@@ -38,7 +38,7 @@ class Repo:
   # Postconditions: The value's information is updated in the repository
   # Raises: InexistentItemError if there is no value with the new value's id already in the repo
   def update(self, val):
-    self.__must_exist(val.id())
+    self.must_exist(val.id())
     self.__data[val.id()] = val
 
   # Method that removes a value from the repository
@@ -47,7 +47,7 @@ class Repo:
   # Postconditions: The value does not exist in the repository anymore
   # Raises: InexistentItemError if the value does not exist in the repo
   def remove(self, val):
-    self.__must_exist(val.id())
+    self.must_exist(val.id())
     del self.__data[val.id()]
 
   def keys(self):

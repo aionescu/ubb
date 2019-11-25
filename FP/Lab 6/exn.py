@@ -6,6 +6,10 @@ class InexistentItemError(Exception):
 class InvalidRentalException(Exception):
   pass
 
+# Exception that is raised if an attempt is made to rent a movie that is already rented
+class MovieNotAvailableError(Exception):
+  pass
+
 # Exception that is raised if an undo is attempted when there is nothing to undo.
 class InvalidUndoError(Exception):
   pass
