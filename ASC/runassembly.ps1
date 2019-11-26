@@ -1,6 +1,3 @@
-# `runhaskell`-style command to run assembly files.
-# Assembles, links, and runs the file in the debugger, then deletes all generated artifacts.
-
 param([switch] $dbg, [string] $src)
 
 $relSrc = ($PSScriptRoot + "/" + $src)
