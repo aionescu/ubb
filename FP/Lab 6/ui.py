@@ -90,11 +90,17 @@ class Ui:
       print("ID must be an integer.")
 
   def search_c(self, args):
-    print(self.__srv.search_clients(args[0], args[1]))
+    try:
+      print(self.__srv.search_clients(args[0], args[1]))
+    except AttributeError:
+      print("Incorrect search category.")
 
   def search_m(self, args):
-    print(self.__srv.search_movies(args[0], args[1]))
-
+    try:
+      print(self.__srv.search_movies(args[0], args[1]))
+    except AttributeError:
+      print("Incorrect search category.")
+      
   def stats_most_rented(self, args):
     print(self.__srv.stats_most_rented())
 
