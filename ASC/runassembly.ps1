@@ -19,19 +19,19 @@ if (Test-Path $src) {
   $obj = ($noExt + ".obj")
   $exe = ($noExt + ".exe")
 
-  $nasmResult = & $nasm -fobj $src -l $lst -I $nasmPath
+  $result = & $nasm -fobj $src -l $lst -I $nasmPath
 
   if (!$?) {
-    $nasmResult | Out-Default
+    $result | Out-Default
   } else {
-    $alinkResult = & $alink -oPE -subsys console -entry start $obj
-    $alinkCode = $?
+    $result = & $alink -oPE -subsys console -entry start $obj
+    $exit = $?
 
     Remove-Item $lst
     Remove-Item $obj
 
-    if (!$alinkCode) {
-      $alinkResult | Out-Default
+    if (!$exit) {
+      $result | Out-Default
     } else {
       $(if ($dbg) { & $ollydbg $exe } else { & $exe }) | Out-Default
       Remove-Item $exe
