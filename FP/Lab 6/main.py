@@ -16,4 +16,6 @@ if __name__ == "__main__":
   main()
 
 # TODO: Fix stats-m (?)
-# TODO: Cascade delete/undo/redo: e.g. if a client is deleted, their rentals are also deleted
+# TODO: Properties
+# TODO: MyPy
+# TODO: GUI

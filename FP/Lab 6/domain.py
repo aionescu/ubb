@@ -1,17 +1,23 @@
 from datetime import datetime, timedelta
 from random import randint
 
-# Class that holds information about a client
+# Root of the inheritance hierarchy of entities
 # Fields:
-#   - id: The ID of the client
-#   - name: The name of the client
-class Client:
-  def __init__(self, id, name):
+#   - id: The ID of the entity
+class Entity:
+  def __init__(self, id):
     self.__id = id
-    self.__name = name
-    
+
   def id(self):
     return self.__id
+
+# Class that holds information about a client
+# Fields:
+#   - name: The name of the client
+class Client(Entity):
+  def __init__(self, id, name):
+    Entity.__init__(self, id)
+    self.__name = name
 
   def name(self):
     return self.__name
@@ -27,19 +33,15 @@ class Client:
 
 # Class that holds information about a movie
 # Fields:
-#   - id: The ID of the movie
 #   - title: The title of the movie
 #   - desc: The description of the movie
 #   - genre: The genre of the movie
-class Movie:
+class Movie(Entity):
   def __init__(self, id, title, desc, genre):
-    self.__id = id
+    Entity.__init__(self, id)
     self.__title = title
     self.__desc = desc
     self.__genre = genre
-
-  def id(self):
-    return self.__id
 
   def title(self):
     return self.__title
@@ -61,24 +63,20 @@ class Movie:
 
 # Class that holds information about a rental
 # Fields:
-#   - id: The ID of the rental
 #   - client_id: The ID of the client renting the movie
 #   - movie_id: The ID of the movie that is being rented
 #   - rented_date: The date the movie was rented on
 #   - due_date: The date by which the rental must be returned
 #   - return_date: [Optional] The day the movie was returned
-class Rental:
+class Rental(Entity):
   def __init__(self, id, client_id, movie_id, rented_date, due_date, return_date):
-    self.__id = id
+    Entity.__init__(self, id)
     self.__movie_id = movie_id
     self.__client_id = client_id
 
     self.__rented_date = rented_date
     self.__due_date = due_date
     self.__return_date = return_date
-
-  def id(self):
-    return self.__id
 
   def movie_id(self):
     return self.__movie_id

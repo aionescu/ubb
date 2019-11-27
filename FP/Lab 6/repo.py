@@ -51,11 +51,14 @@ class Repo:
     del self.__data[val.id()]
 
   def keys(self):
-    for key in self.__data.keys():
+    for key in sorted(self.__data.keys()):
       yield key
 
   def values(self):
-    for val in self.__data.values():
+    def get_id(x):
+      return x.id()
+
+    for val in sorted(self.__data.values(), key = get_id):
       yield val
 
 class ClientRepo(Repo):

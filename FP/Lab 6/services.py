@@ -83,8 +83,13 @@ class Services:
   def remove_client(self, id):
     repo = self.__clients
     client = repo.get(id)
+    actions = [RemoveAction(repo, client)]
 
-    self.__do(RemoveAction(repo, client))
+    for r in self.__rentals.values():
+      if r.client_id() == id:
+        actions.append(RemoveAction(self.__rentals, r))
+
+    self.__do(MultiAction(actions))
 
   # Function that removes a movie from the app's state.
   # Input: id - The ID of the movie
@@ -94,8 +99,13 @@ class Services:
   def remove_movie(self, id):
     repo = self.__movies
     movie = repo.get(id)
+    actions = [RemoveAction(repo, movie)]
 
-    self.__do(RemoveAction(repo, movie))
+    for r in self.__rentals.values():
+      if r.movie_id() == id:
+        actions.append(RemoveAction(self.__rentals, r))
+
+    self.__do(MultiAction(actions))
 
   # Function that returns a formatted list of all the clients.
   # Input: -

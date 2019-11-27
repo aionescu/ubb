@@ -1,10 +1,4 @@
-class Action:
-  def __init__(self, repo):
-    self.__repo = repo
-
-  def repo(self):
-    return self.__repo
-    
+class Action:    
   def apply(self):
     pass
   
@@ -13,34 +7,46 @@ class Action:
   
 class AddAction(Action):
   def __init__(self, repo, val):
-    Action.__init__(self, repo)
+    self.__repo = repo
     self.__val = val
 
   def apply(self):
-    self.repo().add(self.__val)
+    self.__repo.add(self.__val)
 
   def roll_back(self):
-    self.repo().remove(self.__val)
+    self.__repo.remove(self.__val)
 
 class RemoveAction(Action):
   def __init__(self, repo, val):
-    Action.__init__(self, repo)
+    self.__repo = repo
     self.__val = val
 
   def apply(self):
-    self.repo().remove(self.__val)
+    self.__repo.remove(self.__val)
 
   def roll_back(self):
-    self.repo().add(self.__val)
+    self.__repo.add(self.__val)
 
 class UpdateAction(Action):
   def __init__(self, repo, old_val, new_val):
-    Action.__init__(self, repo)
+    self.__repo = repo
     self.__old_val = old_val
     self.__new_val = new_val
 
   def apply(self):
-    self.repo().update(self.__new_val)
+    self.__repo.update(self.__new_val)
 
   def roll_back(self):
-    self.repo().update(self.__old_val)
+    self.__repo.update(self.__old_val)
+
+class MultiAction(Action):
+  def __init__(self, actions):
+    self.__actions = actions
+
+  def apply(self):
+    for a in self.__actions:
+      a.apply()
+
+  def roll_back(self):
+    for a in reversed(self.__actions):
+      a.roll_back()
