@@ -99,7 +99,7 @@ class Rental:
     return self.__return_date is not None
 
   def with_returned(self, return_date):
-    return Rental(self.__id, self.__movie_id, self.__client_id, self.__rented_date, self.__due_date, return_date)
+    return Rental(self.__id, self.__client_id, self.__movie_id, self.__rented_date, self.__due_date, return_date)
 
   def days_rented(self):
     return (self.due_date() - self.rented_date()).days
@@ -117,7 +117,8 @@ class Rental:
     return self.__id == rhs.__id
 
   def __str__(self):
-    return f"[Rental {self.id()}] Client {self.client_id()} rented Movie {self.movie_id()} from {self.rented_date()} to {self.due_date()} [Returned: {self.return_date()}]"
+    ret_str = "" if not self.returned() else f" [Returned on {self.return_date().strftime('%Y-%m-%d')}]"
+    return f"[Rental {self.id()}] Client {self.client_id()} rented Movie {self.movie_id()} from {self.rented_date().strftime('%Y-%m-%d')} to {self.due_date().strftime('%Y-%m-%d')}" +ret_str
 
 def populate_rand():
   fst_names = ["Alex", "Dan", "Mihai", "Ioana", "Florina", "Aurica"]
