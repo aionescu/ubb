@@ -88,6 +88,8 @@ class Ui:
       print("Rental does not exist.")
     except ValueError:
       print("ID must be an integer.")
+    except RentalReturnedError:
+      print("Rental already returned.")
 
   def search_c(self, args):
     try:

@@ -10,6 +10,10 @@ class InvalidRentalException(Exception):
 class MovieNotAvailableError(Exception):
   pass
 
+# Exception that is raised if an attempt is made to return a rental that is already returned
+class RentalReturnedError(Exception):
+  pass
+
 # Exception that is raised if an undo is attempted when there is nothing to undo.
 class InvalidUndoError(Exception):
   pass

@@ -152,6 +152,9 @@ class Services:
     repo = self.__rentals
     rental = repo.get(rental_id)
 
+    if rental.returned():
+      raise RentalReturnedError()
+    
     new = rental.with_returned(datetime.today())
     self.__do(UpdateAction(repo, rental, new))
 
