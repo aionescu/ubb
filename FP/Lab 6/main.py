@@ -1,6 +1,6 @@
 from ui import *
 
-def main() -> None:
+def main():
   ui = Ui(True)
 
   while True:
@@ -14,8 +14,3 @@ def main() -> None:
 
 if __name__ == "__main__":
   main()
-
-# TODO: Fix stats-m (?)
-# TODO: Properties
-# TODO: MyPy
-# TODO: GUI

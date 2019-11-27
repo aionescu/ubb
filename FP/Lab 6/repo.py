@@ -30,7 +30,7 @@ class Repo:
   # Postconditions: The value exists in the repository
   # Raises: -
   def add(self, val):
-    self.__data[val.id()] = val
+    self.__data[val.id] = val
 
   # Method that updates a value in the repository
   # Input: val - The new version of the value to update
@@ -38,8 +38,8 @@ class Repo:
   # Postconditions: The value's information is updated in the repository
   # Raises: InexistentItemError if there is no value with the new value's id already in the repo
   def update(self, val):
-    self.must_exist(val.id())
-    self.__data[val.id()] = val
+    self.must_exist(val.id)
+    self.__data[val.id] = val
 
   # Method that removes a value from the repository
   # Input: val - The value to remove from the repository
@@ -47,16 +47,16 @@ class Repo:
   # Postconditions: The value does not exist in the repository anymore
   # Raises: InexistentItemError if the value does not exist in the repo
   def remove(self, val):
-    self.must_exist(val.id())
-    del self.__data[val.id()]
+    self.must_exist(val.id)
+    del self.__data[val.id]
 
   def keys(self):
-    for key in sorted(self.__data.keys()):
+    for key in sorted(self.__data.keys):
       yield key
 
   def values(self):
     def get_id(x):
-      return x.id()
+      return x.id
 
     for val in sorted(self.__data.values(), key = get_id):
       yield val

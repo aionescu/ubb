@@ -2,23 +2,25 @@ from datetime import datetime, timedelta
 from random import randint
 
 # Root of the inheritance hierarchy of entities
-# Fields:
+# Properties:
 #   - id: The ID of the entity
 class Entity:
   def __init__(self, id):
     self.__id = id
 
+  @property
   def id(self):
     return self.__id
 
 # Class that holds information about a client
-# Fields:
+# Properties:
 #   - name: The name of the client
 class Client(Entity):
   def __init__(self, id, name):
     Entity.__init__(self, id)
     self.__name = name
 
+  @property
   def name(self):
     return self.__name
 
@@ -26,13 +28,13 @@ class Client(Entity):
     if not isinstance(rhs, Client):
       return NotImplemented
 
-    return self.id() == rhs.id()
+    return self.id == rhs.id
 
   def __str__(self):
-    return f"[Client {self.id()}] {self.name()}"
+    return f"[Client {self.id}] {self.name}"
 
 # Class that holds information about a movie
-# Fields:
+# Properties:
 #   - title: The title of the movie
 #   - desc: The description of the movie
 #   - genre: The genre of the movie
@@ -43,12 +45,15 @@ class Movie(Entity):
     self.__desc = desc
     self.__genre = genre
 
+  @property
   def title(self):
     return self.__title
 
+  @property
   def desc(self):
     return self.__desc
 
+  @property
   def genre(self):
     return self.__genre
 
@@ -56,13 +61,13 @@ class Movie(Entity):
     if not isinstance(rhs, Movie):
       return NotImplemented
 
-    return self.id() == rhs.id()
+    return self.id == rhs.id
 
   def __str__(self):
-    return f"[Movie {self.id()}] {self.title()} (Desc: {self.desc()}) (Genre: {self.genre()})"
+    return f"[Movie {self.id}] {self.title} (Desc: {self.desc}) (Genre: {self.genre})"
 
 # Class that holds information about a rental
-# Fields:
+# Properties:
 #   - client_id: The ID of the client renting the movie
 #   - movie_id: The ID of the movie that is being rented
 #   - rented_date: The date the movie was rented on
@@ -78,45 +83,54 @@ class Rental(Entity):
     self.__due_date = due_date
     self.__return_date = return_date
 
+  @property
   def movie_id(self):
     return self.__movie_id
 
+  @property
   def client_id(self):
     return self.__client_id
 
+  @property
   def rented_date(self):
     return self.__rented_date
 
+  @property
   def due_date(self):
     return self.__due_date
 
+  @property
   def return_date(self):
     return self.__return_date
 
+  @property
   def returned(self):
     return self.__return_date is not None
 
   def with_returned(self, return_date):
     return Rental(self.__id, self.__client_id, self.__movie_id, self.__rented_date, self.__due_date, return_date)
 
+  @property
   def days_rented(self):
-    return (self.due_date() - self.rented_date()).days
-
+    return (self.due_date - self.rented_date).days
+    
+  @property
   def is_late(self):
-    return datetime.today() > self.due_date()
+    return datetime.today > self.due_date
 
+  @property
   def days_late(self):
-    return (datetime.today() - self.due_date()).days
+    return (datetime.today - self.due_date).days
 
   def __eq__(self, rhs):
     if not isinstance(rhs, Rental):
       return NotImplemented
 
-    return self.id() == rhs.id()
+    return self.id == rhs.id
 
   def __str__(self):
-    ret_str = "" if not self.returned() else f" [Returned on {self.return_date().strftime('%Y-%m-%d')}]"
-    return f"[Rental {self.id()}] Client {self.client_id()} rented Movie {self.movie_id()} from {self.rented_date().strftime('%Y-%m-%d')} to {self.due_date().strftime('%Y-%m-%d')}" +ret_str
+    ret_str = "" if not self.returned else f" [Returned on {self.return_date.strftime('%Y-%m-%d')}]"
+    return f"[Rental {self.id}] Client {self.client_id} rented Movie {self.movie_id} from {self.rented_date.strftime('%Y-%m-%d')} to {self.due_date.strftime('%Y-%m-%d')}" + ret_str
 
 def populate_rand():
   fst_names = ["Alex", "Dan", "Mihai", "Ioana", "Florina", "Aurica"]

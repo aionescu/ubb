@@ -59,7 +59,7 @@ class Services:
   def update_client(self, id, name):
     repo = self.__clients
     client = Client(id, name)
-    old = repo.get(client.id())
+    old = repo.get(client.id)
 
     self.__do(UpdateAction(repo, old, client))
       
@@ -71,7 +71,7 @@ class Services:
   def update_movie(self, id, title, desc, genre):
     repo = self.__movies
     movie = Movie(id, title, desc, genre)
-    old = repo.get(movie.id())
+    old = repo.get(movie.id)
 
     self.__do(UpdateAction(repo, old, movie))
 
@@ -86,7 +86,7 @@ class Services:
     actions = [RemoveAction(repo, client)]
 
     for r in self.__rentals.values():
-      if r.client_id() == id:
+      if r.client_id == id:
         actions.append(RemoveAction(self.__rentals, r))
 
     self.__do(MultiAction(actions))
@@ -102,7 +102,7 @@ class Services:
     actions = [RemoveAction(repo, movie)]
 
     for r in self.__rentals.values():
-      if r.movie_id() == id:
+      if r.movie_id == id:
         actions.append(RemoveAction(self.__rentals, r))
 
     self.__do(MultiAction(actions))
@@ -135,7 +135,7 @@ class Services:
     client = self.__clients.get(id)
 
     for rental in self.__rentals.values():
-      if rental.client_id() == client.id() and not rental.returned() and rental.is_late():
+      if rental.client_id == client.id and not rental.returned and rental.is_late:
         return True
 
     return False
@@ -150,7 +150,7 @@ class Services:
     repo = self.__rentals
 
     def predicate(r):
-      return r.movie_id() == movie_id and not r.returned()
+      return r.movie_id == movie_id and not r.returned
 
     if any(map(predicate, repo.values())):
       raise MovieNotAvailableError()
@@ -162,7 +162,7 @@ class Services:
     repo = self.__rentals
     rental = repo.get(rental_id)
 
-    if rental.returned():
+    if rental.returned:
       raise RentalReturnedError()
     
     new = rental.with_returned(datetime.today())
@@ -170,7 +170,7 @@ class Services:
 
   def search_clients(self, field, value):
     def getter(c):
-      return getattr(c, field)()
+      return getattr(c, field)
 
     value = value.lower()
 
@@ -181,7 +181,7 @@ class Services:
 
   def search_movies(self, field, value):
     def getter(c):
-      return getattr(c, field)()
+      return getattr(c, field)
 
     value = value.lower()
 
@@ -206,7 +206,7 @@ class Services:
     movie_days = dict(map(with_snd, self.__movies.keys()))
 
     for r in self.__rentals.values():
-      movie_days[r.movie_id()] += r.days_rented()
+      movie_days[r.movie_id] += r.days_rented
 
     movies = map(of_tuple, filter(gt0, sorted(movie_days.items(), key = snd, reverse = True)))
     return '\n'.join(map(str, movies))
@@ -227,7 +227,7 @@ class Services:
     client_days = dict(map(with_snd, self.__clients.keys()))
 
     for r in self.__rentals.values():
-      client_days[r.client_id()] += r.days_rented()
+      client_days[r.client_id] += r.days_rented
 
     clients = map(of_tuple, filter(gt0, sorted(client_days.items(), key = snd, reverse = True)))
     return '\n'.join(map(str, clients))
@@ -241,13 +241,13 @@ class Services:
 
   def stats_late(self):
     def is_late(x):
-      return x.is_late()
+      return x.is_late
 
     def days_late(x):
-      return x.days_late()
+      return x.days_late
 
     def movie_id(x):
-      return x.movie_id()
+      return x.movie_id
     
     def of_id(x):
       return self.__movies.get(x)
