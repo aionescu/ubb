@@ -26,7 +26,7 @@ class Client(Entity):
     if not isinstance(rhs, Client):
       return NotImplemented
 
-    return self.__id == rhs.__id
+    return self.id() == rhs.id()
 
   def __str__(self):
     return f"[Client {self.id()}] {self.name()}"
@@ -56,7 +56,7 @@ class Movie(Entity):
     if not isinstance(rhs, Movie):
       return NotImplemented
 
-    return self.__id == rhs.__id
+    return self.id() == rhs.id()
 
   def __str__(self):
     return f"[Movie {self.id()}] {self.title()} (Desc: {self.desc()}) (Genre: {self.genre()})"
@@ -112,7 +112,7 @@ class Rental(Entity):
     if not isinstance(rhs, Rental):
       return NotImplemented
 
-    return self.__id == rhs.__id
+    return self.id() == rhs.id()
 
   def __str__(self):
     ret_str = "" if not self.returned() else f" [Returned on {self.return_date().strftime('%Y-%m-%d')}]"
