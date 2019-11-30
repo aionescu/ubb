@@ -33,7 +33,12 @@ if (Test-Path $src) {
     if (!$exit) {
       $result | Out-Default
     } else {
-      $(if ($dbg) { & $ollydbg $exe } else { & $exe }) | Out-Default
+      if ($dbg) {
+        & $ollydbg $exe | Out-Default
+      } else {
+        & $exe | Out-Default
+      }
+      
       Remove-Item $exe
     }
   }
