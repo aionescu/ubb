@@ -1,4 +1,7 @@
 .vscode/
+.stack-work/
+numeration-bases.cabal
+*~
 __pycache__/
 .mypy_cache/
 .coverage
