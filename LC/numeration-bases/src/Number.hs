@@ -21,4 +21,4 @@ digits :: String
 digits = "0123456789ABCDEF"
 
 processCmd :: Cmd -> String
-processCmd = undefined
+processCmd = show

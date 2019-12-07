@@ -11,7 +11,7 @@ import Parser
 helpText :: String
 helpText = "\
   \numeration-bases (Made by Alex Ionescu)\n\
-  \To do a conversion, type 'num(b) = ?(h)'.\n\
+  \To do a conversion, type 'n(b) = ?(h)'.\n\
   \To do an operation, type 'n1(b) <op> n2(b)'.\n\
   \\n\
   \Here's some examples:\n\
@@ -30,5 +30,6 @@ handleCmd = do
 
 main :: IO ()
 main = do
+  hSetBuffering stdout NoBuffering
   putStrLn helpText
   forever handleCmd
