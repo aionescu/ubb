@@ -10,7 +10,7 @@ dependencies:
 - parsec
 
 executables:
-  opc-exe:
+  numeration-bases-exe:
     main:                Main.hs
     source-dirs:         src
     ghc-options:
