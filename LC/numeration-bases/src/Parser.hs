@@ -58,11 +58,14 @@ operation = do
   spaces
   b <- number
   let (Number _ aBase) = a
-  let (Number _ bBase) = b
+  let (Number bNum bBase) = b
 
   if aBase /= bBase
   then fail "Both operands must be in the same base."
-  else pure $ CmdOp $ Operation a op b
+  else
+    if (op == Mul || op == Div) && length bNum > 1
+    then fail "Multiplication and division can only be performed on 1-digit numbers."
+    else pure $ CmdOp $ Operation a op b
 
 cmd :: Parser Cmd
 cmd = do

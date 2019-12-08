@@ -10,9 +10,10 @@ import Parser
 
 helpText :: String
 helpText = "\
-  \numeration-bases (Made by Alex Ionescu)\n\
+  \numeration-bases (Made by Andrei-Alexandru Ionescu)\n\
   \To do a conversion, type 'n(b) = ?(h)'.\n\
   \To do an operation, type 'n1(b) <op> n2(b)'.\n\
+  \To exit, type 'exit'.\n\
   \\n\
   \Here's some examples:\n\
   \2A(16) = ?(10)\n\
@@ -23,10 +24,14 @@ handleCmd :: IO ()
 handleCmd = do
   putStr "> "
   str <- getLine
-  let res = parse str
-  let output = (case res of Left err -> err; Right cmd -> processCmd cmd)
 
-  putStrLn output
+  if str == "exit"
+  then exitSuccess
+  else do
+    let res = parse str
+    let output = (case res of Left err -> err; Right cmd -> show $ processCmd cmd)
+
+    putStrLn output
 
 main :: IO ()
 main = do
