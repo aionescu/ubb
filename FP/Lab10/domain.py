@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from random import randint
+from exn import SerializationError
 
 # Root of the inheritance hierarchy of entities
 # Properties:
@@ -12,6 +13,13 @@ class Entity:
   def id(self):
     return self.__id
 
+  def serialize(self, file):
+    pass
+
+  @staticmethod
+  def deserialize(file):
+    pass
+
 # Class that holds information about a client
 # Properties:
 #   - name: The name of the client
@@ -20,9 +28,36 @@ class Client(Entity):
     Entity.__init__(self, id)
     self.__name = name
 
+  @staticmethod
+  def static_method(s):
+    print(f"S is {s}")
+
   @property
   def name(self):
     return self.__name
+
+  def serialize(self, file):
+    def write(s):
+      file.write(s)
+      file.write('\n')
+
+    write(self.id)
+    write(self.name)
+
+  @staticmethod
+  def deserialize(file):
+    def read():
+      s = file.readline()
+      assert s
+      return s
+
+    try:
+      id = read()
+      name = read()
+
+      return Client(int(id), name)
+    except:
+      raise SerializationError
 
   def __eq__(self, rhs):
     if not isinstance(rhs, Client):
@@ -56,6 +91,33 @@ class Movie(Entity):
   @property
   def genre(self):
     return self.__genre
+
+  def serialize(self, file):
+    def write(s):
+      file.write(s)
+      file.write('\n')
+
+    write(self.id)
+    write(self.title)
+    write(self.desc)
+    write(self.genre)
+
+  @staticmethod
+  def deserialize(file):
+    def read():
+      s = file.readline()
+      assert s
+      return s
+
+    try:
+      id = read()
+      title = read()
+      desc = read()
+      genre = read()
+
+      return Movie(int(id), title, desc, genre)
+    except:
+      raise SerializationError
 
   def __eq__(self, rhs):
     if not isinstance(rhs, Movie):
@@ -121,6 +183,37 @@ class Rental(Entity):
   @property
   def days_late(self):
     return (datetime.today - self.due_date).days
+
+  def serialize(self, file):
+    def write(s):
+      file.write(s)
+      file.write('\n')
+
+    write(self.id)
+    write(self.client_id)
+    write(self.movie_id)
+    write(self.rented_date)
+    write(self.due_date)
+    write(self.return_date)
+
+  @staticmethod
+  def deserialize(file):
+    def read():
+      s = file.readline()
+      assert s
+      return s
+
+    try:
+      id = read()
+      client_id = read()
+      movie_id = read()
+      rented_date = read()
+      due_date = read()
+      return_date = read()
+
+      return Rental(int(id), int(client_id), int(movie_id), datetime(rented_date), datetime(due_date), datetime(return_date))
+    except:
+      raise SerializationError
 
   def __eq__(self, rhs):
     if not isinstance(rhs, Rental):

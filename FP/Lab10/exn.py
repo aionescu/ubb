@@ -21,3 +21,6 @@ class InvalidUndoError(Exception):
 # Exception that is raised if a redo is attempted when there is nothing to redo.
 class InvalidRedoError(Exception):
   pass
+
+class SerializationError(Exception):
+  pass
