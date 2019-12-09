@@ -4,11 +4,12 @@ import Data.Char(toUpper)
 import Text.Parsec
 import Text.Parsec.Char
 
-import Number
+import Operations
+import Conversions
 
 type Parser = Parsec String ()
 
-base :: Parser Int
+base :: Parser Base
 base = between (char '(') (char ')') numWs
   where
     numWs = do
@@ -20,7 +21,7 @@ base = between (char '(') (char ')') numWs
       then pure n
       else fail "Base must be between 2 and 16."
 
-number :: Parser Number
+number :: Parser (Digits, Base)
 number = do
   n <- many1 (oneOf digits)
   spaces
@@ -29,52 +30,50 @@ number = do
 
   if any (not . (`elem` ds)) n
   then fail "Number must be in specified base."
-  else pure $ Number n b
+  else pure $ (reverse n, b)
 
-operator :: Parser Operator
+operator :: Parser Op
 operator = choice [add, sub, mul, div]
   where
     add = Add <$ char '+'
     sub = Sub <$ char '-'
     mul = Mul <$ char '*'
-    div = Div <$ char '/'
+    div = DivMod <$ char '/'
 
-conversion :: Parser Cmd
+conversion :: Parser String
 conversion = do
-  n <- number
+  (n, b) <- number
   spaces
   char '='
   spaces
   char '?'
   spaces
-  b <- base
-  pure $ CmdConv $ Conversion n b
+  h <- base
+  pure $ convert b h n
 
-operation :: Parser Cmd
+operation :: Parser String
 operation = do
-  a <- number
+  (a, aBase) <- number
   spaces
   op <- operator
   spaces
-  b <- number
-  let (Number _ aBase) = a
-  let (Number bNum bBase) = b
+  (b, bBase) <- number
 
   if aBase /= bBase
   then fail "Both operands must be in the same base."
   else
-    if (op == Mul || op == Div) && length bNum > 1
+    if (op == Mul || op == DivMod) && length b > 1
     then fail "Multiplication and division can only be performed on 1-digit numbers."
-    else pure $ CmdOp $ Operation a op b
+    else pure $ eval op aBase a b
 
-cmd :: Parser Cmd
+cmd :: Parser String
 cmd = do
   spaces
   c <- try conversion <|> operation
   spaces
   pure c
 
-parse :: String -> Either String Cmd
+parse :: String -> Either String String
 parse input =
   let upper = toUpper <$> input in
   case runParser cmd () "" upper of

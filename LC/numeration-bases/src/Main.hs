@@ -5,7 +5,6 @@ import Data.Maybe(fromMaybe)
 import System.Exit(exitSuccess)
 import System.IO(hSetBuffering, stdout, BufferMode(NoBuffering))
 
-import Number
 import Parser
 
 helpText :: String
@@ -27,11 +26,15 @@ handleCmd = do
 
   if str == "exit"
   then exitSuccess
-  else do
-    let res = parse str
-    let output = (case res of Left err -> err; Right cmd -> show $ processCmd cmd)
-
-    putStrLn output
+  else
+    let
+      res = parse str
+      output =
+        case res of
+          Left err -> err
+          Right cmd -> cmd
+    in
+      putStrLn output
 
 main :: IO ()
 main = do
