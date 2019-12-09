@@ -3,8 +3,8 @@ from exn import *
 
 # Class that manages multiple instances of a particular entity class
 class Repo:
-  def __init__(self):
-    self.__data = {}
+  def __init__(self, storage):
+    self.__storage = storage
     self.__crr_id = 0
 
   def next_id(self):
@@ -12,72 +12,43 @@ class Repo:
     return self.__crr_id
 
   def must_exist(self, id):
-    if id not in self.__data:
-      raise InexistentItemError()
+    self.__storage.must_exist(id)
 
-  # Method that gets the value with the specified id
-  # Input: id - The id to lookup
-  # Output: The value with the corresponding id
-  # Postconditions: -
-  # Raises: InexistentItemError if there no value has the specified id
   def get(self, id):
-    self.must_exist(id)
-    return self.__data[id]
+    self.__storage.get(id)
 
-  # Method that adds the value to the repository
-  # Input: val - The value to add
-  # Output: -
-  # Postconditions: The value exists in the repository
-  # Raises: -
   def add(self, val):
-    self.__data[val.id] = val
+    self.__storage.add(val)
 
-  # Method that updates a value in the repository
-  # Input: val - The new version of the value to update
-  # Output: -
-  # Postconditions: The value's information is updated in the repository
-  # Raises: InexistentItemError if there is no value with the new value's id already in the repo
   def update(self, val):
-    self.must_exist(val.id)
-    self.__data[val.id] = val
+    self.__storage.update(val)
 
-  # Method that removes a value from the repository
-  # Input: val - The value to remove from the repository
-  # Output: -
-  # Postconditions: The value does not exist in the repository anymore
-  # Raises: InexistentItemError if the value does not exist in the repo
   def remove(self, val):
-    self.must_exist(val.id)
-    del self.__data[val.id]
+    self.__storage.remove(val)
 
   def keys(self):
-    for key in sorted(self.__data.keys):
-      yield key
+    return self.__storage.keys()
 
   def values(self):
-    def get_id(x):
-      return x.id
-
-    for val in sorted(self.__data.values(), key = get_id):
-      yield val
+    return self.__storage.values()
 
 class ClientRepo(Repo):
-  def __init__(self):
-    Repo.__init__(self)
+  def __init__(self, storage):
+    Repo.__init__(self, storage)
 
   def create(self, name):
     return Client(self.next_id(), name)
 
 class MovieRepo(Repo):
-  def __init__(self):
-    Repo.__init__(self)
+  def __init__(self, storage):
+    Repo.__init__(self, storage)
 
   def create(self, title, desc, genre):
     return Movie(self.next_id(), title, desc, genre)
       
 class RentalRepo(Repo):
-  def __init__(self):
-    Repo.__init__(self)
+  def __init__(self, storage):
+    Repo.__init__(self, storage)
 
   def create(self, client_id, movie_id, rented_date, due_date):
     return Rental(self.next_id(), client_id, movie_id, rented_date, due_date, None)

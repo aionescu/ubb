@@ -1,45 +1,64 @@
-param([switch] $dbg, [string] $src)
+param([switch] $dbg, [Parameter(ValueFromRemainingArguments)] [string[]] $files)
 
-$relSrc = ($PSScriptRoot + "/" + $src)
-if (Test-Path $relSrc) {
-  $src = $relSrc
+function AbsolutePath {
+  param([string] $path)
+  
+  $rel = ($PSScriptRoot + "/" + $path)
+
+  if (Test-Path $rel) {
+    return $rel
+  } else {
+    return $path
+  }
 }
 
-if (Test-Path $src) {
-  $tools = $env:ASM_TOOLS_PATH
+function ToObj {
+  param([string] $path)
 
-  $nasmPath = $tools + "nasm/"
-  $nasm = $tools + "nasm/nasm.exe"
-  $alink = $tools + "nasm/alink.exe"
-  $ollydbg = $tools + "ollydbg/ollydbg.exe"
+  $noExt = $path -replace "\.[^\.]+$"
 
-  $noExt = $src -replace "\.[^\.]+$"
+  return ($noExt + ".obj")
+}
 
-  $lst = ($noExt + ".lst")
-  $obj = ($noExt + ".obj")
-  $exe = ($noExt + ".exe")
+function ToExe {
+  param([string] $path)
 
-  $result = & $nasm -fobj $src -l $lst -I $nasmPath
+  $noExt = $path -replace "\.[^\.]+$"
 
-  if (!$?) {
+  return ($noExt + ".exe")
+}
+
+$files = @($files | ForEach-Object { AbsolutePath $_ })
+
+$tools = $env:ASM_TOOLS_PATH
+
+$nasm = $tools + "nasm/nasm.exe"
+$alink = $tools + "nasm/alink.exe"
+$ollydbg = $tools + "ollydbg/ollydbg.exe"
+
+$objs = @($files | ForEach-Object { ToObj $_ })
+
+$result = $files | ForEach-Object { & $nasm -fobj $_ }
+
+if (!$?) {
+  $result | Out-Default
+} else {
+  $result = & $alink -oPE -subsys console -entry start @objs
+  $exit = $?
+
+  $objs | ForEach-Object { Remove-Item $_ }
+
+  if (!$exit) {
     $result | Out-Default
   } else {
-    $result = & $alink -oPE -subsys console -entry start $obj
-    $exit = $?
-
-    Remove-Item $lst
-    Remove-Item $obj
-
-    if (!$exit) {
-      $result | Out-Default
+    $exe = ToExe ($files[0])
+    
+    if ($dbg) {
+      & $ollydbg $exe | Out-Default
     } else {
-      if ($dbg) {
-        & $ollydbg $exe | Out-Default
-      } else {
-        & $exe | Out-Default
-      }
-      
-      Remove-Item $exe
+      & ("./" + $exe) | Out-Default
     }
+      
+    Remove-Item $exe
   }
 }
