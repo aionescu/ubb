@@ -35,4 +35,4 @@ convert' src dest n
   | src > dest = successiveDivs src dest n
   | otherwise = n -- src == dest, no conversion needed
 
-convert src dest n = reverse $ convert' src dest n
+convert src dest n = showDigits dest $ convert' src dest n

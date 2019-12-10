@@ -16,6 +16,9 @@ toBase10 = fromJust . (`elemIndex` digits)
 toDigit :: Int -> Digit
 toDigit = (digits !!)
 
+showDigits :: Base -> Digits -> String
+showDigits base digits = reverse digits ++ "(" ++ show base ++ ")"
+
 add :: Base -> Digits -> Digits -> Digits
 add base x y = loop 0 x y
   where
@@ -92,9 +95,9 @@ divMod' base x y = loop [] 0 (reverse x)
 data Op = Add | Sub | Mul | DivMod deriving Eq
 
 eval :: Op -> Base -> Digits -> Digits -> String
-eval Add b x y = reverse $ add b x y
-eval Sub b x y = reverse $ sub b x y
-eval Mul b x [y] = reverse $ mul b x y
+eval Add b x y = showDigits b $ add b x y
+eval Sub b x y = showDigits b $ sub b x y
+eval Mul b x [y] = showDigits b $ mul b x y
 eval DivMod b x [y] =
   let (quot, rem) = divMod' b x y
-  in "q = " ++ reverse quot ++ ", r = " ++ [rem]
+  in "q = " ++ showDigits b quot ++ ", r = " ++ showDigits b [rem]
