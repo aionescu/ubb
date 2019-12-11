@@ -1,6 +1,7 @@
 module Main where
 
 import Control.Monad(forever)
+import Data.Char(toLower)
 import Data.Maybe(fromMaybe)
 import System.Exit(exitSuccess)
 import System.IO(hSetBuffering, stdout, BufferMode(NoBuffering))
@@ -24,7 +25,7 @@ handleCmd = do
   putStr "> "
   str <- getLine
 
-  if str == "exit"
+  if (toLower <$> str) == "exit"
   then exitSuccess
   else
     let

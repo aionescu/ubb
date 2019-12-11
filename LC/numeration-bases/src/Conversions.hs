@@ -22,15 +22,15 @@ successiveDivs src dest num = loop [] num
     loop acc a =
       let (quot, rem) = divMod' src a h
       in
-        if all (== '0') quot
+        if isZero quot
         then reverse (rem : acc)
         else loop (rem : acc) quot
 
 convert' :: Base -> Base -> Digits -> Digits
 convert' src dest n
   | src < 10 && dest < 10 =
-      let b10 = convert src 10 n
-      in convert 10 dest b10
+      let b10 = convert' src 10 n
+      in convert' 10 dest b10
   | src < dest = substitution src dest n
   | src > dest = successiveDivs src dest n
   | otherwise = n -- src == dest, no conversion needed
