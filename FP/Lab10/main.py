@@ -1,5 +1,5 @@
 from ui import Ui
-from storage import *
+from loader import *
 
 def load_settings():
   with open("settings.properties", "r") as file:
@@ -9,24 +9,24 @@ def load_settings():
     rentals = file.readline().replace("rentals=", "").replace("\n", "")
 
     if repo == "mem":
-      storage_type = MemStorage
+      loader_type = MemLoader
       populate = True
     elif repo == "json":
-      storage_type = JsonStorage
+      loader_type = JsonLoader
       populate = False
     elif repo == "pickle":
-      storage_type = PickleStorage
+      loader_type = PickleLoader
       populate = False
     else:
       print("Invalid settings file.")
       exit()
 
-    return (populate, storage_type, [clients, movies, rentals])
+    return (populate, loader_type, [clients, movies, rentals])
 
 def main():
-  (populate, storage_type, files) = load_settings()
+  (populate, loader_type, files) = load_settings()
 
-  ui = Ui(storage_type, files, populate)
+  ui = Ui(loader_type, files, populate)
 
   while True:
     raw = input("rentals> ")

@@ -5,11 +5,11 @@ from exn import *
 from repo import *
 
 class Services:
-  def __init__(self, storage_type, files, populate = False):
+  def __init__(self, loader_type, files, populate = False):
 
-    self.__clients = ClientRepo(storage_type(files[0]))
-    self.__movies = MovieRepo(storage_type(files[1]))
-    self.__rentals = RentalRepo(storage_type(files[2]))
+    self.__clients = ClientRepo(loader_type(files[0]))
+    self.__movies = MovieRepo(loader_type(files[1]))
+    self.__rentals = RentalRepo(loader_type(files[2]))
     
     self.__done_actions, self.__undone_actions = [], []
 
@@ -60,7 +60,7 @@ class Services:
   def update_client(self, id, name):
     repo = self.__clients
     client = Client(id, name)
-    old = repo.storage.get(client.id)
+    old = repo.get(client.id)
 
     self.__do(UpdateAction(repo, old, client))
       
@@ -72,7 +72,7 @@ class Services:
   def update_movie(self, id, title, desc, genre):
     repo = self.__movies
     movie = Movie(id, title, desc, genre)
-    old = repo.storage.get(movie.id)
+    old = repo.get(movie.id)
 
     self.__do(UpdateAction(repo, old, movie))
 
@@ -83,10 +83,10 @@ class Services:
   # Raises: InexistentItemError if a client with the specified ID does not exist.
   def remove_client(self, id):
     repo = self.__clients
-    client = repo.storage.get(id)
+    client = repo.get(id)
     actions = [RemoveAction(repo, client)]
 
-    for r in self.__rentals.storage.values():
+    for r in self.__rentals.values():
       if r.client_id == id:
         actions.append(RemoveAction(self.__rentals, r))
 
@@ -99,10 +99,10 @@ class Services:
   # Raises: InexistentItemError if a movie with the specified ID does not exist.
   def remove_movie(self, id):
     repo = self.__movies
-    movie = repo.storage.get(id)
+    movie = repo.get(id)
     actions = [RemoveAction(repo, movie)]
 
-    for r in self.__rentals.storage.values():
+    for r in self.__rentals.values():
       if r.movie_id == id:
         actions.append(RemoveAction(self.__rentals, r))
 
@@ -114,7 +114,7 @@ class Services:
   # Postconditions: The app's state is not modified.
   # Raises: -
   def list_clients(self):
-    return '\n'.join(map(str, self.__clients.storage.values()))
+    return '\n'.join(map(str, self.__clients.values()))
 
   # Function that returns a formatted list of all the movies.
   # Input: -
@@ -122,7 +122,7 @@ class Services:
   # Postconditions: The app's state is not modified.
   # Raises: -
   def list_movies(self):
-    return '\n'.join(map(str, self.__movies.storage.values()))
+    return '\n'.join(map(str, self.__movies.values()))
 
   # Function that returns a formatted list of all the rentals.
   # Input: -
@@ -130,20 +130,20 @@ class Services:
   # Postconditions: The app's state is not modified.
   # Raises: -
   def list_rentals(self):
-    return '\n'.join(map(str, self.__rentals.storage.values()))
+    return '\n'.join(map(str, self.__rentals.values()))
 
   def __has_late_movies(self, id):
-    client = self.__clients.storage.get(id)
+    client = self.__clients.get(id)
 
-    for rental in self.__rentals.storage.values():
+    for rental in self.__rentals.values():
       if rental.client_id == client.id and not rental.returned and rental.is_late:
         return True
 
     return False
 
   def rent_movie(self, client_id, movie_id, rented_date, due_date):
-    self.__clients.storage.must_exist(client_id)
-    self.__movies.storage.must_exist(movie_id)
+    self.__clients.must_exist(client_id)
+    self.__movies.must_exist(movie_id)
 
     if self.__has_late_movies(client_id):
       raise InvalidRentalException()
@@ -153,7 +153,7 @@ class Services:
     def predicate(r):
       return r.movie_id == movie_id and not r.returned
 
-    if any(map(predicate, repo.storage.values())):
+    if any(map(predicate, repo.values())):
       raise MovieNotAvailableError()
 
     rental = repo.create(client_id, movie_id, rented_date, due_date)
@@ -161,7 +161,7 @@ class Services:
 
   def return_movie(self, rental_id):
     repo = self.__rentals
-    rental = repo.storage.get(rental_id)
+    rental = repo.get(rental_id)
 
     if rental.returned:
       raise RentalReturnedError()
@@ -178,7 +178,7 @@ class Services:
     def predicate(c):
       return value in str(getter(c)).lower()
 
-    return '\n'.join(map(str, filter(predicate, self.__clients.storage.values())))
+    return '\n'.join(map(str, filter(predicate, self.__clients.values())))
 
   def search_movies(self, field, value):
     def getter(c):
@@ -189,7 +189,7 @@ class Services:
     def predicate(c):
       return value in str(getter(c)).lower()
 
-    return '\n'.join(map(str, filter(predicate, self.__movies.storage.values())))
+    return '\n'.join(map(str, filter(predicate, self.__movies.values())))
 
   def stats_most_rented(self):
     def with_snd(x):
@@ -199,12 +199,12 @@ class Services:
       return x[1]
 
     def of_tuple(x):
-      return self.__movies.storage.get(x[0])
+      return self.__movies.get(x[0])
 
     def gt0(x):
       return x[1] > 0
 
-    movie_days = dict(map(with_snd, self.__movies.storage.keys()))
+    movie_days = dict(map(with_snd, self.__movies.keys()))
 
     for r in self.__rentals.values():
       movie_days[r.movie_id] += r.days_rented
@@ -220,14 +220,14 @@ class Services:
       return x[1]
 
     def of_tuple(x):
-      return self.__clients.storage.get(x[0])
+      return self.__clients.get(x[0])
 
     def gt0(x):
       return x[1] > 0
 
-    client_days = dict(map(with_snd, self.__clients.storage.keys()))
+    client_days = dict(map(with_snd, self.__clients.keys()))
 
-    for r in self.__rentals.storage.values():
+    for r in self.__rentals.values():
       client_days[r.client_id] += r.days_rented
 
     clients = map(of_tuple, filter(gt0, sorted(client_days.items(), key = snd, reverse = True)))
@@ -251,9 +251,9 @@ class Services:
       return x.movie_id
     
     def of_id(x):
-      return self.__movies.storage.get(x)
+      return self.__movies.get(x)
 
-    movies = map(of_id, self.distinct(map(movie_id, sorted(filter(is_late, self.__rentals.storage.values()), key = days_late, reverse = True))))
+    movies = map(of_id, self.distinct(map(movie_id, sorted(filter(is_late, self.__rentals.values()), key = days_late, reverse = True))))
     return '\n'.join(map(str, movies))
 
   def undo(self):

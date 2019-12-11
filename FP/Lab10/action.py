@@ -11,10 +11,10 @@ class AddAction(Action):
     self.__val = val
 
   def apply(self):
-    self.__repo.storage.add(self.__val)
+    self.__repo.add(self.__val)
 
   def roll_back(self):
-    self.__repo.storage.remove(self.__val)
+    self.__repo.remove(self.__val)
 
 class RemoveAction(Action):
   def __init__(self, repo, val):
@@ -22,10 +22,10 @@ class RemoveAction(Action):
     self.__val = val
 
   def apply(self):
-    self.__repo.storage.remove(self.__val)
+    self.__repo.remove(self.__val)
 
   def roll_back(self):
-    self.__repo.storage.add(self.__val)
+    self.__repo.add(self.__val)
 
 class UpdateAction(Action):
   def __init__(self, repo, old_val, new_val):
@@ -34,10 +34,10 @@ class UpdateAction(Action):
     self.__new_val = new_val
 
   def apply(self):
-    self.__repo.storage.update(self.__new_val)
+    self.__repo.update(self.__new_val)
 
   def roll_back(self):
-    self.__repo.storage.update(self.__old_val)
+    self.__repo.update(self.__old_val)
 
 class MultiAction(Action):
   def __init__(self, actions):
