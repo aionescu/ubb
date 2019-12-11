@@ -2,6 +2,7 @@ module Operations where
 
 import Data.List
 import Data.Maybe
+import Debug.Trace
 
 type Digit = Char
 type Digits = String
@@ -16,8 +17,16 @@ toBase10 = fromJust . (`elemIndex` digits)
 toDigit :: Int -> Digit
 toDigit = (digits !!)
 
+skip0 :: Digits -> Digits
+skip0 [] = []
+skip0 ('0' : ds) = ds
+skip0 ds = ds
+
 showDigits :: Base -> Digits -> String
-showDigits base digits = reverse digits ++ "(" ++ show base ++ ")"
+showDigits base digits =
+  if all (=='0') digits
+  then "0"
+  else skip0 $ reverse digits ++ "(" ++ show base ++ ")"
 
 add :: Base -> Digits -> Digits -> Digits
 add base x y = loop 0 x y

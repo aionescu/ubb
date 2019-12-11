@@ -1,10 +1,25 @@
 from exn import InexistentItemError
 import pickle
+import jsonpickle
 
 class Storage:
   def __init__(self):
     self.__data = {}
+    self.__crr_id = 0
     self.load()
+
+  @property
+  def crr_id(self):
+    return self.__crr_id
+
+  @crr_id.setter
+  def crr_id(self, crr_id):
+    self.__crr_id = crr_id
+
+  @property
+  def next_id(self):
+    self.__crr_id += 1
+    return self.__crr_id
 
   @property
   def data(self):
@@ -53,8 +68,8 @@ class Storage:
     for val in sorted(self.__data.values(), key = get_id):
       yield val
 
-class InMemoryStorage(Storage):
-  def __init__(self):
+class MemStorage(Storage):
+  def __init__(self, _file):
     Storage.__init__(self)
 
   def load(self):
@@ -63,40 +78,36 @@ class InMemoryStorage(Storage):
   def save(self):
     pass
 
-class TextFileStorage(Storage):
-  def __init__(self, ty, file):
-    self.__ty = ty
-    self.__file = file
-    Storage.__init__(self)
-
-  def load(self):
-    with open(self.__file, "r") as file:
-      while True:
-        pos = file.tell()
-        line = file.readline()
-
-        if not line:
-          break
-
-        file.seek(pos)
-
-        val = self.__ty.deserialize(file)
-        self.data[val.id] = val
-
-  def save(self):
-    with open(self.__file, "w") as file:
-      for val in self.values():
-        val.serialize(file)
-
-class BinaryFileStorage(Storage):
+class JsonStorage(Storage):
   def __init__(self, file):
     self.__file = file
     Storage.__init__(self)
 
   def load(self):
-    with open(self.__file, "rb") as file:
-      self.data = pickle.load(file)
-      
+    try:
+      with open(self.__file, "r") as file:
+        json = file.read()
+        (self.crr_id, self.data) = jsonpickle.decode(json)
+    except FileNotFoundError:
+      pass
+
+  def save(self):
+    with open(self.__file, "w") as file:
+      json = jsonpickle.encode((self.crr_id, self.data))
+      file.write(json)
+
+class PickleStorage(Storage):
+  def __init__(self, file):
+    self.__file = file
+    Storage.__init__(self)
+
+  def load(self):
+    try:
+      with open(self.__file, "rb") as file:
+        (self.crr_id, self.data) = pickle.load(file)
+    except FileNotFoundError:
+      pass
+
   def save(self):
     with open(self.__file, "wb") as file:
-      pickle.dump(self.data, file)
+      pickle.dump((self.crr_id, self.data), file)
