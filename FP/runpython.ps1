@@ -1,23 +1,24 @@
-param([string] $src)
+param([string] $path)
 
-$relSrc = ($PSScriptRoot + "/" + $src)
-if (Test-Path $relSrc) {
-  $src = $relSrc
+$rel = ($PSScriptRoot + "/" + $path)
+if (Test-Path $rel) {
+  $path = $rel
 }
 
-if (Test-Path $src) {
-  $result = & mypy $src
+$result = & mypy $path
 
-  if (!$?) {
-    $result | Out-Default
-  } else {
-    $result = & py ($src + "/test.py")
-    $exit = $?
+if (!$?) {
+  $result | Out-Default
+} else {
+  $test = ($path + "/test.py")
 
-    if (!$exit) {
+  if (Test-Path $test) {
+    $result = & py $test
+
+    if (!$?) {
       $result | Out-Default
-    } else {
-      & py ($src + "/main.py")
     }
   }
+
+  & py ($path + "/main.py")
 }
