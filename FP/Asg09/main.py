@@ -1,32 +1,16 @@
 from ui import Ui
 from loader import *
-
-def load_settings():
-  with open("settings.properties", "r") as file:
-    repo = file.readline().replace("repo=", "").replace("\n", "")
-    clients = file.readline().replace("clients=", "").replace("\n", "")
-    movies = file.readline().replace("movies=", "").replace("\n", "")
-    rentals = file.readline().replace("rentals=", "").replace("\n", "")
-
-    if repo == "mem":
-      loader_type = MemLoader
-      populate = True
-    elif repo == "json":
-      loader_type = JsonLoader
-      populate = False
-    elif repo == "pickle":
-      loader_type = PickleLoader
-      populate = False
-    else:
-      print("Invalid settings file.")
-      exit()
-
-    return (populate, loader_type, [clients, movies, rentals])
+from exn import *
+from settings import *
 
 def main():
-  (populate, loader_type, files) = load_settings()
+  try:
+    settings = Settings("settings.properties")
+  except InvalidSettingsError:
+    print("Settings file has incorrect format.")
+    exit()
 
-  ui = Ui(loader_type, files, populate)
+  ui = Ui(settings)
 
   while True:
     raw = input("rentals> ")

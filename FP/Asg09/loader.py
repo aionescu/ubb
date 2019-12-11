@@ -1,5 +1,9 @@
 import pickle
 import jsonpickle
+import os
+
+def is_empty_file(fpath):  
+    return os.path.isfile(fpath) and os.path.getsize(fpath) == 0
 
 class Loader:
   def load(self):
@@ -24,6 +28,9 @@ class JsonLoader(Loader):
     Loader.__init__(self)
 
   def load(self):
+    if is_empty_file(self.__file):
+      return (0, {})
+
     try:
       with open(self.__file, "r") as file:
         json = file.read()
@@ -42,6 +49,9 @@ class PickleLoader(Loader):
     Loader.__init__(self)
 
   def load(self):
+    if is_empty_file(self.__file):
+      return (0, {})
+
     try:
       with open(self.__file, "rb") as file:
         return pickle.load(file)

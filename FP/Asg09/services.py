@@ -3,17 +3,19 @@ from domain import *
 from action import *
 from exn import *
 from repo import *
+from settings import *
 
 class Services:
-  def __init__(self, loader_type, files, populate = False):
+  def __init__(self, settings):
+    loader = settings.loader
 
-    self.__clients = ClientRepo(loader_type(files[0]))
-    self.__movies = MovieRepo(loader_type(files[1]))
-    self.__rentals = RentalRepo(loader_type(files[2]))
+    self.__clients = ClientRepo(loader(settings.clients))
+    self.__movies = MovieRepo(loader(settings.movies))
+    self.__rentals = RentalRepo(loader(settings.rentals))
     
     self.__done_actions, self.__undone_actions = [], []
 
-    if populate:
+    if settings.populate:
       (clients, movies, rents) = populate_rand()
 
       for client in clients:

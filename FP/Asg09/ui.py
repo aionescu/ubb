@@ -4,8 +4,8 @@ from exn import *
 from services import *
 
 class Ui:
-  def __init__(self, loader_type, files, populate = False):
-    self.__srv = Services(loader_type, files, populate)
+  def __init__(self, settings):
+    self.__srv = Services(settings)
 
   def handle(self, cmd, args):
     try:
