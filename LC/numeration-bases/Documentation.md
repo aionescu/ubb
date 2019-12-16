@@ -24,9 +24,11 @@ The following arithmetic operations are supported for any base between 2 and 16:
 
 ## Conversions
 
-The program supports multiple conversion methods: The substitution method, the method of successive divions, and the method of using an intermediate base (using 10 as the intermediary base).
+The program supports multiple conversion methods: The substitution method, the method of successive divions, the method of using an intermediate base (using 10 as the intermediary base), and rapid conversions between bases that are powers of 2.
 
-The program deduces which method to use based on the following condition: If both the source and destination base are lower than 10, then the method with an intermediary base 10 is chosen. Otherwise, if the source base is lower than the destination base, the substitution method is used. Otherwise, if the destination base is lower than the source base, the method of successive divisions is chosen. If the source and destination base are equal, no conversion is required.
+The program automatically infers which conversion method to use based on the source and destination base.
+
+The used conversion method is displayed along with the result of the conversion.
 
 ## Implementation
 

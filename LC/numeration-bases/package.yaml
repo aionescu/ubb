@@ -16,5 +16,4 @@ executables:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
-    - -Wincomplete-patterns
-    - -Wincomplete-uni-patterns
+    - -O2

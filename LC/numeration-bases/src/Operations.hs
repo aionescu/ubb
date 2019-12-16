@@ -10,8 +10,14 @@ type Base = Int
 digits :: String
 digits = "0123456789ABCDEF"
 
+(...) :: (c -> d) -> (a -> b -> c) -> (a -> b -> d)
+(...) = (.) . (.)
+
+indexOf :: Eq a => [a] -> a -> Int
+indexOf = fromJust ... flip elemIndex
+
 toBase10 :: Digit -> Int
-toBase10 = fromJust . (`elemIndex` digits)
+toBase10 = indexOf digits
 
 toDigit :: Int -> Digit
 toDigit = (digits !!)
@@ -21,18 +27,17 @@ isZero = all (== '0')
 
 skip0 :: Digits -> Digits
 skip0 [] = []
-skip0 ('0' : ds) = ds
+skip0 "0" = "0"
+skip0 ('0' : ds) = skip0 ds
 skip0 ds = ds
+
+skipTail0 :: Digits -> Digits
+skipTail0 = reverse . skip0 . reverse
 
 showDigits :: Base -> Digits -> String
 showDigits base digits =
-  let
-    digits' =
-      if isZero digits
-      then "0"
-      else skip0 $ reverse digits
-  in
-    digits' ++ "(" ++ show base ++ ")"
+  let digits' = skip0 $ reverse digits
+  in digits' ++ "(" ++ show base ++ ")"
 
 add :: Base -> Digits -> Digits -> Digits
 add base x y = loop 0 x y
