@@ -7,8 +7,12 @@ import Text.Parsec.Char
 import Operations
 import Conversions
 
+-- This module implements the parsing algorithm used to interpret
+-- expressions of the form `x(b) <op> y(b)` and `n(b) = ?(h)`.
+
 type Parser = Parsec String ()
 
+-- Parses a base enclosed in parentheses.
 base :: Parser Base
 base = between (char '(') (char ')') numWs
   where
@@ -21,6 +25,7 @@ base = between (char '(') (char ')') numWs
       then pure n
       else fail "Base must be between 2 and 16."
 
+-- Parses a number, comprised of a series of digits and a base.
 number :: Parser (Digits, Base)
 number = do
   n <- many1 (oneOf digits)
@@ -32,6 +37,7 @@ number = do
   then fail "Number must be in specified base."
   else pure $ (reverse n, b)
 
+-- Parses a single arithmetic operator.
 operator :: Parser Op
 operator = choice [add, sub, mul, div]
   where
@@ -40,6 +46,8 @@ operator = choice [add, sub, mul, div]
     mul = Mul <$ char '*'
     div = DivMod <$ char '/'
 
+-- Parses a conversion expression, then performs the conversion
+-- and returns the result.
 conversion :: Parser String
 conversion = do
   (n, b) <- number
@@ -51,6 +59,8 @@ conversion = do
   h <- base
   pure $ convert b h n
 
+-- Parses an operation expression, then performs the operation
+-- and returns the result.
 operation :: Parser String
 operation = do
   (a, aBase) <- number
@@ -66,6 +76,7 @@ operation = do
     then fail "Multiplication and division can only be performed on 1-digit numbers."
     else pure $ eval op aBase a b
 
+-- Parses a "command", i.e. either an operation or a conversion.
 cmd :: Parser String
 cmd = do
   spaces

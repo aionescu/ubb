@@ -2,13 +2,20 @@ module Conversions where
 
 import Operations
 
--- https://stackoverflow.com/a/12882583
+-- Taken from https://stackoverflow.com/a/12882583
 chunks :: Int -> [a] -> [[a]]
 chunks _ [] = []
 chunks n xs =
   let (ys, zs) = splitAt n xs
   in ys : chunks n zs
 
+-- This function converts a number using the substitution method.
+-- Parameters:
+--   src: The source base.
+--   dest: The destination base.
+--   num: The number to convert.
+-- Preconditions: src < dest.
+-- Returns: The result of the conversion.
 substitution :: Base -> Base -> Digits -> Digits
 substitution src dest num = loop 0 num
   where
@@ -21,6 +28,13 @@ substitution src dest num = loop 0 num
     loop i (a : as) = add dest (pow i [a] b') (loop (i + 1) as)
     loop i [] = "0"
 
+-- This function converts a number using the method of successive divisions.
+-- Parameters:
+--   src: The source base.
+--   dest: The destination base.
+--   num: The number to convert.
+-- Preconditions: src > dest.
+-- Returns: The result of the conversion.
 successiveDivs :: Base -> Base -> Digits -> Digits
 successiveDivs src dest num = loop [] num
   where
@@ -33,6 +47,7 @@ successiveDivs src dest num = loop [] num
         then reverse (rem : acc)
         else loop (rem : acc) quot
 
+-- Powers of 2
 pow2 :: [Base]
 pow2 = [2, 4, 8, 16]
 
@@ -41,6 +56,7 @@ pow2 = [2, 4, 8, 16]
 log2 :: Int -> Int
 log2 = floor . logBase 2.0 . fromIntegral
 
+-- Correspondence table used for rapid conversions.
 table :: [[Digits]]
 table =
   [ []
@@ -50,10 +66,13 @@ table =
   , reverse <$> ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"]
   ]
 
+-- Helper functions
 extendTo :: Int -> Digits -> Digits
 extendTo n (a : as) = a : extendTo (n - 1) as
 extendTo n [] = replicate n '0'
 
+-- This function converts a single digit to base 2.
+-- Preconditions: The source base is a power of 2.
 to2 :: Base -> Digit -> Digits
 to2 b d =
   let
@@ -63,6 +82,8 @@ to2 b d =
   in
     extendTo log (t !! n)
 
+-- This function converts a number from base 2 to a single digit in another base.
+-- Preconditions: The source base is a power of 2.
 from2 :: Base -> Digits -> Digit
 from2 b d =
   let
@@ -73,9 +94,13 @@ from2 b d =
   in
     r
 
+-- This function implements the rapid conversion from any base that is
+-- a power of 2 to base 2.
 rapidTo2 :: Base -> Digits -> Digits
 rapidTo2 b = (>>= to2 b)
 
+-- This function implements the rapid conversion from base 2 to
+-- any base that is a power of 2.
 rapidFrom2 :: Base -> Digits -> Digits
 rapidFrom2 b d =
   let
@@ -84,6 +109,7 @@ rapidFrom2 b d =
   in
     from2 b <$> cs
 
+-- Data type used to represent a substitution method.
 data Method = Base10 | Rapid | Substitution | SuccessiveDivs | Identity
 
 showMethod m =
@@ -94,6 +120,8 @@ showMethod m =
     SuccessiveDivs -> "successive divisions"
     Identity -> "identity"
 
+-- This function chooses which substitution method to employ
+-- based on the source and destination base.
 convert' :: Base -> Base -> Digits -> (Digits, Method)
 convert' src dest n
   | src == dest = (n, Identity)
@@ -106,6 +134,7 @@ convert' src dest n
   | src < dest = (substitution src dest n, Substitution)
   | src > dest = (successiveDivs src dest n, SuccessiveDivs)
 
+-- This function pretty-prints the result of a conversion.
 convert :: Base -> Base -> Digits -> String
 convert src dest n =
   let (d, m) = convert' src dest n

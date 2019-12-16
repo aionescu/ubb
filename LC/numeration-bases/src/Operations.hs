@@ -3,18 +3,17 @@ module Operations where
 import Data.List
 import Data.Maybe
 
+-- Data type declarations
 type Digit = Char
 type Digits = String
 type Base = Int
 
+-- Helper functions
 digits :: String
 digits = "0123456789ABCDEF"
 
-(...) :: (c -> d) -> (a -> b -> c) -> (a -> b -> d)
-(...) = (.) . (.)
-
 indexOf :: Eq a => [a] -> a -> Int
-indexOf = fromJust ... flip elemIndex
+indexOf xs x = fromJust $ elemIndex x xs
 
 toBase10 :: Digit -> Int
 toBase10 = indexOf digits
@@ -39,6 +38,12 @@ showDigits base digits =
   let digits' = skip0 $ reverse digits
   in digits' ++ "(" ++ show base ++ ")"
 
+-- This function performs the addition of 2 numbers in the specified base.
+-- Parameters:
+--   base: The base in which to perform the operation.
+--   x: The first operand.
+--   y: The second operand.
+-- Returns: The result of adding the 2 operands.
 add :: Base -> Digits -> Digits -> Digits
 add base x y = loop 0 x y
   where
@@ -61,6 +66,12 @@ add base x y = loop 0 x y
     loop 0 [] [] = []
     loop carry [] [] = [toDigit carry]
 
+-- This function performs the subtraction of 2 numbers in the specified base.
+-- Parameters:
+--   base: The base in which to perform the operation.
+--   x: The first operand.
+--   y: The second operand.
+-- Returns: The result of subtracting the second operand from the first.
 sub :: Base -> Digits -> Digits -> Digits
 sub base x y = loop x y
   where
@@ -84,6 +95,12 @@ sub base x y = loop x y
 
     loop [] [] = []
 
+-- This function performs the multiplication of 2 numbers in the specified base.
+-- Parameters:
+--   base: The base in which to perform the operation.
+--   x: The first operand.
+--   y: The second operand. Must be a single digit.
+-- Returns: The result of multiplying the 2 operands.
 mul :: Base -> Digits -> Digit -> Digits
 mul base x y = loop 0 x
   where
@@ -99,6 +116,12 @@ mul base x y = loop 0 x
     loop 0 [] = []
     loop carry [] = [toDigit carry]
 
+-- This function performs the division of 2 numbers in the specified base.
+-- Parameters:
+--   base: The base in which to perform the operation.
+--   x: The first operand.
+--   y: The second operand. Must be a single digit.
+-- Returns: A tuple containing the quotient and the remainder of the division of the 2 operands.
 divMod' :: Base -> Digits -> Digit -> (Digits, Digit)
 divMod' base x y = loop [] 0 (reverse x)
   where

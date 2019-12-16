@@ -12,7 +12,7 @@ helpText :: String
 helpText = "\
   \numeration-bases (Made by Andrei-Alexandru Ionescu)\n\
   \To do a conversion, type 'n(b) = ?(h)'.\n\
-  \To do an operation, type 'n1(b) <op> n2(b)'.\n\
+  \To do an operation, type 'x(b) <op> y(b)'.\n\
   \To exit, type 'exit'.\n\
   \\n\
   \Here's some examples:\n\
