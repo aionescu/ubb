@@ -9,7 +9,7 @@ import System.Exit
 import System.Process
 
 myPy :: String -> IO ExitCode
-myPy path = system ("python3 -m mypy " ++ path)
+myPy path = system ("python3 -m mypy --strict " ++ path)
 
 tests :: String -> IO ExitCode
 tests path = do

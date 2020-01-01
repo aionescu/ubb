@@ -1,5 +1,7 @@
+from typing import Iterable, Tuple
 from enum import Enum
-from typing import Iterable
+
+Point = Tuple[int, int]
 
 class Cell(Enum):
   Empty = 0
@@ -7,13 +9,13 @@ class Cell(Enum):
   P2 = 2
 
   @property
-  def flip(self) -> Cell:
-    if self == Cell.Empty:
-      return self
-    elif self == Cell.P1:
+  def flip(self) -> 'Cell':
+    if self == Cell.P1:
       return Cell.P2
-    else:
+    elif self == Cell.P2:
       return Cell.P1
+    else:
+      return self
 
   def __str__(self) -> str:
     if self == Cell.Empty:
@@ -37,14 +39,18 @@ class Board:
   def height(self) -> int:
     return self.__height
 
-  def is_in(self, x: int, y: int) -> bool:
+  def is_in(self, p: Point) -> bool:
+    x, y = p
+
     return (x >= 0 and x < self.height
       and y >= 0 and y < self.width)
 
-  def get(self, x: int, y: int) -> Cell:
+  def get(self, p: Point) -> Cell:
+    x, y = p
     return self.__board[x][y]
 
-  def set(self, x: int, y: int, val: Cell) -> None:
+  def set(self, p: Point, val: Cell) -> None:
+    x, y = p
     self.__board[x][y] = val
     
   def yield_all(self) -> Iterable[Cell]:
