@@ -1,4 +1,5 @@
 from typing import Iterable, Tuple
+from utils import all_f
 from enum import Enum
 
 Point = Tuple[int, int]
@@ -57,6 +58,12 @@ class Board:
     for row in self.__board:
       for cell in row:
         yield cell
+
+  def is_full(self) -> bool:
+    def not_empty(cell: Cell) -> bool:
+      return cell != Cell.Empty
+
+    return all_f(not_empty, self.yield_all())
 
   def __str__(self) -> str:
     buf = ""
