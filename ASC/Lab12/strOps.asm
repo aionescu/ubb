@@ -3,10 +3,12 @@ bits 32
 extern printf
 import printf msvcrt.dll
 
+global _printN
+global _commonPrefixLength
+
 ; void printN(const char* s, int n);
 ; Prints the first n characters of s.
 ; If n >= strlen(s), the function results in undefined behavior.
-global _printN
 segment data public data use32
   fmt db "%s\n", 0
 
@@ -18,15 +20,15 @@ _printN:
 	mov eax, [ebp + 8] ; s
   add eax, [ebp + 12] ; s += n
 
-  mov edx, [eax]
-  mov [eax], 0
+  mov dl, [eax]
+  mov byte [eax], 0
 
-  push [ebp + 8]
+  push dword [ebp + 8]
   push fmt
   call [printf]
   add esp, 8
 
-  mov [eax], edx
+  mov [eax], dl
 
 	mov esp, ebp
 	pop ebp
@@ -34,20 +36,20 @@ _printN:
 
 ; int commonPrefixLength(const char* a, const char* b);
 ; Returns the length of the longest common prefix of the 2 strings.
-global _commonPrefixLength
-segment data public data use32
-segment code public code use32
 _commonPrefixLength:
 	push ebp
 	mov ebp, esp
-  pushad 
+  push ebx
          
   mov eax, 0
-  mov ecx, [ebp + 8] ; a
-  mov edx, [ebp + 12] ; b
+  mov ecx, [ebp + 12] ; a
+  mov edx, [ebp + 16] ; b
 
 .looop:
-  cmp [ecx], [edx]
+  mov bl, [ecx]
+  mov bh, [edx]
+
+  cmp bl, bh
   jne .done
 
   inc eax
@@ -55,8 +57,8 @@ _commonPrefixLength:
   inc edx
   jmp .looop
 
-.done
-  popad
+.done:
+  pop ebx
 	mov esp, ebp
 	pop ebp
   ret

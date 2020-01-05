@@ -2,9 +2,10 @@ bits 32
 
 global start
 
-extern exit, scanf
+extern exit, scanf, printf
 import exit msvcrt.dll
 import scanf msvcrt.dll
+import printf msvcrt.dll
 
 %include "strOps.asm"
 
@@ -25,7 +26,7 @@ start:
   add esp, 8
 
   cmp eax, 0
-  je done
+  je .done
 
 .looop:
   push dword s2
@@ -47,7 +48,7 @@ start:
   jmp .looop
 
 .false:
-  mov [cond], 0
+  mov byte [cond], 0
   
 .done:
   push msgBegin
@@ -55,7 +56,7 @@ start:
   call [printf]
   add esp, 8
 
-  cmp cond, 1
+  cmp byte [cond], 1
   je .printEnd
 
   push msgMid

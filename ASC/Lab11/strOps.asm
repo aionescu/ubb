@@ -26,7 +26,7 @@ strEq:
   jmp .looop
   
 .done:
-  cmp [edx], 0
+  cmp byte [edx], 0
   jne .retFalse
 
   mov eax, 1
