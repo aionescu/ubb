@@ -2,62 +2,33 @@ bits 32
 
 extern _printf
 
-global _printN
-global _commonPrefixLength
-
-; void printN(const char* s, int n);
-; Prints the first n characters of s.
-; If n >= strlen(s), the function results in undefined behavior.
-segment data public data use32
-  fmt db "%s", 10, 0
-
-segment code public code use32
-_printN:
-  push ebp
-  mov ebp, esp
-
-  mov eax, [ebp + 8] ; s
-  add eax, [ebp + 12] ; s += n
-
-  mov dl, [eax]
-  mov byte [eax], 0
-
-  push dword [ebp + 8]
-  push fmt
-  call _printf
-  add esp, 8
-
-  mov [eax], dl
-
-  mov esp, ebp
-  pop ebp
-  ret
-
 ; int commonPrefixLength(const char* a, const char* b);
 ; Returns the length of the longest common prefix of the 2 strings.
+global _commonPrefixLength
+segment data public data use32
+segment code public code use32
 _commonPrefixLength:
   push ebp
   mov ebp, esp
-  push ebx
-         
-  mov eax, 0
-  mov ecx, [ebp + 12] ; a
-  mov edx, [ebp + 16] ; b
+
+  mov ecx, [ebp + 8] ; a
+  mov edx, [ebp + 12] ; b
 
 .looop:
-  mov bl, [ecx]
-  mov bh, [edx]
+  mov al, [ecx]
+  mov ah, [edx]
 
-  cmp bl, bh
+  cmp al, ah
   jne .done
 
-  inc eax
   inc ecx
   inc edx
   jmp .looop
 
 .done:
-  pop ebx
+  sub ecx, [ebp + 8]
+  mov eax, ecx
+
   mov esp, ebp
   pop ebp
   ret
