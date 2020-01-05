@@ -8,8 +8,8 @@ import System.Environment
 import System.Exit
 import System.Process
 
-myPy :: String -> IO ExitCode
-myPy path = system ("python3 -m mypy --strict " ++ path)
+myPy :: String -> String -> IO ExitCode
+myPy strict path = system ("python3 -m mypy " ++ strict ++ " " ++ path)
 
 tests :: String -> IO ExitCode
 tests path = do
@@ -31,29 +31,35 @@ run path = system ("python3 " ++ path ++ "/main.py")
     ExitFailure _ -> pure c
     ExitSuccess -> b
 
-getPath :: IO String
-getPath = do
+getPath :: String -> String -> IO String
+getPath pwd path = do
+  let rel = pwd ++ "/" ++ path
+  exists <- doesFileExist rel
+
+  pure $
+    if exists
+    then rel
+    else path
+
+handleArgs :: IO (String, String)
+handleArgs = do
   args <- getArgs
-  dir <- getCurrentDirectory
+  pwd <- getCurrentDirectory
 
   case args of
-    [] -> pure dir
-    p : _ ->
-      let rel = dir ++ "/" ++ p
-      in do
-        exists <- doesFileExist rel
-
-        pure $
-          if exists
-          then rel
-          else p
+    "--no-strict" : arg : _ -> do
+      path <- getPath pwd arg
+      pure ("", path)
+    arg : _ -> do
+      path <- getPath pwd arg
+      pure ("--strict", arg)
 
 main :: IO ()
 main = do
-  path <- getPath
+  (strict, path) <- handleArgs
 
   c <-
-    myPy path
+    myPy strict path
     !=> tests path
     !=> run path
 
