@@ -1,7 +1,6 @@
 from ui import Ui
 
-# TODO: Fix diag1 and vertical win conditions not working
-# TODO: Add tests & specs
+# TODO: Add tests
 
 def main() -> None:
   ui = Ui()
