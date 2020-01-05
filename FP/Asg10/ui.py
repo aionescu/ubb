@@ -26,7 +26,7 @@ class Ui:
       self.restart()
       return
 
-    print("Please select which column you wish to place a disc on.")
+    print("Please select which column you wish to place a piece on.")
     inp = input()
 
     if inp == "exit":
