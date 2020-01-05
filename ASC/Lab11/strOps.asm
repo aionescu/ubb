@@ -49,7 +49,7 @@ strFind:
 
   push edx
   push ecx
-  call [strEq]
+  call strEq
   add esp, 8
 
   cmp eax, 1

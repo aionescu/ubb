@@ -13,10 +13,10 @@ segment data public data use32
 
 segment code public code use32
 _printN:
-	push ebp
-	mov ebp, esp
+  push ebp
+  mov ebp, esp
 
-	mov eax, [ebp + 8] ; s
+  mov eax, [ebp + 8] ; s
   add eax, [ebp + 12] ; s += n
 
   mov dl, [eax]
@@ -29,15 +29,15 @@ _printN:
 
   mov [eax], dl
 
-	mov esp, ebp
-	pop ebp
+  mov esp, ebp
+  pop ebp
   ret
 
 ; int commonPrefixLength(const char* a, const char* b);
 ; Returns the length of the longest common prefix of the 2 strings.
 _commonPrefixLength:
-	push ebp
-	mov ebp, esp
+  push ebp
+  mov ebp, esp
   push ebx
          
   mov eax, 0
@@ -58,6 +58,6 @@ _commonPrefixLength:
 
 .done:
   pop ebx
-	mov esp, ebp
-	pop ebp
+  mov esp, ebp
+  pop ebp
   ret

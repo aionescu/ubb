@@ -13,7 +13,7 @@ segment data use32 class=data
   fmt db "%s", 0
   msgBegin db "Primul sir ", 0
   msgMid db "NU ", 0
-  msgEnd db "este subsir in toate celelalte siruri.", 0
+  msgEnd db "este subsir in toate celelalte siruri.", 10, 0
   s times 100 db 0
   s2 times 100 db 0
   cond db 1
@@ -39,16 +39,16 @@ start:
 
   push s
   push s2
-  call [strFind]
+  call strFind
   add esp, 8
 
   cmp eax, 0
-  je .false
+  jne .next
 
-  jmp .looop
-
-.false:
   mov byte [cond], 0
+
+.next:
+  jmp .looop
   
 .done:
   push msgBegin
