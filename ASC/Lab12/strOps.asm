@@ -9,7 +9,7 @@ global _commonPrefixLength
 ; Prints the first n characters of s.
 ; If n >= strlen(s), the function results in undefined behavior.
 segment data public data use32
-  fmt db "%s\n", 0
+  fmt db "%s", 10, 0
 
 segment code public code use32
 _printN:
