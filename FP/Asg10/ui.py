@@ -6,10 +6,7 @@ class Ui:
     self.__game = Game()
 
   def __clear(self) -> None:
-    if os.name == "nt":
-      os.system("cls")
-    else:
-      os.system("clear")
+    os.system("cls" if os.name == "nt" else "clear")
 
   def print(self) -> None:
     self.__clear()
