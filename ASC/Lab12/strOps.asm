@@ -1,7 +1,6 @@
 bits 32
 
-extern printf
-import printf msvcrt.dll
+extern _printf
 
 global _printN
 global _commonPrefixLength
@@ -25,7 +24,7 @@ _printN:
 
   push dword [ebp + 8]
   push fmt
-  call [printf]
+  call _printf
   add esp, 8
 
   mov [eax], dl
