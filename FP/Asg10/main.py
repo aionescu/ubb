@@ -1,7 +1,5 @@
 from ui import Ui
 
-# TODO: Add tests
-
 def main() -> None:
   ui = Ui()
   

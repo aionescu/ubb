@@ -4,6 +4,7 @@ from game import Game
 class Ui:
   def __init__(self) -> None:
     self.__game = Game()
+    self.__last_invalid = False
 
   def __clear(self) -> None:
     os.system("cls" if os.name == "nt" else "clear")
@@ -18,6 +19,7 @@ class Ui:
 
     if ans == "y":
       self.__game = Game()
+      self.__last_invalid = False
     else:
       exit()
     
@@ -26,7 +28,7 @@ class Ui:
       self.restart()
       return
 
-    print("Please select which column you wish to place a piece on.")
+    print("That move was invalid. Please try again." if self.__last_invalid else "Please select which column you wish to place a piece on.")
     inp = input()
 
     if inp == "exit":
@@ -38,4 +40,4 @@ class Ui:
       print("Column must be a number.")
       return
     
-    self.__game.make_move(column)
+    self.__last_invalid = not self.__game.make_move(column)
