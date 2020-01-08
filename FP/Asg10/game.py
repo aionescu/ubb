@@ -10,6 +10,16 @@ class Game:
     self.__next_p = Cell.P1
     self.__state: Optional[Cell] = None
 
+  # Property that returns the next player that will make a move
+  @property
+  def next_p(self) -> Cell:
+    return self.__next_p
+
+  # Property that returns the width of the game board
+  @property
+  def board_width(self) -> int:
+    return self.__board.width
+
   # Makes a move and advances the game by 1 turn
   # Input: column - The column on which to place the next piece
   # Returns: True if the move is valid, otherwise False
