@@ -23,7 +23,7 @@ def shuffle(l: List[T]) -> None:
 
     l[i], l[j] = l[j], l[i] 
 
-def is_sorted(l: List[T], key: Callable[[T], Any]) -> bool:
+def is_sorted(l: List[T], key: Callable[[T], Any] = id) -> bool:
   for i in range(0, len(l) - 1):
     if key(l[i]) > key(l[i + 1]):
       return False
