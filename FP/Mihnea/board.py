@@ -67,23 +67,23 @@ class Board:
   def try_place_plane(self, head, orientation):
     plane = create_plane(head, orientation)
 
-    all_is_in = all(map(self.is_in, plane))
-
+    all_is_in = all(list(map(self.is_in, plane)))
+    
     if not all_is_in:
       return False
 
     def f(p):
       return self.get(p) == EMPTY
 
-    all_is_empty = all(map(f, plane))
-
+    all_is_empty = all(list(map(f, plane)))
+    
     if not all_is_empty:
       return False
 
     def g(p):
       self.set(p, PLANE_TAIL)
 
-    map(g, plane)
+    _l = list(map(g, plane))
 
     self.set(head, PLANE_HEAD)
     return True

@@ -29,8 +29,8 @@ class Ui:
         raise ValueError()
 
       planes = []
-
-      for _ in range(0, 3):
+      i = 0
+      while i < 3:
         while True:
           pos = input()
           ori = input()
@@ -40,6 +40,7 @@ class Ui:
             ori = get_ori(ori)
 
             planes.append((pos, ori))
+            i += 1
           except:
             print("Invalid plane. Please try again.")
 
@@ -63,6 +64,7 @@ class Ui:
         move = self.__game.to_coord(move)
       except:
         print("Invalid coordinate. Please try again.")
+        continue
 
       if self.__game.make_move_p1(move):
         break
@@ -73,6 +75,7 @@ class Ui:
 
   def check_win(self):
     if self.__game.win_p1():
+      self.print()
       print("Player 1 won.")
       exit()
     elif self.__game.win_p2():

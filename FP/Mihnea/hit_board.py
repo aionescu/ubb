@@ -44,7 +44,7 @@ class HitBoard:
       letter = inc_char(letter)
 
       for y in range(0, self.__board.width):
-        buf += to_string(self.__board.get((x, y))) + " "
+        buf += to_string((x, y)) + " "
 
       buf += "\n"
 

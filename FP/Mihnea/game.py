@@ -16,12 +16,7 @@ class Game:
     return (x, y)
 
   def make_move_p1(self, move):
-    try:
-      coord = self.to_coord(move)
-    except:
-      return False
-
-    return self.__hit_board_p1.hit(coord)
+    return self.__hit_board_p1.hit(move)
 
   def make_move_p2(self):
     while True:
