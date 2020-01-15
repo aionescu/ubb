@@ -1,9 +1,13 @@
+import sys
+sys.path.append('../')
+
 from datetime import datetime
 from domain import *
 from action import *
 from exn import *
 from repo import *
 from settings import *
+from map.map import filter_by
 
 class Services:
   def __init__(self, settings):
@@ -180,7 +184,7 @@ class Services:
     def predicate(c):
       return value in str(getter(c)).lower()
 
-    return '\n'.join(map(str, filter(predicate, self.__clients.values())))
+    return '\n'.join(map(str, filter_by(predicate, self.__clients.values())))
 
   def search_movies(self, field, value):
     def getter(c):
@@ -191,7 +195,7 @@ class Services:
     def predicate(c):
       return value in str(getter(c)).lower()
 
-    return '\n'.join(map(str, filter(predicate, self.__movies.values())))
+    return '\n'.join(map(str, filter_by(predicate, self.__movies.values())))
 
   def stats_most_rented(self):
     def with_snd(x):
@@ -211,7 +215,7 @@ class Services:
     for r in self.__rentals.values():
       movie_days[r.movie_id] += r.days_rented
 
-    movies = map(of_tuple, filter(gt0, sorted(movie_days.items(), key = snd, reverse = True)))
+    movies = map(of_tuple, filter_by(gt0, sorted(movie_days.items(), key = snd, reverse = True)))
     return '\n'.join(map(str, movies))
 
   def stats_most_active(self):
@@ -232,7 +236,7 @@ class Services:
     for r in self.__rentals.values():
       client_days[r.client_id] += r.days_rented
 
-    clients = map(of_tuple, filter(gt0, sorted(client_days.items(), key = snd, reverse = True)))
+    clients = map(of_tuple, filter_by(gt0, sorted(client_days.items(), key = snd, reverse = True)))
     return '\n'.join(map(str, clients))
 
   def distinct(self, iterable):
@@ -255,7 +259,7 @@ class Services:
     def of_id(x):
       return self.__movies.get(x)
 
-    movies = map(of_id, self.distinct(map(movie_id, sorted(filter(is_late, self.__rentals.values()), key = days_late, reverse = True))))
+    movies = map(of_id, self.distinct(map(movie_id, sorted(filter_by(is_late, self.__rentals.values()), key = days_late, reverse = True))))
     return '\n'.join(map(str, movies))
 
   def undo(self):

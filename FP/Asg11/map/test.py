@@ -1,7 +1,7 @@
 import unittest
 from typing import List
 from random import randint
-from map import gnome_sort, is_sorted, Map, shuffle
+from map import filter_by, gnome_sort, is_sorted, Map, shuffle
 
 class DomainTestCase(unittest.TestCase):
   def test_gnome_sort(self):
@@ -80,6 +80,17 @@ class DomainTestCase(unittest.TestCase):
     d[1000] = 1000
 
     assert m[1000] == 1000
+
+  def test_filter_by(self):
+    l = range(1, 1000)
+
+    def even(x):
+      return x % 2 == 0
+
+    ll = filter_by(even, l)
+
+    for e in ll:
+      assert even(e)
 
 if __name__ == "__main__":
   unittest.main()

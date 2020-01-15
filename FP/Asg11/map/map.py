@@ -34,6 +34,11 @@ def bogo_sort(l: List[T], key: Callable[[T], Any] = id) -> None:
   while not is_sorted(l, key):
     shuffle(l)
 
+def filter_by(f: Callable[[T], bool], i: Iterable[T]) -> Iterable[T]:
+  for e in i:
+    if f(e):
+      yield e
+
 K = TypeVar("K")
 V = TypeVar("V")
 
@@ -80,10 +85,10 @@ class Map(Generic[K, V]):
     return self.__dict.values()
 
   def filter_items(self, predicate: Callable[[Tuple[K, V]], bool]) -> Iterable[Tuple[K, V]]:
-    return filter(predicate, self.items)
+    return filter_by(predicate, self.items)
 
   def filter_keys(self, predicate: Callable[[K], bool]) -> Iterable[K]:
-    return filter(predicate, self.keys)
+    return filter_by(predicate, self.keys)
 
   def filter_values(self, predicate: Callable[[V], bool]) -> Iterable[V]:
-    return filter(predicate, self.values)
+    return filter_by(predicate, self.values)

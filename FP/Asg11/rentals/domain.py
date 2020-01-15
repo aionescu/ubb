@@ -120,11 +120,11 @@ class Rental(Entity):
     
   @property
   def is_late(self):
-    return datetime.today > self.due_date
+    return datetime.today() > self.due_date
 
   @property
   def days_late(self):
-    return (datetime.today - self.due_date).days
+    return (datetime.today() - self.due_date).days
 
   def __eq__(self, rhs):
     if not isinstance(rhs, Rental):

@@ -15,6 +15,8 @@ class Ui:
         print("Command not recognized.")
       else:
         raise ae
+    except IndexError:
+      print("Invalid arguments.")
       
   def exit(self, args):
     exit()
