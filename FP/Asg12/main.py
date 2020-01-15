@@ -1,4 +1,6 @@
-from typing import List, Iterable
+import sys
+from typing import Any, List, Iterable
+from itertools import combinations
 
 def sieve(n: int) -> List[bool]:
   p = [True for i in range(n + 1)]
@@ -19,6 +21,14 @@ def primes_from_to(start: int, end: int, sieve: List[bool]) -> Iterable[int]:
     if sieve[i]:
       yield i
 
+def next_prime(crr: int, sieve: List[bool]) -> int:
+  i = crr + 1
+
+  while not sieve[i]:
+    i += 1
+
+  return i
+
 def pretty_print(l: List[int]) -> None:
   s = " + ".join(map(str, l))
   print(s)
@@ -28,18 +38,36 @@ def backtrack_recursive(n: int, sieve: List[bool], crr: List[int]) -> None:
     pretty_print(crr)
     return
 
-  fst = 0 if len(crr) == 0 else crr[-1]
+  last = 0 if len(crr) == 0 else crr[-1]
 
-  for j in primes_from_to(fst + 1, n, sieve):
+  for j in primes_from_to(last + 1, n, sieve):
     crr.append(j)
     backtrack_recursive(n, sieve, crr)
     crr.pop()
 
-def main():
-  print("Please enter the value of N.")
-  n = int(input())
+def to_list(l: Any) -> List[int]:
+  return list(l)
 
-  backtrack_recursive(n, sieve(n), [])
+def subsets(s: List[int]) -> Iterable[List[int]]:
+  for cardinality in range(len(s) + 1):
+    yield from map(to_list, combinations(s, cardinality))
+
+def backtrack_iterative(n: int, sieve: List[bool]) -> None:
+  primes = list(primes_from_to(1, n, sieve))
+
+  for subset in subsets(primes):
+    if sum(subset) == n:
+      pretty_print(subset)
+
+def main():
+  rec = sys.argv[1] == "--rec"
+  n = int(sys.argv[2] if rec else sys.argv[1])
+  siev = sieve(n)
+
+  if rec:
+    backtrack_recursive(n, siev, [])
+  else:
+    backtrack_iterative(n, siev)
 
 if __name__ == "__main__":
   main()
