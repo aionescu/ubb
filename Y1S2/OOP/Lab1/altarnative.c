@@ -6,14 +6,10 @@ typedef struct {
   int day, month, year;
 } date;
 
-date parse_date(char* s) {
-  s[2] = s[5] = '\0';
-
+date parse_date(const char* s) {
   int day = atoi(s);
   int month = atoi(s + 3);
   int year = atoi(s + 6);
-
-  s[2] = s[5] = '-';
 
   date d = { day, month, year };
   return d;
@@ -21,14 +17,11 @@ date parse_date(char* s) {
 
 int get_day_no(date d) {
   int days_in_month[13] = { 0, 31, (d.year % 4 == 0 ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-
-  int crr = 0;
+  int crr = d.day;
 
   for (int i = 1; i < d.month; ++i) {
     crr += days_in_month[i];
   }
-
-  crr += d.day;
 
   return crr;
 }
