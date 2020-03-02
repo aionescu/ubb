@@ -7,3 +7,4 @@ __pycache__/
 *.lst
 *.obj
 *.exe
+*.out
