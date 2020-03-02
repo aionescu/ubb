@@ -4,35 +4,39 @@
 
 typedef struct {
   int day, month, year;
-} date;
+} Date;
 
-date parse_date(const char* s) {
-  int day = atoi(s);
-  int month = atoi(s + 3);
-  int year = atoi(s + 6);
+Date parse_date(const char* string) {
+  // String format is DD-MM-YYYY
+  int day = atoi(string); // We read the day, which is at the beginning of the string
+  int month = atoi(string + 3); // We need to read the month, so we skip 3 characters
+  int year = atoi(string + 6); // We need to read the year, so we need to skip another 3 characters
 
-  date d = { day, month, year };
-  return d;
+  Date date = { day, month, year };
+  return date;
 }
 
-int get_day_no(date d) {
-  int days_in_month[13] = { 0, 31, (d.year % 4 == 0 ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-  int crr = d.day;
+int get_day_of_year(Date date) {
+  // Array of days in each month of the year
+  // Intended to be 1-indexed for easier index arithmetic
+  int days_in_month[13] = { 0, 31, (date.year % 4 == 0 ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
-  for (int i = 1; i < d.month; ++i) {
-    crr += days_in_month[i];
+  int day_of_year = date.day;
+
+  for (int i = 1; i < date.month; ++i) {
+    day_of_year += days_in_month[i];
   }
 
-  return crr;
+  return day_of_year;
 }
 
 int main() {
-  char s[100];
+  char input[100];
 
-  while (scanf("%s", s) && strcmp(s, "exit")) {
-    date d = parse_date(s);
-    int day_no = get_day_no(d);
+  while (scanf("%s", input) && strcmp(input, "exit")) {
+    Date date = parse_date(input);
+    int day_of_year = get_day_of_year(date);
 
-    printf("%d ", day_no);
+    printf("%d ", day_of_year);
   }
 }
