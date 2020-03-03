@@ -1,0 +1,2 @@
+kitty +kitten ssh iaie2748@linux.scs.ubbcluj.ro -p 2222
+scp -r iaie2748@linux.scs.ubbcluj.ro:SRC DEST
