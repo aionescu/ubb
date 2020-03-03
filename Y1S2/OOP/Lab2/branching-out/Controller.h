@@ -1,6 +1,7 @@
 #ifndef __CONTROLLER_H__
 #define __CONTROLLER_H__
 
+#include "Utils.h"
 #include "Domain.h"
 #include "Repo.h"
 
@@ -9,6 +10,6 @@ typedef struct {
 } Controller;
 
 void listAll(Controller* controller);
-void listByIntendedUse(Controller* controller, Use intendedUse);
+void listByIntendedUse(Controller* controller, Str intendedUse);
 
 #endif

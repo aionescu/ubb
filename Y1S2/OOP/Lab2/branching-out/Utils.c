@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "Utils.h"
 
-void failWith(const char* message) {
+void failWith(Str message) {
   printf("failWith: %s", message);
   exit(1);
 }

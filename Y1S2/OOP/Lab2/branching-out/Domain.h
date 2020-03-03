@@ -3,27 +3,10 @@
 
 #include "Utils.h"
 
-typedef enum {
-  Powder,
-  Solid,
-  Viscous,
-  Liquid
-} State;
-
-Str stateToStr(State state);
-
-typedef enum {
-  Medicinal,
-  Alchemical,
-  Practical
-} Use;
-
-Str useToStr(Use use);
-
 typedef struct {
   int id;
-  State state;
-  Use intendedUse;
+  String state;
+  String intendedUse;
   int potency;
 } Ingredient;
 

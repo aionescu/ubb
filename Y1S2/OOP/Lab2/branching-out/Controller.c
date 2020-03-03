@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "Utils.h"
 #include "Domain.h"
 #include "Controller.h"
@@ -13,11 +14,11 @@ void listAll(Controller* controller) {
   }
 }
 
-void listByIntendedUse(Controller* controller, Use intendedUse) {
+void listByIntendedUse(Controller* controller, Str intendedUse) {
   for (int i = 0; i < controller->repo.ingredientCount; ++i) {
     Ingredient ingredient = controller->repo.ingredients[i];
 
-    if (ingredient.intendedUse == intendedUse) {
+    if (!strcmp(ingredient.intendedUse, intendedUse)) {
       String string = ingredientToString(ingredient);
 
       printf("%s\n", string);
