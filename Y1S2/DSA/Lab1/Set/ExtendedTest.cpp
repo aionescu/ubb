@@ -35,7 +35,6 @@ void testCreate() {
 	for (int i = -10; i < 10; i++) { //search in an empty set
 		assert(s.search(i) == false);
 	}
-
 	for (int i = -10; i < 10; i++) { //delete from an empty set
 		assert(s.remove(i) == false);
 	}
@@ -53,16 +52,20 @@ void testAdd() {
 	}
 	//printM(s);
 	assert(s.isEmpty() == false);
+
 	assert(s.size() == 10);
+
 	for (int i = -10; i < 20; i++) { //add more elements [-10, 20)
 		s.add(i);
 	}
-	//printM(s);
+
+	//printM(m);
 	assert(s.isEmpty() == false);
 	assert(s.size() == 30);
 	for (int i = -100; i < 100; i++) { //add more elements [-100, 100)
 		s.add(i);
 	}
+
 	//printM(m);
 	assert(s.isEmpty() == false);
 	assert(s.size() == 200);
@@ -80,10 +83,12 @@ void testAdd() {
 			assert(s.search(i) == false);
 		}
 	}
+
 	testIteratorSteps(s);
 	for (int i = 10000; i > -10000; i--) { //add larger values first
 		s.add(i);
 	}
+
 	testIteratorSteps(s);
 	assert(s.size()==20000);
 }
@@ -99,17 +104,13 @@ void testRemove() {
 	//printM(m);
 	for (int i = -100; i < 100; i = i + 2) { 
 		m.add(i);
-		printM(m);
 	}
-
-	printM(m);
-
+	//printM(m);
 	for (int i = -100; i < 100; i++) { //delete everything (including inexistent elements)
 		if (i % 2 == 0) {
 			assert(m.remove(i) == true);
 		}
 		else {
-			cout << i << std::endl;
 			assert(m.remove(i) == false);
 		}
 	}
@@ -282,4 +283,9 @@ void testAllExtended() {
 	testIterator();
 	testMix();
 	testQuantity();
+
 }
+
+
+
+

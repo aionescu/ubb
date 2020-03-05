@@ -5,7 +5,6 @@
 
 void testAll() { 
 	Set s;
-	
 	assert(s.isEmpty() == true);
 	assert(s.size() == 0); 
 	assert(s.add(5)==true);
@@ -22,6 +21,7 @@ void testAll() {
 	assert(s.remove(6) == false);
 	assert(s.size() == 4);
 
+
 	SetIterator it = s.iterator();
 	it.first();
 	int sum = 0;
@@ -30,6 +30,7 @@ void testAll() {
 		sum += e;
 		it.next();
 	}
-	
 	assert(sum == 19);
+
 }
+
