@@ -4,6 +4,7 @@
 
 Set::Set() : capacity{0}, count{0}, array{nullptr}, minElem{} { }
 
+// O(n)
 bool Set::add(TElem elem) {
 	if (capacity == 0) {
 		capacity = 64;
@@ -76,6 +77,7 @@ bool Set::add(TElem elem) {
 	}
 }
 
+// O(1)
 bool Set::remove(TElem elem) {
 	auto idx = elem - minElem;
 
@@ -88,15 +90,18 @@ bool Set::remove(TElem elem) {
 	return true;
 }
 
+// O(1)
 bool Set::search(TElem elem) const {
 	auto idx = elem - minElem;
 	return idx >= 0 && idx < capacity && array[idx];
 }
 
+// O(1)
 int Set::size() const {
 	return count;
 }
 
+// O(1)
 bool Set::isEmpty() const {
 	return count == 0;
 }
