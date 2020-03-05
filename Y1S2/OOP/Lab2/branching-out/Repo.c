@@ -1,21 +1,21 @@
 #include <stdbool.h>
 #include "Repo.h"
 
-bool addIngredient(Repo* repo, Ingredient ingredient) {
+bool repoAddIngredient(Repo* repo, const Ingredient* ingredient) {
   if (repo->ingredientCount == SHELF_SIZE)
     return false;
 
   for (int i = 0; i < repo->ingredientCount; ++i)
-    if (repo->ingredients[i].id == ingredient.id)
+    if (repo->ingredients[i].id == ingredient->id)
       return false;
 
-  repo->ingredients[repo->ingredientCount] = ingredient;
+  repo->ingredients[repo->ingredientCount] = *ingredient;
   repo->ingredientCount++;
   
   return true;
 }
 
-bool removeIngredient(Repo* repo, int ingredientId) {
+bool repoRemoveIngredient(Repo* repo, int ingredientId) {
   for (int i = 0; i < repo->ingredientCount; ++i)
     if (repo->ingredients[i].id == ingredientId) {
       for (int j = i; j < repo->ingredientCount - 1; ++j)
@@ -28,12 +28,17 @@ bool removeIngredient(Repo* repo, int ingredientId) {
   return false;
 }
 
-bool updateIngredient(Repo* repo, Ingredient newIngredient) {
+bool repoUpdateIngredient(Repo* repo, const Ingredient* newIngredient) {
   for (int i = 0; i < repo->ingredientCount; ++i)
-    if (repo->ingredients[i].id == newIngredient.id) {
-      repo->ingredients[i] = newIngredient;
+    if (repo->ingredients[i].id == newIngredient->id) {
+      repo->ingredients[i] = *newIngredient;
       return true;
     }
 
   return false;
+}
+
+void repoForEach(const Repo* repo, void (*action)(const Ingredient* ingredient)) {
+  for (int i = 0; i < repo->ingredientCount; ++i)
+    action(&repo->ingredients[i]);
 }

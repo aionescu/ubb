@@ -11,8 +11,10 @@ typedef struct {
   int ingredientCount;
 } Repo;
 
-bool addIngredient(Repo* repo, Ingredient ingredient);
-bool removeIngredient(Repo* repo, int ingredientId);
-bool updateIngredient(Repo* repo, Ingredient newIngredient);
+bool repoAddIngredient(Repo* repo, const Ingredient* ingredient);
+bool repoRemoveIngredient(Repo* repo, int ingredientId);
+bool repoUpdateIngredient(Repo* repo, const Ingredient* newIngredient);
+
+void repoForEach(const Repo* repo, void (*action)(const Ingredient* ingredient));
 
 #endif

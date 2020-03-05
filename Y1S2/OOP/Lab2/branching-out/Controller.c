@@ -1,28 +1,36 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "Utils.h"
 #include "Domain.h"
+#include "Repo.h"
 #include "Controller.h"
 
-void listAll(Controller* controller) {
-  for (int i = 0; i < controller->repo.ingredientCount; ++i) {
-    String string = ingredientToString(controller->repo.ingredients[i]);
-
-    printf("%s\n", string);
-    free((void*)string);
-  }
+bool controllerAddIngredient(Controller* controller, const Ingredient* ingredient) {
+  return repoAddIngredient(&controller->repo, ingredient);
 }
 
-void listByIntendedUse(Controller* controller, Str intendedUse) {
-  for (int i = 0; i < controller->repo.ingredientCount; ++i) {
-    Ingredient ingredient = controller->repo.ingredients[i];
+bool controllerUpdateIngredient(Controller* controller, const Ingredient* ingredient) {
+  return repoUpdateIngredient(&controller->repo, ingredient);
+}
 
-    if (!strcmp(ingredient.intendedUse, intendedUse)) {
-      String string = ingredientToString(ingredient);
+bool controllerRemoveIngredient(Controller* controller, int ingredientId) {
+  return repoRemoveIngredient(&controller->repo, ingredientId);
+}
 
-      printf("%s\n", string);
-      free((void*)string);
-    }
-  }
+void controllerListAll(const Controller* controller) {
+  repoForEach(&controller->repo, printIngredient);
+}
+
+static const char* currentIntendedUse;
+
+void printByIntendedUse(const Ingredient* ingredient) {
+  if (!strcmp(ingredient->intendedUse, currentIntendedUse))
+    printIngredient(ingredient);
+}
+
+void controllerListByIntendedUse(const Controller* controller, const char* intendedUse) {
+  currentIntendedUse = intendedUse;
+  repoForEach(&controller->repo, printByIntendedUse);
+
+  currentIntendedUse = NULL;
 }

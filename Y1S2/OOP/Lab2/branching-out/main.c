@@ -1,5 +1,11 @@
 #include <stdio.h>
+#include "UI.h"
+
+UI ui;
 
 int main() {
-  printf("Hi world.");
+  while (true) {
+    printf("> ");
+    handleCommand(&ui);
+  }
 }

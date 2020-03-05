@@ -7,12 +7,11 @@ typedef struct {
   Controller controller;
 } UI;
 
-void uiAddIngredient(UI* ui);
-void uiUpdateIngredient(UI* ui);
-void uiDeleteIngredient(UI* ui);
-
-void uiListAll(UI* ui);
-void uiListByIntendedUse(UI* ui);
+void uiAdd(UI* ui);
+void uiUpdate(UI* ui);
+void uiDelete(UI* ui);
+void uiList(UI* ui);
+void uiExit(UI* ui);
 
 void handleCommand(UI* ui);
 

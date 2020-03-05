@@ -1,15 +1,15 @@
 #ifndef __DOMAIN_H__
 #define __DOMAIN_H__
 
-#include "Utils.h"
+#define INGREDIENT_NAME_LENGTH 64
 
 typedef struct {
   int id;
-  String state;
-  String intendedUse;
+  char state[INGREDIENT_NAME_LENGTH];
+  char intendedUse[INGREDIENT_NAME_LENGTH];
   int potency;
 } Ingredient;
 
-String ingredientToString(Ingredient ingredient);
+void printIngredient(const Ingredient* ingredient);
 
 #endif
