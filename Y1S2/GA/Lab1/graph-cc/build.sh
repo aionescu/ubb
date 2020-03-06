@@ -1,1 +1,1 @@
-g++ -std=c++17 -Wall -O3 Graph.hh main.cc
+g++ -std=c++17 -Wall -O3 Graph.hh Graph.cc main.cc

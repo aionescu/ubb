@@ -2,13 +2,29 @@
 #define __GRAPH_HH__
 
 #include <functional>
-#include <optional>
+#include <iosfwd>
 #include <stdexcept>
 #include <unordered_map>
 #include <utility>
 #include <vector>
 
+// https://stackoverflow.com/a/32685618
+struct PairHash {
+  std::size_t operator ()(const std::pair<int, int>& p) const {
+    auto h1 = std::hash<int>{}(p.first);
+    auto h2 = std::hash<int>{}(p.second);
+
+    return h1 ^ h2;  
+  }
+};
+
 struct Graph {
+  friend std::ostream& operator <<(std::ostream& os, const Graph& g);
+  friend std::istream& operator >>(std::istream& is, Graph& g);
+
+  Graph(int vertexCount) : _vertexCount{vertexCount}, _edgeCount{0}, _inbound{}, _outbound{}, _cost{} { }
+  Graph() : Graph{0} { }
+
   int vertexCount() const {
     return _vertexCount;
   }
@@ -80,16 +96,16 @@ struct Graph {
       action(v);
   }
 
-  std::optional<int> getCost(int vertex1, int vertex2) const {
+  int getCost(int vertex1, int vertex2) const {
     _assertInRange(vertex1);
     _assertInRange(vertex2);
 
     auto it = _cost.find({vertex1, vertex2});
 
     if (it == _cost.end())
-      return {};
+      throw std::runtime_error{"Edge does not exist."};
 
-    return {it->second};
+    return it->second;
   }
 
   void setCost(int vertex1, int vertex2, int cost) {
@@ -112,6 +128,7 @@ struct Graph {
     _outbound[vertex1].push_back(vertex2);
     _inbound[vertex2].push_back(vertex1);
     _cost[{vertex1, vertex2}] = cost;
+    ++_edgeCount;
   }
 
   void removeEdge(int vertex1, int vertex2) {
@@ -128,6 +145,7 @@ struct Graph {
     vi.erase(std::find(vi.begin(), vi.end(), vertex1));
 
     _cost.erase({vertex1, vertex2});
+    --_edgeCount;
   }
 
   void addVertex() {
@@ -139,16 +157,18 @@ struct Graph {
 
     throw std::runtime_error{"Unimplemented."};
   }
-  
+
 private:
   void _assertInRange(int vertex) const {
     if (vertex < 0 || vertex >= _vertexCount)
       throw std::out_of_range{"Vertex out of range."};
   }
 
-  int _vertexCount;
+  int _vertexCount, _edgeCount;
   std::unordered_map<int, std::vector<int>> _inbound, _outbound;
-  std::unordered_map<std::pair<int, int>, int> _cost;
+  std::unordered_map<std::pair<int, int>, int, PairHash> _cost;
 };
+
+Graph randomGraph(int vertexCount, int edgeCount);
 
 #endif
