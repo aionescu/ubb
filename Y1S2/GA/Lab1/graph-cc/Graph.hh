@@ -155,7 +155,35 @@ struct Graph {
   void removeVertex(int vertex) {
     _assertInRange(vertex);
 
-    throw std::runtime_error{"Unimplemented."};
+    for (int i = 0; i < _vertexCount; ++i) {
+      if (existsEdge(vertex, i))
+        removeEdge(vertex, i);
+
+      if (existsEdge(i, vertex))
+        removeEdge(i, vertex);
+    }
+
+    for (int i = vertex + 1; i < _vertexCount; ++i) {
+      for (int j = 0; j < _vertexCount; ++j) {
+        if (existsEdge(i, j)) {
+          int cost = getCost(i, j);
+          removeEdge(i, j);
+          addEdge(i - 1, j, cost);
+        }
+      }
+    }
+
+    for (int i = vertex + 1; i < _vertexCount; ++i) {
+      for (int j = 0; j < _vertexCount; ++j) {
+        if (existsEdge(j, i)) {
+          int cost = getCost(j, i);
+          removeEdge(j, i);
+          addEdge(j, i - 1, cost);
+        }
+      }
+    }
+
+    --_vertexCount;
   }
 
 private:

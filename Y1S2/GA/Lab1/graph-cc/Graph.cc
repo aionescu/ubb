@@ -20,9 +20,11 @@ std::istream& operator >>(std::istream& is, Graph& g) {
   g.~Graph();
   new (&g) Graph();
 
-  is >> g._vertexCount >> g._edgeCount;
+  int edgeCount;
 
-  for (int i = 0; i < g._edgeCount; ++i) {
+  is >> g._vertexCount >> edgeCount;
+
+  for (int i = 0; i < edgeCount; ++i) {
     int v1, v2, cost;
     is >> v1 >> v2 >> cost;
 
