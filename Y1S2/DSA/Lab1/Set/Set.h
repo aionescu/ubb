@@ -11,8 +11,8 @@ class Set {
 
 private:
   int capacity, count;
-  TElem minElem;
   TElem* array;
+  TElem minElem;
 
 public:
   //implicit constructor
