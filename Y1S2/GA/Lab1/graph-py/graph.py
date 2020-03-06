@@ -1,12 +1,12 @@
 from typing import Dict, List, Tuple, Callable
 
 class Graph:
-  def __init__(self):
+  def __init__(self) -> None:
     self.__vertexCount = 0
     self.__edgeCount = 0
     self.__inbound: Dict[int, List[int]] = {}
     self.__outbound: Dict[int, List[int]] = {}
-    self.__cost: Dict[Tuple[Int, Int], Int] = {}
+    self.__cost: Dict[Tuple[int, int], int] = {}
 
   def vertexCount(self) -> int:
     return self.__vertexCount

@@ -1,6 +1,6 @@
 from graph import Graph
 
-def main():
+def main() -> None:
   print("Hi world.")
 
 if __name__ == "__main__":
