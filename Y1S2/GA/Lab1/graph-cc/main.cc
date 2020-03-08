@@ -1,11 +1,15 @@
 #include <fstream>
 #include <iostream>
 #include "Graph.hh"
+#include "UI.hh"
 
 int main() {
-  Graph g;
-  std::ifstream{"../Input/digraph-ex1.txt"} >> g;
+  std::cout << std::boolalpha;
 
-  std::cout << g << '\n';
-  std::cout << randomGraph(5, 10);
+  UI ui;
+
+  while (true) {
+    std::cout << "> ";
+    ui.handleCommand();
+  }
 }
