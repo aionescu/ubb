@@ -5,23 +5,12 @@
 #include <cstdlib>
 #include <ctime>
 #include <functional>
+#include <map>
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include <unordered_map>
 #include <utility>
 #include <vector>
-
-// https://stackoverflow.com/a/32685618
-class PairHash {
-public:
-  std::size_t operator ()(const std::pair<int, int>& p) const {
-    auto h1 = std::hash<int>{}(p.first);
-    auto h2 = std::hash<int>{}(p.second);
-
-    return h1 ^ h2;  
-  }
-};
 
 static int rand_range(int min, int max) {
   return std::rand() % (max - min) + min;
@@ -250,8 +239,8 @@ private:
       throw std::out_of_range{"Vertex does not exist."};
   }
 
-  std::unordered_map<int, std::vector<int>> _inbound, _outbound;
-  std::unordered_map<std::pair<int, int>, int, PairHash> _cost;
+  std::map<int, std::vector<int>> _inbound, _outbound;
+  std::map<std::pair<int, int>, int> _cost;
 };
 
 #endif

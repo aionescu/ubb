@@ -4,9 +4,9 @@
 #include <fstream>
 #include <functional>
 #include <iostream>
+#include <map>
 #include <string>
 #include <sstream>
-#include <unordered_map>
 #include <streambuf>
 #include "Graph.hh"
 
@@ -17,6 +17,7 @@ struct UI {
     CMD("help", help);
     CMD("exit", exit);
     CMD("vertex-count", vertexCount);
+    CMD("vertices", vertices);
     CMD("is-vertex", isVertex);
     CMD("exists-edge", existsEdge);
     CMD("in-degree", inDegree);
@@ -57,6 +58,15 @@ struct UI {
     args >> v;
 
     std::cout << _graph.isVertex(v) << '\n';
+  }
+
+  void vertices(std::stringstream& args) {
+    std::cout << "[ ";
+
+    for (auto v : _graph.vertices())
+      std::cout << v << ' ';
+
+    std::cout << "]\n";
   }
 
   void existsEdge(std::stringstream& args) {
@@ -219,7 +229,7 @@ struct UI {
 
 private:
   Graph _graph;
-  std::unordered_map<std::string, std::function<void(std::stringstream&)>> _cmds;
+  std::map<std::string, std::function<void(std::stringstream&)>> _cmds;
 };
 
 #endif
