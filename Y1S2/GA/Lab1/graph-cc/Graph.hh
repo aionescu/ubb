@@ -12,7 +12,7 @@
 #include <utility>
 #include <vector>
 
-static int rand_range(int min, int max) {
+static inline int rand_range(int min, int max) {
   return std::rand() % (max - min) + min;
 }
 
