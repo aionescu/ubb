@@ -1,5 +1,5 @@
-#ifndef __GRAPH_HH__
-#define __GRAPH_HH__
+#ifndef GRAPH_HH
+#define GRAPH_HH
 
 #include <algorithm>
 #include <cstdlib>

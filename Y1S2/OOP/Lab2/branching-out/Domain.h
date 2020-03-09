@@ -1,5 +1,5 @@
-#ifndef __DOMAIN_H__
-#define __DOMAIN_H__
+#ifndef DOMAIN_H
+#define DOMAIN_H
 
 #define INGREDIENT_NAME_LENGTH 64
 

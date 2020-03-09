@@ -1,5 +1,5 @@
-#ifndef __UI_H__
-#define __UI_H__
+#ifndef UI_HH
+#define UI_HH
 
 #include <fstream>
 #include <functional>

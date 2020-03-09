@@ -1,5 +1,5 @@
-#ifndef __UI_H__
-#define __UI_H__
+#ifndef UI_H
+#define UI_H
 
 #include "Controller.h"
 

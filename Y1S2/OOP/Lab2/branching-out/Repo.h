@@ -1,5 +1,5 @@
-#ifndef __REPO_H__
-#define __REPO_H__
+#ifndef REPO_H
+#define REPO_H
 
 #include <stdbool.h>
 #include "Domain.h"
