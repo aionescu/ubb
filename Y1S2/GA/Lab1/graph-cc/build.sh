@@ -1,1 +1,1 @@
-g++ -std=c++17 -Wall -O3 Graph.cc UI.cc main.cc
+g++ -std=c++17 -Wall -O3 main.cc

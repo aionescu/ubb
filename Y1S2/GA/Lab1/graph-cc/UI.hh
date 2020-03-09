@@ -7,6 +7,7 @@
 #include <string>
 #include <sstream>
 #include <unordered_map>
+#include <streambuf>
 #include "Graph.hh"
 
 #define CMD(s, f) _cmds[s] = [&](std::stringstream& args) { this->f(args); }
@@ -16,9 +17,12 @@ struct UI {
     CMD("help", help);
     CMD("exit", exit);
     CMD("vertex-count", vertexCount);
+    CMD("is-vertex", isVertex);
     CMD("exists-edge", existsEdge);
     CMD("in-degree", inDegree);
     CMD("out-degree", outDegree);
+    CMD("inbound", inbound);
+    CMD("outbound", outbound);
     CMD("get-cost", getCost);
     CMD("set-cost", setCost);
     CMD("add-edge", addEdge);
@@ -27,7 +31,9 @@ struct UI {
     CMD("remove-vertex", removeVertex);
     CMD("save-to-file", saveToFile);
     CMD("load-from-file", loadFromFile);
+    CMD("load-old-fmt", loadOldFmt);
     CMD("print", print);
+    CMD("random", random);
   }
 
   void help(std::stringstream& args) {
@@ -44,6 +50,13 @@ struct UI {
 
   void vertexCount(std::stringstream& args) {
     std::cout << _graph.vertexCount() << '\n';
+  }
+
+  void isVertex(std::stringstream& args) {
+    int v;
+    args >> v;
+
+    std::cout << _graph.isVertex(v) << '\n';
   }
 
   void existsEdge(std::stringstream& args) {
@@ -65,6 +78,30 @@ struct UI {
     args >> v;
 
     std::cout << _graph.outDegree(v) << '\n';
+  }
+
+  void inbound(std::stringstream& args) {
+    int v;
+    args >> v;
+
+    std::cout << "[ ";
+
+    for (auto v2 : _graph.inbound(v))
+      std::cout << v2 << ' ';
+
+    std::cout << "]\n";
+  }
+
+  void outbound(std::stringstream& args) {
+    int v;
+    args >> v;
+
+    std::cout << "[ ";
+
+    for (auto v2 : _graph.outbound(v))
+      std::cout << v2 << ' ';
+
+    std::cout << "]\n";
   }
 
   void getCost(std::stringstream& args) {
@@ -96,7 +133,10 @@ struct UI {
   }
 
   void addVertex(std::stringstream& args) {
-    _graph.addVertex();
+    int v;
+    args >> v;
+
+    _graph.addVertex(v);
   }
 
   void removeVertex(std::stringstream& args) {
@@ -110,18 +150,50 @@ struct UI {
     std::string s;
     args >> s;
 
-    std::ofstream{s} << _graph;
+    std::ofstream{s} << _graph.toString();
   }
 
   void loadFromFile(std::stringstream& args) {
     std::string s;
     args >> s;
 
-    std::ifstream{s} >> _graph;
+    std::ifstream t{s};
+    std::string str;
+
+    t.seekg(0, std::ios::end);   
+    str.reserve(t.tellg());
+    t.seekg(0, std::ios::beg);
+
+    str.assign((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
+
+    _graph = Graph::fromString(str);
+  }
+
+  void loadOldFmt(std::stringstream& args) {
+    std::string s;
+    args >> s;
+
+    std::ifstream t{s};
+    std::string str;
+
+    t.seekg(0, std::ios::end);   
+    str.reserve(t.tellg());
+    t.seekg(0, std::ios::beg);
+
+    str.assign((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
+
+    _graph = Graph::fromStringOld(str);
   }
 
   void print(std::stringstream& args) {
-    std::cout << _graph;
+    std::cout << _graph.toString();
+  }
+
+  void random(std::stringstream& args) {
+    int vertexCount, edgeCount;
+    args >> vertexCount >> edgeCount;
+
+    _graph = Graph::randomGraph(vertexCount, edgeCount);
   }
 
   void handleCommand() {

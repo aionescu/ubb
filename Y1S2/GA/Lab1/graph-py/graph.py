@@ -1,75 +1,55 @@
+from copy import deepcopy
 from random import randint
 from typing import Dict, List, Tuple, Callable
 
 class Graph:
-  def __init__(self, vertexCount: int = 0) -> None:
-    self.__vertexCount = vertexCount
-    self.__edgeCount = 0
+  def __init__(self) -> None:
     self.__inbound: Dict[int, List[int]] = {}
     self.__outbound: Dict[int, List[int]] = {}
     self.__cost: Dict[Tuple[int, int], int] = {}
 
   def vertexCount(self) -> int:
-    return self.__vertexCount
+    return len(self.__outbound)
 
-  def __assertInRange(self, vertex: int) -> None:
-    if vertex < 0 or vertex >= self.__vertexCount:
-      raise Exception("Vertex out of range.")
+  def isVertex(self, vertex: int) -> bool:
+    return vertex in self.__outbound
 
-  def forEachVertex(self, action: Callable[[int], None]) -> None:
-    for i in range(self.__vertexCount):
-      action(i)
+  def __assertVertexExists(self, vertex: int) -> None:
+    if not self.isVertex(vertex):
+      raise Exception("Vertex does not exist.")
+
+  def vertices(self) -> List[int]:
+    return list(self.__outbound.keys())
+
+  def inbound(self, vertex: int) -> List[int]:
+    self.__assertVertexExists(vertex)
+
+    return list(self.__inbound[vertex])
+
+  def outbound(self, vertex: int) -> List[int]:
+    self.__assertVertexExists(vertex)
+
+    return list(self.__outbound[vertex])
 
   def existsEdge(self, vertex1: int, vertex2: int) -> bool:
-    self.__assertInRange(vertex1)
-    self.__assertInRange(vertex2)
+    self.__assertVertexExists(vertex1)
+    self.__assertVertexExists(vertex2)
 
-    if vertex1 not in self.__outbound:
-      return False
-
-    for v in self.__outbound[vertex1]:
-      if v == vertex2:
-        return True
-
-    return False
+    return vertex2 in self.__outbound[vertex1]
 
   def inDegree(self, vertex: int) -> int:
-    self.__assertInRange(vertex)
-
-    if vertex not in self.__inbound:
-      return 0
+    self.__assertVertexExists(vertex)
 
     return len(self.__inbound[vertex])
 
   def outDegree(self, vertex: int) -> int:
-    self.__assertInRange(vertex)
-
-    if vertex not in self.__outbound:
-      return 0
+    self.__assertVertexExists(vertex)
 
     return len(self.__outbound[vertex])
 
-  def forEachInbound(self, vertex: int, action: Callable[[int], None]) -> None:
-    self.__assertInRange(vertex)
-
-    if vertex not in self.__inbound:
-      return
-
-    for v in self.__inbound[vertex]:
-      action(v)
-
-  def forEachOutbound(self, vertex: int, action: Callable[[int], None]) -> None:
-    self.__assertInRange(vertex)
-
-    if vertex not in self.__outbound:
-      return
-
-    for v in self.__outbound[vertex]:
-      action(v)
-
   def getCost(self, vertex1: int, vertex2: int) -> int:
-    self.__assertInRange(vertex1)
-    self.__assertInRange(vertex2)
+    self.__assertVertexExists(vertex1)
+    self.__assertVertexExists(vertex2)
 
     pair = (vertex1, vertex2)
 
@@ -79,8 +59,8 @@ class Graph:
     return self.__cost[pair]
 
   def setCost(self, vertex1: int, vertex2: int, cost: int) -> None:
-    self.__assertInRange(vertex1)
-    self.__assertInRange(vertex2)
+    self.__assertVertexExists(vertex1)
+    self.__assertVertexExists(vertex2)
 
     if not self.existsEdge(vertex1, vertex2):
       raise Exception("Edge does not exist.")
@@ -88,89 +68,103 @@ class Graph:
     self.__cost[(vertex1, vertex2)] = cost
 
   def addEdge(self, vertex1: int, vertex2: int, cost: int) -> None:
-    self.__assertInRange(vertex1)
-    self.__assertInRange(vertex2)
+    self.__assertVertexExists(vertex1)
+    self.__assertVertexExists(vertex2)
 
     if self.existsEdge(vertex1, vertex2):
       raise Exception("Edge already exists.")
 
-    if vertex1 not in self.__outbound:
-      self.__outbound[vertex1] = []
-
     self.__outbound[vertex1].append(vertex2)
-
-    if vertex2 not in self.__inbound:
-      self.__inbound[vertex2] = []
-
     self.__inbound[vertex2].append(vertex1)
-
     self.__cost[(vertex1, vertex2)] = cost
-    self.__edgeCount += 1
 
   def removeEdge(self, vertex1: int, vertex2: int) -> None:
-    self.__assertInRange(vertex1)
-    self.__assertInRange(vertex2)
+    self.__assertVertexExists(vertex1)
+    self.__assertVertexExists(vertex2)
 
     if not self.existsEdge(vertex1, vertex2):
       raise Exception("Edge does not exist.")
 
     self.__outbound[vertex1].remove(vertex2)
     self.__inbound[vertex2].remove(vertex1)
-
     del self.__cost[(vertex1, vertex2)]
-    self.__edgeCount -= 1
 
-  def addVertex(self) -> None:
-    self.__vertexCount += 1
+  def addVertex(self, vertex: int) -> None:
+    if self.isVertex(vertex):
+      raise Exception("Vertex already exists.")
+
+    self.__outbound[vertex] = []
+    self.__inbound[vertex] = []
 
   def removeVertex(self, vertex: int) -> None:
-    self.__assertInRange(vertex)
+    self.__assertVertexExists(vertex)
 
-    for i in range(self.__vertexCount):
-      if self.existsEdge(vertex, i):
-        self.removeEdge(vertex, i)
+    for v2 in self.__outbound[vertex]:
+      self.__inbound[v2].remove(vertex)
+      del self.__cost[(vertex, v2)]
 
-      if self.existsEdge(i, vertex):
-        self.removeEdge(i, vertex)
+    del self.__outbound[vertex]
 
-    for i in range(vertex + 1, self.__vertexCount):
-      for j in range(0, self.__vertexCount):
-        if self.existsEdge(i, j):
-          cost = self.getCost(i, j)
-          self.removeEdge(i, j)
-          self.addEdge(i - 1, j, cost)
+    for v2 in self.__inbound[vertex]:
+      self.__outbound[v2].remove(vertex)
+      del self.__cost[(v2, vertex)]
 
-    for i in range(vertex + 1, self.__vertexCount):
-      for j in range(0, self.__vertexCount):
-        if self.existsEdge(j, i):
-          cost = self.getCost(j, i)
-          self.removeEdge(j, i)
-          self.addEdge(j, i - 1, cost)
-
-    self.__vertexCount -= 1
+    del self.__inbound[vertex]
 
   def __str__(self) -> str:
-    s = str(self.__vertexCount) + " " + str(self.__edgeCount) + "\n"
+    s = ""
 
-    def append(s2: str) -> None:
-      nonlocal s
-      s = s + s2
+    for v1 in self.vertices():
+      outbound = self.outbound(v1)
+      inbound = self.inbound(v1)
 
-    self.forEachVertex(lambda v1:
-      self.forEachOutbound(v1, lambda v2:
-        append(str(v1) + " " + str(v2) + " " + str(self.getCost(v1, v2)) + "\n")))
+      if not outbound and not inbound:
+        s += str(v1) + "\n"
+      else:
+        for v2 in self.outbound(v1):
+          s += str(v1) + " " + str(v2) + " " + str(self.getCost(v1, v2)) + "\n"
 
     return s
 
+  def copy(self) -> 'Graph':
+    return deepcopy(self)
+
   @staticmethod
   def fromString(s: str) -> 'Graph':
+    g = Graph()
+    lines = s.split("\n")
+
+    for line in map(lambda x: x.split(" "), lines):
+      if int(line[1]) == -1:
+        g.addVertex(int(line[0]))
+        continue
+
+      v1 = int(line[0])
+      v2 = int(line[1])
+      c = int(line[2])
+
+      if not g.isVertex(v1):
+        g.addVertex(v1)
+
+      if not g.isVertex(v2):
+        g.addVertex(v2)
+
+      g.addEdge(v1, v2, c)
+
+    return g
+
+  @staticmethod
+  def fromStringOld(s: str) -> 'Graph':
     lines = s.split("\n")
     fstLine = lines[0].split(" ")
 
     vertexCount = int(fstLine[0])
     edgeCount = int(fstLine[1])
 
-    g = Graph(vertexCount)
+    g = Graph()
+
+    for v in range(vertexCount):
+      g.addVertex(v)
 
     for i in range(edgeCount):
       edge = lines[i + 1].split(" ")
@@ -180,7 +174,11 @@ class Graph:
 
   @staticmethod
   def randomGraph(vertexCount: int, edgeCount: int) -> 'Graph':
-    g = Graph(vertexCount)
+    g = Graph()
+
+    for v in range(vertexCount):
+      g.addVertex(v)
+
     i = 0
 
     while i < edgeCount:

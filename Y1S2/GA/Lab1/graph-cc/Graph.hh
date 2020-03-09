@@ -1,15 +1,20 @@
 #ifndef __GRAPH_HH__
 #define __GRAPH_HH__
 
+#include <algorithm>
+#include <cstdlib>
+#include <ctime>
 #include <functional>
-#include <iosfwd>
+#include <sstream>
 #include <stdexcept>
+#include <string>
 #include <unordered_map>
 #include <utility>
 #include <vector>
 
 // https://stackoverflow.com/a/32685618
-struct PairHash {
+class PairHash {
+public:
   std::size_t operator ()(const std::pair<int, int>& p) const {
     auto h1 = std::hash<int>{}(p.first);
     auto h2 = std::hash<int>{}(p.second);
@@ -18,99 +23,162 @@ struct PairHash {
   }
 };
 
-struct Graph {
-  friend std::ostream& operator <<(std::ostream& os, const Graph& g);
-  friend std::istream& operator >>(std::istream& is, Graph& g);
+static int rand_range(int min, int max) {
+  return std::rand() % (max - min) + min;
+}
 
-  Graph(int vertexCount) : _vertexCount{vertexCount}, _edgeCount{0}, _inbound{}, _outbound{}, _cost{} { }
-  Graph() : Graph{0} { }
+class Graph {
+public:
+  static Graph randomGraph(int vertexCount, int edgeCount) {
+    std::srand(std::time(0));
+    Graph g;
 
-  int vertexCount() const {
-    return _vertexCount;
+    for (int i = 0; i < vertexCount; ++i)
+      g.addVertex(i);
+
+    for (int i = 0; i < edgeCount;) {
+      int v1 = rand_range(0, vertexCount);
+      int v2 = rand_range(0, vertexCount);
+      int cost = rand_range(-100, 100);
+
+      try {
+        g.addEdge(v1, v2, cost);
+        ++i;
+      } catch (...) {
+
+      }
+    }
+
+    return g;
   }
 
-  void forEachVertex(std::function<void(int)> action) const {
-    for (int i = 0; i < _vertexCount; ++i)
-      action(i);
+  static Graph fromString(std::string s) {
+    std::stringstream ss{s};
+    Graph g;
+
+    int v1, v2, c;
+
+    while (ss >> v1 >> v2) {
+      if (v2 == -1) {
+        g.addVertex(v1);
+        continue;
+      }
+
+      ss >> c;
+
+      if (!g.isVertex(v1))
+        g.addVertex(v1);
+
+      if (!g.isVertex(v2))
+        g.addVertex(v2);
+
+      g.addEdge(v1, v2, c);
+    }
+
+    return g;
+  }
+
+  static Graph fromStringOld(std::string s) {
+    std::stringstream ss{s};
+    Graph g;
+
+    int vertexCount, edgeCount;
+
+    ss >> vertexCount >> edgeCount;
+
+    for (int i = 0; i < vertexCount; ++i)
+      g.addVertex(i);
+      
+    for (int i = 0; i < edgeCount; ++i) {
+      int v1, v2, cost;
+      ss >> v1 >> v2 >> cost;
+
+      g.addEdge(v1, v2, cost);
+    }
+
+    return g;
+  }
+
+  std::string toString() const {
+    std::stringstream ss{};
+
+    for (auto v1 : vertices()) {
+      auto outbound = this->outbound(v1);
+      auto inbound = this->inbound(v1);
+
+      if (outbound.size() == 0 && inbound.size() == 0)
+        ss << v1 << " -1" << '\n';
+      else {
+        for (auto v2 : outbound)
+          ss << v1 << ' ' << v2 << ' ' << getCost(v1, v2) << '\n';
+      }
+    }
+
+    return ss.str();
+  }
+
+  int vertexCount() const {
+    return _outbound.size();
+  }
+
+  bool isVertex(int vertex) const {
+    return _outbound.find(vertex) != _outbound.end();
+  }
+
+  std::vector<int> vertices() const {
+    std::vector<int> vs;
+
+    std::transform(_outbound.begin(), _outbound.end(), std::back_inserter(vs),
+      [&](auto it) { return it.first; });
+
+    return vs;
   }
 
   bool existsEdge(int vertex1, int vertex2) const {
-    _assertInRange(vertex1);
-    _assertInRange(vertex2);
+    _assertVertexExists(vertex1);
+    _assertVertexExists(vertex2);
 
-    auto it = _outbound.find(vertex1);
-
-    if (it == _outbound.end())
-      return false;
-
-    for (auto v : it->second)
-      if (v == vertex2)
-        return true;
-
-    return false;
+    auto v = _outbound.at(vertex1);
+    return std::count(v.begin(), v.end(), vertex2) > 0;
   }
 
   int inDegree(int vertex) const {
-    _assertInRange(vertex);
+    _assertVertexExists(vertex);
 
-    auto it = _inbound.find(vertex);
-
-    if (it == _inbound.end())
-      return 0;
-
-    return it->second.size();
+    return _inbound.at(vertex).size();
   }
 
   int outDegree(int vertex) const {
-    _assertInRange(vertex);
+    _assertVertexExists(vertex);
 
-    auto it = _outbound.find(vertex);
-
-    if (it == _outbound.end())
-      return 0;
-
-    return it->second.size();
+    return _outbound.at(vertex).size();
   }
 
-  void forEachInbound(int vertex, std::function<void(int)> action) const {
-    _assertInRange(vertex);
+  std::vector<int> inbound(int vertex) const {
+    _assertVertexExists(vertex);
 
-    auto it = _inbound.find(vertex);
-
-    if (it == _inbound.end())
-      return;
-
-    for (auto v : it->second)
-      action(v);
+    return std::vector<int>{_inbound.at(vertex)};
   }
 
-  void forEachOutbound(int vertex, std::function<void(int)> action) const {
-    _assertInRange(vertex);
+  std::vector<int> outbound(int vertex) const {
+    _assertVertexExists(vertex);
 
-    auto it = _outbound.find(vertex);
-
-    if (it == _outbound.end())
-      return;
-
-    for (auto v : it->second)
-      action(v);
+    return std::vector<int>{_outbound.at(vertex)};
   }
 
   int getCost(int vertex1, int vertex2) const {
-    _assertInRange(vertex1);
-    _assertInRange(vertex2);
+    _assertVertexExists(vertex1);
+    _assertVertexExists(vertex2);
 
-    auto it = _cost.find({vertex1, vertex2});
-
-    if (it == _cost.end())
+    if (!existsEdge(vertex1, vertex2))
       throw std::runtime_error{"Edge does not exist."};
 
-    return it->second;
+    return _cost.at({vertex1, vertex2});
   }
 
   void setCost(int vertex1, int vertex2, int cost) {
-    _assertInRange(vertex1);
-    _assertInRange(vertex2);
+    _assertVertexExists(vertex1);
+    _assertVertexExists(vertex2);
 
     if (!existsEdge(vertex1, vertex2))
       throw std::runtime_error{"Edge does not exist."};
@@ -119,8 +187,8 @@ struct Graph {
   }
 
   void addEdge(int vertex1, int vertex2, int cost) {
-    _assertInRange(vertex1);
-    _assertInRange(vertex2);
+    _assertVertexExists(vertex1);
+    _assertVertexExists(vertex2);
 
     if (existsEdge(vertex1, vertex2))
       throw std::runtime_error{"Edge already exists."};
@@ -128,12 +196,11 @@ struct Graph {
     _outbound[vertex1].push_back(vertex2);
     _inbound[vertex2].push_back(vertex1);
     _cost[{vertex1, vertex2}] = cost;
-    ++_edgeCount;
   }
 
   void removeEdge(int vertex1, int vertex2) {
-    _assertInRange(vertex1);
-    _assertInRange(vertex2);
+    _assertVertexExists(vertex1);
+    _assertVertexExists(vertex2);
 
     if (!existsEdge(vertex1, vertex2))
       throw std::runtime_error{"Edge does not exist."};
@@ -145,58 +212,46 @@ struct Graph {
     vi.erase(std::find(vi.begin(), vi.end(), vertex1));
 
     _cost.erase({vertex1, vertex2});
-    --_edgeCount;
   }
 
-  void addVertex() {
-    ++_vertexCount;
+  void addVertex(int vertex) {
+    if (isVertex(vertex))
+      throw std::runtime_error{"Vertex already exists."};
+
+    _outbound[vertex] = {};
+    _inbound[vertex] = {};
   }
 
   void removeVertex(int vertex) {
-    _assertInRange(vertex);
+    _assertVertexExists(vertex);
 
-    for (int i = 0; i < _vertexCount; ++i) {
-      if (existsEdge(vertex, i))
-        removeEdge(vertex, i);
+    for (auto v2 : _outbound[vertex]) {
+      auto& v = _inbound[v2];
 
-      if (existsEdge(i, vertex))
-        removeEdge(i, vertex);
+      v.erase(std::find(v.begin(), v.end(), vertex));
+      _cost.erase({vertex, v2});
     }
 
-    for (int i = vertex + 1; i < _vertexCount; ++i) {
-      for (int j = 0; j < _vertexCount; ++j) {
-        if (existsEdge(i, j)) {
-          int cost = getCost(i, j);
-          removeEdge(i, j);
-          addEdge(i - 1, j, cost);
-        }
-      }
+    _outbound.erase(vertex);
+
+    for (auto v2 : _inbound[vertex]) {
+      auto& v = _outbound[v2];
+
+      v.erase(std::find(v.begin(), v.end(), vertex));
+      _cost.erase({v2, vertex});
     }
 
-    for (int i = vertex + 1; i < _vertexCount; ++i) {
-      for (int j = 0; j < _vertexCount; ++j) {
-        if (existsEdge(j, i)) {
-          int cost = getCost(j, i);
-          removeEdge(j, i);
-          addEdge(j, i - 1, cost);
-        }
-      }
-    }
-
-    --_vertexCount;
+    _inbound.erase(vertex);
   }
 
 private:
-  void _assertInRange(int vertex) const {
-    if (vertex < 0 || vertex >= _vertexCount)
-      throw std::out_of_range{"Vertex out of range."};
+  void _assertVertexExists(int vertex) const {
+    if (!isVertex(vertex))
+      throw std::out_of_range{"Vertex does not exist."};
   }
 
-  int _vertexCount, _edgeCount;
   std::unordered_map<int, std::vector<int>> _inbound, _outbound;
   std::unordered_map<std::pair<int, int>, int, PairHash> _cost;
 };
-
-Graph randomGraph(int vertexCount, int edgeCount);
 
 #endif
