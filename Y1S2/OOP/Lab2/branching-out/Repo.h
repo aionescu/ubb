@@ -15,6 +15,6 @@ bool repoAddIngredient(Repo* repo, const Ingredient* ingredient);
 bool repoRemoveIngredient(Repo* repo, int ingredientId);
 bool repoUpdateIngredient(Repo* repo, const Ingredient* newIngredient);
 
-void repoForEach(const Repo* repo, void (*action)(const Ingredient* ingredient));
+IngredientArray repoData(const Repo* repo);
 
 #endif

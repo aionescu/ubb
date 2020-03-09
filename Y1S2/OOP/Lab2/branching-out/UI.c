@@ -81,13 +81,37 @@ void uiDelete(UI* ui) {
     printf("No!\n");
 }
 
+void printIngredient(const Ingredient* ingredient) {
+  printf("Ingredient #%d, State: %s, Intended use: %s, Potency: %d\n",
+    ingredient->id,
+    ingredient->state,
+    ingredient->intendedUse,
+    ingredient->potency);
+}
+
+void uiListAll(IngredientArray ingredients) {
+  for (int i = 0; i < ingredients.length; ++i)
+    printIngredient(&ingredients.data[i]);
+}
+
+void uiListByIntendedUse(IngredientArray ingredients, const char* intendedUse) {
+  for (int i = 0; i < ingredients.length; ++i) {
+    Ingredient ingredient = ingredients.data[i];
+
+    if (!strcmp(ingredient.intendedUse, intendedUse))
+      printIngredient(&ingredient);
+  }
+}
+
 void uiList(UI* ui) {
   const char* token = strtok(NULL, DELIM);
 
+  IngredientArray ingredients = controllerData(&ui->controller);
+
   if (!token) // list all
-    controllerListAll(&ui->controller);
+    uiListAll(ingredients);
   else
-    controllerListByIntendedUse(&ui->controller, token);
+    uiListByIntendedUse(ingredients, token);
 }
 
 void uiExit(UI* ui) {

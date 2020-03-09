@@ -13,7 +13,6 @@ bool controllerAddIngredient(Controller* controller, const Ingredient* ingredien
 bool controllerUpdateIngredient(Controller* controller, const Ingredient* ingredient);
 bool controllerRemoveIngredient(Controller* controller, int ingredientId);
 
-void controllerListAll(const Controller* controller);
-void controllerListByIntendedUse(const Controller* controller, const char* intendedUse);
+IngredientArray controllerData(const Controller* controller);
 
 #endif

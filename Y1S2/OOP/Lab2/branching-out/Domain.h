@@ -10,6 +10,9 @@ typedef struct {
   int potency;
 } Ingredient;
 
-void printIngredient(const Ingredient* ingredient);
+typedef struct {
+  int length;
+  const Ingredient* data;
+} IngredientArray;
 
 #endif

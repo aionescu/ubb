@@ -38,7 +38,10 @@ bool repoUpdateIngredient(Repo* repo, const Ingredient* newIngredient) {
   return false;
 }
 
-void repoForEach(const Repo* repo, void (*action)(const Ingredient* ingredient)) {
-  for (int i = 0; i < repo->ingredientCount; ++i)
-    action(&repo->ingredients[i]);
+IngredientArray repoData(const Repo* repo) {
+  IngredientArray array;
+  array.length = repo->ingredientCount;
+  array.data = repo->ingredients;
+
+  return array;
 }
