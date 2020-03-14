@@ -1,0 +1,1 @@
+gcc -std=c11 -Wall -O3 domain.c action.c repo.c controller.c ui.c test.c main.c
