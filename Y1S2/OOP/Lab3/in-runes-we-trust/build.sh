@@ -1,1 +1,1 @@
-gcc -std=c11 -Wall -O3 domain.c action.c repo.c controller.c ui.c test.c main.c
+gcc -std=c11 -Wall -O3 Domain.c Action.c Repo.c Controller.c UI.c Test.c Main.c
