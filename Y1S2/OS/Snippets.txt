@@ -1,2 +1,3 @@
 kitty +kitten ssh iaie2748@linux.scs.ubbcluj.ro -p 2222
-scp -r iaie2748@linux.scs.ubbcluj.ro:SRC DEST
+scp -r iaie2748@linux.scs.ubbcluj.ro:<src> <dest>
+valgrind --leak-check=full --show-leak-kinds=all <path>
