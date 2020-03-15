@@ -8,7 +8,7 @@
 #include "Repo.h"
 #include "Controller.h"
 
-void test_newIngredient_doesNotExceedMaxLength() {
+void test_newIngredient_longInput_doesNotExceedMaxLength() {
   char data[101];
   memset(data, 'a', 100);
   data[100] = '\0';
@@ -28,7 +28,7 @@ void test_newShelf_isEmpty() {
   freeShelf(&shelf);
 }
 
-void test_shelfAddToEnd_shelfGrows() {
+void test_shelfAddToEnd_anyInput_shelfGrows() {
   Shelf shelf = newShelf();
   Ingredient ingredient = zeroedIngredient();
 
@@ -67,7 +67,7 @@ void test_newActionList_isEmpty() {
   freeActionList(&actionList);
 }
 
-void test_actionListPush_listGrows() {
+void test_actionListPush_anyInput_listGrows() {
   ActionList actionList = newActionList();
   Ingredient ingredient = zeroedIngredient();
   Action action = newAdd(&ingredient);
@@ -100,7 +100,7 @@ void test_actionListPop_listShrinks() {
   freeActionList(&actionList);
 }
 
-void test_repoAddIngredient_failsWhenDuplicateAdded() {
+void test_repoAddIngredient_duplicateIngredient_fails() {
   Repo repo = newRepo();
   Ingredient ingredient = zeroedIngredient();
 
@@ -110,60 +110,60 @@ void test_repoAddIngredient_failsWhenDuplicateAdded() {
   freeRepo(&repo);
 }
 
-void test_repoUpdateIngredient_failsOnInexistentIngredient() {
+void test_repoUpdateIngredient_inexistentIngredient_fails() {
   Repo repo = newRepo();
   Ingredient ingredient = zeroedIngredient();
 
-  assert(!repoUpdateIngredient(&repo, &ingredient));
+  assert(!repoUpdateIngredient(&repo, &ingredient, NULL));
 
   freeRepo(&repo);
 }
 
-void test_repoRemoveIngredient_failsOnInexistentIngredient() {
+void test_repoRemoveIngredient_inexistentIngredient_fails() {
   Repo repo = newRepo();
   Ingredient ingredient = zeroedIngredient();
 
   repoAddIngredient(&repo, &ingredient);
 
-  assert(repoRemoveIngredient(&repo, ingredient.id));
-  assert(!repoRemoveIngredient(&repo, ingredient.id));
+  assert(repoRemoveIngredient(&repo, ingredient.id, NULL, NULL));
+  assert(!repoRemoveIngredient(&repo, ingredient.id, NULL, NULL));
 
   freeRepo(&repo);
 }
 
-void test_repoUndo_failsWhenNothingToUndo() {
-  Repo repo = newRepo();
+void test_controllerUndo_nothingToUndo_fails() {
+  Controller controller = newController();
 
-  assert(!repoUndo(&repo));
+  assert(!controllerUndo(&controller));
 
-  freeRepo(&repo);
+  freeController(&controller);
 }
 
-void test_repoRedo_failsWhenNothingToRedo() {
-  Repo repo = newRepo();
+void test_controllerRedo_nothingToRedo_fails() {
+  Controller controller = newController();
 
-  assert(!repoRedo(&repo));
+  assert(!controllerRedo(&controller));
 
-  freeRepo(&repo);
+  freeController(&controller);
 }
 
 void runAllTests() {
-  test_newIngredient_doesNotExceedMaxLength();
+  test_newIngredient_longInput_doesNotExceedMaxLength();
 
   test_newShelf_isEmpty();
-  test_shelfAddToEnd_shelfGrows();
+  test_shelfAddToEnd_anyInput_shelfGrows();
   test_shelfRemoveFromEnd_shelfShrinks();
 
   test_newActionList_isEmpty();
-  test_actionListPush_listGrows();
+  test_actionListPush_anyInput_listGrows();
   test_actionListPop_listShrinks();
 
-  test_repoAddIngredient_failsWhenDuplicateAdded();
-  test_repoUpdateIngredient_failsOnInexistentIngredient();
-  test_repoRemoveIngredient_failsOnInexistentIngredient();
+  test_repoAddIngredient_duplicateIngredient_fails();
+  test_repoUpdateIngredient_inexistentIngredient_fails();
+  test_repoRemoveIngredient_inexistentIngredient_fails();
 
-  test_repoUndo_failsWhenNothingToUndo();
-  test_repoRedo_failsWhenNothingToRedo();
+  test_controllerUndo_nothingToUndo_fails();
+  test_controllerRedo_nothingToRedo_fails();
   
   printf("All tests passed.\n");
 }

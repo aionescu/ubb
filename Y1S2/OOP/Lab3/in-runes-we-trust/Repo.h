@@ -7,7 +7,6 @@
 
 typedef struct {
   Shelf shelf;
-  ActionList done, undone;
 } Repo;
 
 // Initializes a new repository with 0 ingredients and no actions performed.
@@ -23,20 +22,12 @@ bool repoAddIngredient(Repo* repo, const Ingredient* newIngredient);
 // Attempts to remove the ingredient with the specified ID from the repository.
 // Returns: `false` if no ingredient exists with the specified ID,
 // otherwise `true`.
-bool repoRemoveIngredient(Repo* repo, int ingredientId);
+bool repoRemoveIngredient(Repo* repo, int ingredientId, int* indexBuf, Ingredient* ingredientBuf);
 
 // Attempts to update the ingredient with the specified ID.
 // Returns: `false` if no ingredient exists with the specified ID,
 // otherwise `true`.
-bool repoUpdateIngredient(Repo* repo, const Ingredient* newIngredient);
-
-// Attempts to undo the last performed action.
-// Returns: `false` if no actions were performed, otherwise `true`.
-bool repoUndo(Repo* repo);
-
-// Attempts to redo the last undone action.
-// Returns: `false` if no actions were undone, otherwise `true`.
-bool repoRedo(Repo* repo);
+bool repoUpdateIngredient(Repo* repo, const Ingredient* newIngredient, Ingredient* ingredientBuf);
 
 // Returns a read-only view of the repository's data.
 const Shelf* repoData(const Repo* repo);

@@ -3,10 +3,12 @@
 
 #include <stdbool.h>
 #include "Domain.h"
+#include "Action.h"
 #include "Repo.h"
 
 typedef struct {
   Repo repo;
+  ActionList done, undone;
 } Controller;
 
 // Initializes a new controller with an empty repository.

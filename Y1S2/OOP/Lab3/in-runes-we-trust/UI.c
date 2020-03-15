@@ -188,7 +188,8 @@ void uiRedo(UI* ui) {
 }
 
 bool handleCommand(UI* ui) {
-  char command[MAX_COMMAND_LENGTH];
+  char command[MAX_COMMAND_LENGTH + 1];
+  memset(command, 0, MAX_COMMAND_LENGTH + 1);
 
   if (!fgets(command, MAX_COMMAND_LENGTH, stdin)) {
     printf("Error: Couldn't read input.\n");
@@ -196,6 +197,11 @@ bool handleCommand(UI* ui) {
   }
 
   const char* token = strtok(command, DELIM);
+
+  if (!token) {
+    printf("Command expected.\n");
+    return true;
+  }
 
   if (!strcmp(token, "exit"))
     return false;

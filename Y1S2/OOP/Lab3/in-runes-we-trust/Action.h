@@ -13,6 +13,7 @@ typedef struct {
   ActionType type;
   Ingredient ingredient;
   Ingredient oldIngredient;
+  int index;
 } Action;
 
 // Creates a new action representing the addition of the specified ingredient.
