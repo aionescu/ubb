@@ -19,7 +19,7 @@ void test_newIngredient_longInput_doesNotExceedMaxLength() {
   assert(strlen(ingredient.intendedUse) == INGREDIENT_NAME_LENGTH);
 }
 
-void test_newShelf_isEmpty() {
+void test_newShelf_noInput_shelfIsEmpty() {
   Shelf shelf = newShelf();
 
   assert(shelf.length == 0);
@@ -177,7 +177,7 @@ void test_controllerRedo_somethingToRedo_operationIsRedone() {
 void runAllTests() {
   test_newIngredient_longInput_doesNotExceedMaxLength();
 
-  test_newShelf_isEmpty();
+  test_newShelf_noInput_shelfIsEmpty();
   test_shelfAddToEnd_anyInput_shelfGrows();
   test_shelfRemoveFromEnd_shelfShrinks();
 

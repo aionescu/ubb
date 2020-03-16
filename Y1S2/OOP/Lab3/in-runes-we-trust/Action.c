@@ -67,11 +67,11 @@ void actionListGrow(ActionList* actionList) {
     actionList->capacity = 1;
   } else {
     int newCapacity = actionList->capacity * 2;
-    Action* newBuf = malloc(newCapacity * sizeof(Action));
-    memcpy(newBuf, actionList->data, actionList->length * sizeof(Action));
+    Action* newBuffer = malloc(newCapacity * sizeof(Action));
+    memcpy(newBuffer, actionList->data, actionList->length * sizeof(Action));
 
     free(actionList->data);
-    actionList->data = newBuf;
+    actionList->data = newBuffer;
     actionList->capacity = newCapacity;
   }
 }

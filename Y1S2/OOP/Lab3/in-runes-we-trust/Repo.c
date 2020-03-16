@@ -23,16 +23,16 @@ bool repoAddIngredient(Repo* repo, const Ingredient* newIngredient) {
   return true;
 }
 
-bool repoRemoveIngredient(Repo* repo, int ingredientId, int* indexBuf, Ingredient* ingredientBuf) {
+bool repoRemoveIngredient(Repo* repo, int ingredientId, int* indexBuffer, Ingredient* ingredientBuffer) {
   SHELF_FOR(ingredient, &repo->shelf)
     if (ingredient->id == ingredientId) {
       int index = ingredient - repo->shelf.data;
 
-      if (indexBuf)
-        *indexBuf = index;
+      if (indexBuffer)
+        *indexBuffer = index;
 
-      if (ingredientBuf)
-        *ingredientBuf = *ingredient;
+      if (ingredientBuffer)
+        *ingredientBuffer = *ingredient;
 
       shelfRemoveAt(&repo->shelf, index);
       return true;
@@ -41,12 +41,12 @@ bool repoRemoveIngredient(Repo* repo, int ingredientId, int* indexBuf, Ingredien
   return false;
 }
 
-bool repoUpdateIngredient(Repo* repo, const Ingredient* newIngredient, Ingredient* ingredientBuf) {
+bool repoUpdateIngredient(Repo* repo, const Ingredient* newIngredient, Ingredient* ingredientBuffer) {
   SHELF_FOR_MUT(ingredient, &repo->shelf)
     if (ingredient->id == newIngredient->id) {
 
-      if (ingredientBuf)
-        *ingredientBuf = *ingredient;
+      if (ingredientBuffer)
+        *ingredientBuffer = *ingredient;
 
       *ingredient = *newIngredient;
       return true;

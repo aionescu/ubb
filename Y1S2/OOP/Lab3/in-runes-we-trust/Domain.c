@@ -48,10 +48,10 @@ void freeShelf(Shelf* shelf) {
 Shelf copyShelf(const Shelf* shelf) {
   Shelf newShelf = *shelf;
 
-  Ingredient* newBuf = malloc(shelf->capacity * sizeof(Ingredient));
-  memcpy(newBuf, shelf->data, shelf->length * sizeof(Ingredient));
+  Ingredient* newBuffer = malloc(shelf->capacity * sizeof(Ingredient));
+  memcpy(newBuffer, shelf->data, shelf->length * sizeof(Ingredient));
 
-  newShelf.data = newBuf;
+  newShelf.data = newBuffer;
   return newShelf;
 }
 
@@ -64,11 +64,11 @@ void shelfGrow(Shelf* shelf) {
     shelf->capacity = 1;
   } else {
     int newCapacity = shelf->capacity * 2;
-    Ingredient* newBuf = malloc(newCapacity * sizeof(Ingredient));
-    memcpy(newBuf, shelf->data, shelf->length * sizeof(Ingredient));
+    Ingredient* newBuffer = malloc(newCapacity * sizeof(Ingredient));
+    memcpy(newBuffer, shelf->data, shelf->length * sizeof(Ingredient));
 
     free(shelf->data);
-    shelf->data = newBuf;
+    shelf->data = newBuffer;
     shelf->capacity = newCapacity;
   }
 }

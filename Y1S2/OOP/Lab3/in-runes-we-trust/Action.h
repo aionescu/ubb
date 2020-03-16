@@ -45,8 +45,8 @@ void actionListPush(ActionList* actionList, const Action* action);
 // Attempts to remove the most recently added action from the specified action list.
 // If the action list is empty, the function returns `false`.
 // If the action list is not empty, the function returns `true`, and
-// the removed action is copied into `actionBuf`.
-bool actionListPop(ActionList* actionList, Action* actionBuf);
+// the removed action is copied into `actionBuffer`.
+bool actionListPop(ActionList* actionList, Action* actionBuffer);
 
 // Clears the specified action, removing all elements.
 // Post: *actionList == newActionList()

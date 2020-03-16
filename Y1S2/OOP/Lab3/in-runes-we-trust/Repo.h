@@ -22,12 +22,12 @@ bool repoAddIngredient(Repo* repo, const Ingredient* newIngredient);
 // Attempts to remove the ingredient with the specified ID from the repository.
 // Returns: `false` if no ingredient exists with the specified ID,
 // otherwise `true`.
-bool repoRemoveIngredient(Repo* repo, int ingredientId, int* indexBuf, Ingredient* ingredientBuf);
+bool repoRemoveIngredient(Repo* repo, int ingredientId, int* indexBuffer, Ingredient* ingredientBuffer);
 
 // Attempts to update the ingredient with the specified ID.
 // Returns: `false` if no ingredient exists with the specified ID,
 // otherwise `true`.
-bool repoUpdateIngredient(Repo* repo, const Ingredient* newIngredient, Ingredient* ingredientBuf);
+bool repoUpdateIngredient(Repo* repo, const Ingredient* newIngredient, Ingredient* ingredientBuffer);
 
 // Returns a read-only view of the repository's data.
 const Shelf* repoData(const Repo* repo);
