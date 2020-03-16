@@ -109,9 +109,9 @@ void uiListByIntendedUse(const Shelf* shelf, const char* intendedUse) {
       printIngredient(ingredient);
 }
 
-void uiListMaxPotency(const Shelf* shelf, int maxPotency, int (*cmp)(const void* a, const void* b)) {
+void uiListMaxPotency(const Shelf* shelf, int maxPotency, int (*comparer)(const void* a, const void* b)) {
   Shelf newShelf = copyShelf(shelf);
-  qsort(newShelf.data, newShelf.length, sizeof(Ingredient), cmp);
+  qsort(newShelf.data, newShelf.length, sizeof(Ingredient), comparer);
 
   SHELF_FOR(ingredient, &newShelf)
     if (ingredient->potency < maxPotency)
@@ -120,14 +120,14 @@ void uiListMaxPotency(const Shelf* shelf, int maxPotency, int (*cmp)(const void*
   freeShelf(&newShelf);
 }
 
-int cmpAsc(const void* a, const void* b) {
+int compareAscending(const void* a, const void* b) {
   const char* aState = ((const Ingredient*)a)->state;
   const char* bState = ((const Ingredient*)b)->state;
 
   return strcmp(aState, bState);
 }
 
-int cmpDesc(const void* a, const void* b) {
+int compareDescending(const void* a, const void* b) {
   const char* aState = ((const Ingredient*)a)->state;
   const char* bState = ((const Ingredient*)b)->state;
 
@@ -153,12 +153,12 @@ void uiList(UI* ui) {
 
     if (token) {
       if (!strcmp(token, "desc"))
-        uiListMaxPotency(shelf, maxPotency, cmpDesc);
+        uiListMaxPotency(shelf, maxPotency, compareDescending);
       else
         printf("Argument not recognized.\n");
     }
     else
-      uiListMaxPotency(shelf, maxPotency, cmpAsc);
+      uiListMaxPotency(shelf, maxPotency, compareAscending);
   }
 }
 
