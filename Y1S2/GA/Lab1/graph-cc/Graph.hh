@@ -16,8 +16,31 @@ static inline int rand_range(int min, int max) {
   return std::rand() % (max - min) + min;
 }
 
+// Class that represents a directed graph.
 class Graph {
+  // Representation of the graph:
+  // * The graph is represented by 3 ordered dictionaries (std::map),
+  //   one that stores the inbound edges for each vertex, one that stores
+  //   the outbound edges for each vertex, and one that stores the cost
+  //   associated to each edge.
+  // * The existence of a vertex can be checked by simply checking if it
+  //   exists as a key in either the `_inbound` or `_outbound` dictionaries.
+  // * The existence of an edge can be checked by simply checking if it exists
+  //   as a key in the `_cost` dictionary.
+  // * The Graph class contains a default constructor, copy constructor and
+  //   move constructor, so copying the data from one graph to another is as
+  //   easy as writing `Graph g2 = g;`.
+  std::map<int, std::vector<int>> _inbound, _outbound;
+  std::map<std::pair<int, int>, int> _cost;
+
+  void _assertVertexExists(int vertex) const {
+    if (!isVertex(vertex))
+      throw std::out_of_range{"Vertex does not exist."};
+  }
+
 public:
+  // Creates a graph with `vertexCount` vertices numbered from 0
+  // to `vertexCount` - 1, and `edgeCount` randomly generated edges.
   static Graph randomGraph(int vertexCount, int edgeCount) {
     std::srand(std::time(0));
     Graph g;
@@ -41,6 +64,7 @@ public:
     return g;
   }
 
+  // Constructs a graph from the given string.
   static Graph fromString(std::string s) {
     std::stringstream ss{s};
     Graph g;
@@ -67,6 +91,9 @@ public:
     return g;
   }
 
+  // Constructs a graph from the given string, which is expected
+  // to be in the "old" format (that assumes the graph contains all
+  // vertices from 0 to n - 1).
   static Graph fromStringOld(std::string s) {
     std::stringstream ss{s};
     Graph g;
@@ -88,6 +115,8 @@ public:
     return g;
   }
 
+  // Returns a string representation of the graph.
+  // Law: forall g. fromString(toString(g)) == g
   std::string toString() const {
     std::stringstream ss{};
 
@@ -106,14 +135,18 @@ public:
     return ss.str();
   }
 
+  // Returns the number of vertices in the graph.
   int vertexCount() const {
     return _outbound.size();
   }
 
+  // Checks whether the graph contains the specified vertex.
+  // Returns: `true` if the vertex exists in the graph, otherwise `false`.
   bool isVertex(int vertex) const {
     return _outbound.find(vertex) != _outbound.end();
   }
 
+  // Returns a vector containing all vertices in the graph, in ascending order.
   std::vector<int> vertices() const {
     std::vector<int> vs;
 
@@ -123,38 +156,55 @@ public:
     return vs;
   }
 
+  // Checks whether there exists an edge between the 2 vertices.
+  // Returns: `true` if there exists an edge between the 2 vertices,
+  // otherwise `false`.
+  // Throws: std::out_of_range if either of the vertices is not in the graph.
   bool existsEdge(int vertex1, int vertex2) const {
     _assertVertexExists(vertex1);
     _assertVertexExists(vertex2);
 
-    auto v = _outbound.at(vertex1);
-    return std::count(v.begin(), v.end(), vertex2) > 0;
+    return _cost.find({vertex1, vertex2}) != _cost.end();
   }
 
+  // Returns the in degree of the specified vertex.
+  // Throws: std::out_of_range if the specified vertex is not in the graph.
   int inDegree(int vertex) const {
     _assertVertexExists(vertex);
 
     return _inbound.at(vertex).size();
   }
 
+  // Returns the out degree of the specified vertex.
+  // Throws: std::out_of_range if the specified vertex is not in the graph.
   int outDegree(int vertex) const {
     _assertVertexExists(vertex);
 
     return _outbound.at(vertex).size();
   }
 
+  // Returns a vector containing all the inbound edges of the specified vertex.
+  // Throws: std::out_of_range if the specified vertex is not in the graph.
+  // Law: forall v. forall v2 in inbound(v). existsEdge(v2, v)
   std::vector<int> inbound(int vertex) const {
     _assertVertexExists(vertex);
 
     return std::vector<int>{_inbound.at(vertex)};
   }
 
+  // Returns a vector containing all the outbound edges of the specified vertex.
+  // Throws: std::out_of_range if the specified vertex is not in the graph.
+  // Law: forall v. forall v2 in outbound(v). existsEdge(v, v2)
   std::vector<int> outbound(int vertex) const {
     _assertVertexExists(vertex);
 
     return std::vector<int>{_outbound.at(vertex)};
   }
 
+  // Returns the cost associated to the edge between `vertex1` and `vertex2`.
+  // Throws:
+  //   * std::out_of_range if either vertex is not in the graph.
+  //   * std::runtime_error if there is no edge between vertex1 and vertex2.
   int getCost(int vertex1, int vertex2) const {
     _assertVertexExists(vertex1);
     _assertVertexExists(vertex2);
@@ -165,6 +215,11 @@ public:
     return _cost.at({vertex1, vertex2});
   }
 
+  // Sets the cost associated to the edge between `vertex1` and `vertex2` to
+  // be equal to `cost`.
+  // Throws:
+  //   * std::out_of_range if either vertex is not in the graph.
+  //   * std::runtime_error if there is no edge between vertex1 and vertex2.
   void setCost(int vertex1, int vertex2, int cost) {
     _assertVertexExists(vertex1);
     _assertVertexExists(vertex2);
@@ -175,6 +230,12 @@ public:
     _cost[{vertex1, vertex2}] = cost;
   }
 
+  // Adds a new edge between `vertex1` and `vertex2`, with the cost equal
+  // to `cost`.
+  // Throws:
+  //   * std::out_of_range if either vertex is not in the graph.
+  //   * std::runtime_error if there already exists an edge between
+  //     vertex1 and vertex2.
   void addEdge(int vertex1, int vertex2, int cost) {
     _assertVertexExists(vertex1);
     _assertVertexExists(vertex2);
@@ -187,6 +248,10 @@ public:
     _cost[{vertex1, vertex2}] = cost;
   }
 
+  // Removes the edge between `vertex1` and `vertex2`.
+  // Throws:
+  //   * std::out_of_range if either vertex is not in the graph.
+  //   * std::runtime_error if there is no edge between vertex1 and vertex2.
   void removeEdge(int vertex1, int vertex2) {
     _assertVertexExists(vertex1);
     _assertVertexExists(vertex2);
@@ -203,6 +268,8 @@ public:
     _cost.erase({vertex1, vertex2});
   }
 
+  // Adds the specified vertex to the graph.
+  // Throws: std::runtime_error if the vertex already exists.
   void addVertex(int vertex) {
     if (isVertex(vertex))
       throw std::runtime_error{"Vertex already exists."};
@@ -211,6 +278,8 @@ public:
     _inbound[vertex] = {};
   }
 
+  // Removes the specified vertex from the graph.
+  // Throws: std::runtime_error if the vertex is not in the graph.
   void removeVertex(int vertex) {
     _assertVertexExists(vertex);
 
@@ -232,15 +301,6 @@ public:
 
     _inbound.erase(vertex);
   }
-
-private:
-  void _assertVertexExists(int vertex) const {
-    if (!isVertex(vertex))
-      throw std::out_of_range{"Vertex does not exist."};
-  }
-
-  std::map<int, std::vector<int>> _inbound, _outbound;
-  std::map<std::pair<int, int>, int> _cost;
 };
 
 #endif

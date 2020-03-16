@@ -4,15 +4,19 @@
 #include <fstream>
 #include <functional>
 #include <iostream>
-#include <map>
 #include <string>
 #include <sstream>
 #include <streambuf>
+#include <unordered_map>
 #include "Graph.hh"
 
 #define CMD(s, f) _cmds[s] = [&](std::stringstream& args) { this->f(args); }
 
-struct UI {
+class UI {
+  Graph _graph;
+  std::unordered_map<std::string, std::function<void(std::stringstream&)>> _cmds;
+
+public:
   UI() : _graph{} {
     CMD("help", help);
     CMD("exit", exit);
@@ -226,10 +230,6 @@ struct UI {
       std::cout << "Exception: " << e.what() << "\n";
     }
   }
-
-private:
-  Graph _graph;
-  std::map<std::string, std::function<void(std::stringstream&)>> _cmds;
 };
 
 #endif
