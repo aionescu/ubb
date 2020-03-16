@@ -139,10 +139,37 @@ void test_controllerUndo_nothingToUndo_fails() {
   freeController(&controller);
 }
 
+void test_controllerUndo_somethingToUndo_operationIsUndone() {
+  Controller controller = newController();
+  Ingredient ingredient = zeroedIngredient();
+
+  controllerAddIngredient(&controller, &ingredient);
+
+  assert(controllerUndo(&controller));
+
+  assert(controllerData(&controller)->length == 0);
+
+  freeController(&controller);
+}
+
 void test_controllerRedo_nothingToRedo_fails() {
   Controller controller = newController();
 
   assert(!controllerRedo(&controller));
+
+  freeController(&controller);
+}
+
+void test_controllerRedo_somethingToRedo_operationIsRedone() {
+  Controller controller = newController();
+  Ingredient ingredient = zeroedIngredient();
+
+  controllerAddIngredient(&controller, &ingredient);
+
+  controllerUndo(&controller);
+  controllerRedo(&controller);
+
+  assert(controllerData(&controller)->length == 1);
 
   freeController(&controller);
 }
@@ -163,7 +190,10 @@ void runAllTests() {
   test_repoRemoveIngredient_inexistentIngredient_fails();
 
   test_controllerUndo_nothingToUndo_fails();
+  test_controllerUndo_somethingToUndo_operationIsUndone();
+
   test_controllerRedo_nothingToRedo_fails();
+  test_controllerRedo_somethingToRedo_operationIsRedone();
   
   printf("All tests passed.\n");
 }

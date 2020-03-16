@@ -113,7 +113,7 @@ void uiListMaxPotency(const Shelf* shelf, int maxPotency, int (*cmp)(const void*
   Shelf newShelf = copyShelf(shelf);
   qsort(newShelf.data, newShelf.length, sizeof(Ingredient), cmp);
 
-  SHELF_FOR(ingredient, shelf)
+  SHELF_FOR(ingredient, &newShelf)
     if (ingredient->potency < maxPotency)
       printIngredient(ingredient);
 
@@ -224,4 +224,10 @@ bool handleCommand(UI* ui) {
     printf("Command not recognized.\n");
 
   return true;
+}
+
+void mainLoop(UI* ui) {
+  do {
+    printf("> ");
+  } while (handleCommand(ui));
 }

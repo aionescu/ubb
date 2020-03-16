@@ -7,10 +7,7 @@ int main() {
   runAllTests();
   
   UI ui = newUI();
-
-  do {
-    printf("> ");
-  } while (handleCommand(&ui));
-
+  
+  mainLoop(&ui);
   freeUI(&ui);
 }

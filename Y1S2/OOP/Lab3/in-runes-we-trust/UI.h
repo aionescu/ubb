@@ -21,4 +21,6 @@ void uiRedo(UI* ui);
 
 bool handleCommand(UI* ui);
 
+void mainLoop(UI* ui);
+
 #endif
