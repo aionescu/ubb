@@ -1,0 +1,1 @@
+g++ -std=c++17 -Wall -O3 SortedBag.cpp SortedBagIterator.cpp ShortTest.cpp ExtendedTest.cpp App.cpp
