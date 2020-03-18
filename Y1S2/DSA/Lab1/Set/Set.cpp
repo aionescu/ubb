@@ -1,16 +1,15 @@
-#include <stdexcept>
 #include "Set.h"
 #include "SetIterator.h"
 
-Set::Set() : capacity{0}, count{0}, array{nullptr}, minElem{} { }
+Set::Set() : capacity{0}, count{0}, maxIdx{0}, array{nullptr}, minElem{} { }
 
-// O(n)
 bool Set::add(TElem elem) {
 	if (capacity == 0) {
-		capacity = 64;
+		capacity = 1;
 		count = 1;
+		maxIdx = 0;
 
-		array = new TElem[64]{};
+		array = new TElem[1]{};
 		array[0] = true;
 
 		minElem = elem;
@@ -26,13 +25,32 @@ bool Set::add(TElem elem) {
 		array[idx] = true;
 		++count;
 
+		if (idx > maxIdx)
+			maxIdx = idx;
+
 		return true;
 	} else if (idx < 0) {
 		auto diff = -idx;
-		auto newCapacity = capacity + 64;
+
+		if (maxIdx + diff < capacity) {
+			for (auto i = maxIdx; i >= 0; --i) {
+				array[i + diff] = array[i];
+				array[i] = false;
+			}
+
+			array[0] = true;
+			++count;
+
+			maxIdx += diff;
+			minElem = elem;
+
+			return true;
+		}
+
+		auto newCapacity = capacity * 2;
 
 		while (newCapacity < capacity + diff)
-		  newCapacity += 64;
+		  newCapacity *= 2;
 
 		auto newArray = new TElem[newCapacity]{};
 
@@ -48,14 +66,15 @@ bool Set::add(TElem elem) {
 		capacity = newCapacity;
 		++count;
 		minElem = elem;
+		maxIdx += diff;
 
 		return true;
-	} else if (idx >= capacity) {
-		auto diff = idx - capacity;
-		auto newCapacity = capacity + 64;
+	} else { // if (idx >= capacity)
+		auto diff = idx - maxIdx;
+		auto newCapacity = capacity * 2;
 
 		while (newCapacity < capacity + diff)
-		  newCapacity += 64;
+		  newCapacity *= 2;
 
 		auto newArray = new TElem[newCapacity]{};
 
@@ -70,18 +89,16 @@ bool Set::add(TElem elem) {
 
 		capacity = newCapacity;
 		++count;
+		maxIdx = idx;
 
 		return true;
-	} else {
-		throw std::logic_error{"Set::add: Unreachable"};
 	}
 }
 
-// O(1)
 bool Set::remove(TElem elem) {
 	auto idx = elem - minElem;
 
-	if (capacity == 0 || idx < 0 || idx >= capacity || !array[idx])
+	if (capacity == 0 || idx < 0 || idx > maxIdx || !array[idx])
 		return false;
 
 	array[idx] = false;
@@ -90,24 +107,21 @@ bool Set::remove(TElem elem) {
 	return true;
 }
 
-// O(1)
 bool Set::search(TElem elem) const {
 	auto idx = elem - minElem;
-	return idx >= 0 && idx < capacity && array[idx];
+	return capacity > 0 && idx >= 0 && idx <= maxIdx && array[idx];
 }
 
-// O(1)
 int Set::size() const {
 	return count;
 }
 
-// O(1)
 bool Set::isEmpty() const {
 	return count == 0;
 }
 
 Set::~Set() {
-	capacity = count = 0;
+	capacity = count = maxIdx = 0;
 	minElem.~TElem();
 
 	if (array) {

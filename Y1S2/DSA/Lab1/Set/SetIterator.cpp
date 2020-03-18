@@ -12,9 +12,12 @@ void SetIterator::first() {
 }
 
 void SetIterator::next() {
+	if (set.capacity == 0)
+		return;
+
 	do {
 		++idx;
-	} while (idx < set.capacity && !set.array[idx]);
+	} while (idx <= set.maxIdx && !set.array[idx]);
 }
 
 TElem SetIterator::getCurrent() {
@@ -25,5 +28,5 @@ TElem SetIterator::getCurrent() {
 }
 
 bool SetIterator::valid() const {
-	return idx >= 0 && idx < set.capacity;
+	return set.capacity > 0 && idx >= 0 && idx <= set.maxIdx;
 }
