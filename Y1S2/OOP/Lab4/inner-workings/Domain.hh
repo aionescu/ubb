@@ -3,47 +3,42 @@
 
 #include <string>
 
-class Date {
-  int day, month, year;
-
-public:
-  int getDay() const {
-    return day;
-  }
-
-  int getMonth() const {
-    return month;
-  }
-
-  int getYear() const {
-    return year;
-  }
-};
-
 class Task {
-  std::string title, type, vision;
-  Date lastPerformed;
-  int timesPerformed;
+  std::string _title;
+  std::string _type;
+  std::string _lastPerformed;
+  int _timesPerformed;
+  std::string _vision;
 
 public:
-  std::string getTitle() const {
-    return title;
+  Task() = default;
+
+  Task(std::string title, std::string type, std::string lastPerformed, int timesPerformed, std::string vision)
+    : _title{title}, _type{type}, _lastPerformed{lastPerformed}, _timesPerformed{timesPerformed}, _vision{vision}
+    {}
+
+  Task(const Task& task) = default;
+  Task& operator =(const Task& task) = default;
+  ~Task() = default;
+
+  std::string title() const {
+    return _title;
   }
 
-  std::string getType() const {
-    return type;
+  std::string type() const {
+    return _type;
   }
 
-  Date getLastPerformed() const {
-    return lastPerformed;
+  std::string lastPerformed() const {
+    return _lastPerformed;
   }
 
-  int getTimesPerformed() const {
-    return timesPerformed;
+  int timesPerformed() const {
+    return _timesPerformed;
   }
 
-  std::string getVision() const {
-    return vision;
+  std::string vision() const {
+    return _vision;
   }
 };
 

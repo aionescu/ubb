@@ -1,7 +1,7 @@
 #include <iostream>
-#include "Domain.hh"
-#include "Vector.hh"
+#include "UI.hh"
 
 int main() {
-  std::cout << "Hi world.\n";
+  UI ui;
+  ui.mainLoop();
 }
