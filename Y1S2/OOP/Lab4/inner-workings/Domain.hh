@@ -11,7 +11,7 @@ class Task {
   std::string _vision;
 
 public:
-  Task() = default;
+  Task() : _title{}, _type{}, _lastPerformed{}, _timesPerformed{0}, _vision{} {}
 
   Task(std::string title, std::string type, std::string lastPerformed, int timesPerformed, std::string vision)
     : _title{title}, _type{type}, _lastPerformed{lastPerformed}, _timesPerformed{timesPerformed}, _vision{vision}
