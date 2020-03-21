@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <iostream>
+#include <map>
 #include <sstream>
 #include <string>
 #include "Domain.hh"
@@ -56,82 +57,104 @@ std::string taskToString(Task task) {
 
 class UI {
   Services _services;
-
+  std::map<std::string, void (UI::*)(std::stringstream&)> _commands;
 public:
-  void mode(std::string mode) {
+  UI() : _services{}, _commands{{
+      { "help", &UI::help },
+      { "exit", &UI::exit },
+      { "mode", &UI::mode },
+      { "add", &UI::add },
+      { "update", &UI::update },
+      { "delete", &UI::remove },
+      { "list", &UI::list }
+    }} {}
+
+  void help(std::stringstream& args) {
+    std::cout << "Available commands:\n";
+
+    for (auto command : _commands) {
+      std::cout << command.first << '\n';
+    }
+  }
+
+  void exit(std::stringstream& args) {
+    std::exit(0);
+  }
+
+  void mode(std::stringstream& args) {
+    std::string mode;
+    args >> mode;
+
     _services.setMode(mode);
   }
 
-  void add(Task newTask) {
+  void add(std::stringstream& args) {
+    std::string buffer;
+    std::getline(args, buffer);
+
+    auto parts = splitString(buffer, ',');
+    auto newTask = taskFromParts(parts);
+
     if (!_services.add(newTask))
       std::cout << "Error: Invalid command.\n";
   }
 
-  void update(Task task) {
+  void update(std::stringstream& args) {
+    std::string buffer;
+    std::getline(args, buffer);
+
+    auto parts = splitString(buffer, ',');
+    auto task = taskFromParts(parts);
+
     if (!_services.update(task))
       std::cout << "Error: Invalid command.\n";
   }
 
-  void remove(std::string title) {
+  void remove(std::stringstream& args) {
+    std::string title;
+    args >> title;
+    
     if (!_services.remove(title))
       std::cout << "Error: Invalid command.\n";
   }
 
-  void list() {
+  void list(std::stringstream& args) {
     auto data = _services.data();
 
     for (int i = 0; i < data.length(); ++i)
       std::cout << taskToString(data[i]) << '\n';
   }
 
-  bool handleCommand() {
-    std::string command;
-    std::cin >> command;
+  void handleCommand() {
+    std::string inputBuffer;
+    std::getline(std::cin, inputBuffer);
+    std::stringstream inputStream{inputBuffer};
 
-    if (command.size() == 0) {
-      std::cout << "Error: Command expected.\n";
-      return true;
+    std::string commandString;
+    inputStream >> commandString;
+
+    auto command = _commands.find(commandString);
+
+    if (command == _commands.end()) {
+      std::cout << "Command not recognized.\n";
+      return;
     }
-
-    if (command == "exit")
-      return false;
-    else if (command == "list")
-      list();
-    else {
-      std::string input;
-      std::getline(std::cin, input);
-
-      auto parts = splitString(input, ',');
-      
-      if (command == "mode")
-        mode(parts[0]);
-      else if (command == "add")
-        add(taskFromParts(parts));
-      else if (command == "update")
-        update(taskFromParts(parts));
-      else if (command == "delete")
-        remove(parts[0]);
-      else
-        std::cout << "Command not recognized.\n";
+    
+    try {
+      auto commandFunction = command->second;
+      (this->*commandFunction)(inputStream);
+    } catch (WrongModeException& e) {
+      std::cout << "Error: Wrong mode.\n";
+    } catch (...) {
+      std::cout << "Error: Wrong arguments.\n";
     }
-
-    return true;
   }
 
   void mainLoop() {
-    bool keepGoing = true;
-
-    do {
+    while (true) {
       std::cout << "> ";
-
-      try {
-        keepGoing = handleCommand();
-      } catch (std::runtime_error& e) {
-        std::cout << "Error: Wrong mode.\n";
-      } catch (...) {
-        std::cout << "Error: Wrong arguments.\n";
-      }
-    } while (keepGoing);
+      handleCommand();
+    }
   }
 };
 

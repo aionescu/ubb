@@ -71,7 +71,7 @@ void test_services_add_wrongMode_throwsException() {
   try {
     services.add(Task{});
     assert(false);
-  } catch (std::runtime_error&) {}
+  } catch (WrongModeException&) {}
 }
 
 void test_services_add_newTask_operationSucceeds() {
