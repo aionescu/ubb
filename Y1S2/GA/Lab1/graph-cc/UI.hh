@@ -2,43 +2,40 @@
 #define UI_HH
 
 #include <fstream>
-#include <functional>
 #include <iostream>
+#include <map>
 #include <string>
 #include <sstream>
 #include <streambuf>
-#include <unordered_map>
 #include "Graph.hh"
-
-#define CMD(s, f) _cmds[s] = [&](std::stringstream& args) { this->f(args); }
 
 class UI {
   Graph _graph;
-  std::unordered_map<std::string, std::function<void(std::stringstream&)>> _cmds;
+  std::map<std::string, void (UI::*)(std::stringstream&)> _cmds;
 
 public:
   UI() : _graph{} {
-    CMD("help", help);
-    CMD("exit", exit);
-    CMD("vertex-count", vertexCount);
-    CMD("vertices", vertices);
-    CMD("is-vertex", isVertex);
-    CMD("exists-edge", existsEdge);
-    CMD("in-degree", inDegree);
-    CMD("out-degree", outDegree);
-    CMD("inbound", inbound);
-    CMD("outbound", outbound);
-    CMD("get-cost", getCost);
-    CMD("set-cost", setCost);
-    CMD("add-edge", addEdge);
-    CMD("remove-edge", removeEdge);
-    CMD("add-vertex", addVertex);
-    CMD("remove-vertex", removeVertex);
-    CMD("save-to-file", saveToFile);
-    CMD("load-from-file", loadFromFile);
-    CMD("load-old-fmt", loadOldFmt);
-    CMD("print", print);
-    CMD("random", random);
+    _cmds["help"] = &UI::help;
+    _cmds["exit"] = &UI::exit;
+    _cmds["vertex-count"] = &UI::vertexCount;
+    _cmds["vertices"] = &UI::vertices;
+    _cmds["is-vertex"] = &UI::isVertex;
+    _cmds["exists-edge"] = &UI::existsEdge;
+    _cmds["in-degree"] = &UI::inDegree;
+    _cmds["out-degree"] = &UI::outDegree;
+    _cmds["inbound"] = &UI::inbound;
+    _cmds["outbound"] = &UI::outbound;
+    _cmds["get-cost"] = &UI::getCost;
+    _cmds["set-cost"] = &UI::setCost;
+    _cmds["add-edge"] = &UI::addEdge;
+    _cmds["remove-edge"] = &UI::removeEdge;
+    _cmds["add-vertex"] = &UI::addVertex;
+    _cmds["remove-vertex"] = &UI::removeVertex;
+    _cmds["save-to-file"] = &UI::saveToFile;
+    _cmds["load-from-file"] = &UI::loadFromFile;
+    _cmds["load-old-fmt"] = &UI::loadOldFmt;
+    _cmds["print"] = &UI::print;
+    _cmds["random"] = &UI::random;
   }
 
   void help(std::stringstream& args) {
@@ -225,7 +222,8 @@ public:
     }
     
     try {
-      cmd->second(ss);
+      auto fPtr = cmd->second;
+      (this->*fPtr)(ss);
     } catch (std::exception& e) {
       std::cout << "Exception: " << e.what() << "\n";
     }
