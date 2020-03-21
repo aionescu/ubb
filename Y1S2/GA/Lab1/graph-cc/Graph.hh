@@ -287,7 +287,7 @@ inline std::istream& operator >>(std::istream& is, Graph& g) {
 inline std::ostream& operator <<(std::ostream& os, const Graph& g) {
   for (auto v1 : g.vertices())
     if (g.inDegree(v1) == 0 && g.outDegree(v1) == 0)
-      os << v1 << " -1" << '\n';
+      os << v1 << " -1\n";
     else
       for (auto v2 : g.outbound(v1))
         os << v1 << ' ' << v2 << ' ' << g.getCost(v1, v2) << '\n';
