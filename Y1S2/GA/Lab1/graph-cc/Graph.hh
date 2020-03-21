@@ -257,7 +257,7 @@ public:
 };
 
 // Reads a graph from the given stream.
-std::istream& operator >>(std::istream& is, Graph& g) {
+inline std::istream& operator >>(std::istream& is, Graph& g) {
   g.~Graph();
   new (&g) Graph();
 
@@ -284,7 +284,7 @@ std::istream& operator >>(std::istream& is, Graph& g) {
 }
 
 // Writes the graph to the stream.
-std::ostream& operator <<(std::ostream& os, const Graph& g) {
+inline std::ostream& operator <<(std::ostream& os, const Graph& g) {
   for (auto v1 : g.vertices())
     if (g.inDegree(v1) == 0 && g.outDegree(v1) == 0)
       os << v1 << " -1" << '\n';

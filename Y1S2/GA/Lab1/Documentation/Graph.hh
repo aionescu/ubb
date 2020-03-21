@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <functional>
+#include <iostream>
 #include <map>
 #include <sstream>
 #include <stdexcept>
@@ -34,17 +35,10 @@ public:
   // to `vertexCount` - 1, and `edgeCount` randomly generated edges.
   static Graph randomGraph(int vertexCount, int edgeCount);
 
-  // Constructs a graph from the given string.
-  static Graph fromString(std::string s);
-
-  // Constructs a graph from the given string, which is expected
+  // Reads a graph from the given stream, which is expected
   // to be in the "old" format (that assumes the graph contains all
   // vertices from 0 to n - 1).
-  static Graph fromStringOld(std::string s);
-
-  // Returns a string representation of the graph.
-  // Law: forall g. fromString(toString(g)) == g
-  std::string toString() const;
+  static Graph fromStreamOld(std::istream& is);
 
   // Returns the number of vertices in the graph.
   int vertexCount() const;
@@ -73,12 +67,12 @@ public:
   // Returns a vector containing all the inbound edges of the specified vertex.
   // Throws: std::out_of_range if the specified vertex is not in the graph.
   // Law: forall v. forall v2 in inbound(v). existsEdge(v2, v)
-  std::vector<int> inbound(int vertex) const;
+  const std::vector<int>& inbound(int vertex) const;
 
   // Returns a vector containing all the outbound edges of the specified vertex.
   // Throws: std::out_of_range if the specified vertex is not in the graph.
   // Law: forall v. forall v2 in outbound(v). existsEdge(v, v2)
-  std::vector<int> outbound(int vertex) const;
+  const std::vector<int>& outbound(int vertex) const;
 
   // Returns the cost associated to the edge between `vertex1` and `vertex2`.
   // Throws:
@@ -115,5 +109,11 @@ public:
   // Throws: std::runtime_error if the vertex is not in the graph.
   void removeVertex(int vertex);
 };
+
+// Reads a graph from the given stream.
+inline std::istream& operator >>(std::istream& is, Graph& g);
+
+// Writes the graph to the stream.
+inline std::ostream& operator <<(std::ostream& os, const Graph& g);
 
 #endif
