@@ -60,14 +60,14 @@ class UI {
   std::map<std::string, void (UI::*)(std::stringstream&)> _commands;
 public:
   UI() : _services{}, _commands{{
-      { "help", &UI::help },
-      { "exit", &UI::exit },
-      { "mode", &UI::mode },
-      { "add", &UI::add },
-      { "update", &UI::update },
-      { "delete", &UI::remove },
-      { "list", &UI::list }
-    }} {}
+    { "help", &UI::help },
+    { "exit", &UI::exit },
+    { "mode", &UI::mode },
+    { "add", &UI::add },
+    { "update", &UI::update },
+    { "delete", &UI::remove },
+    { "list", &UI::list }
+  }} {}
 
   void help(std::stringstream& args) {
     std::cout << "Available commands:\n";
