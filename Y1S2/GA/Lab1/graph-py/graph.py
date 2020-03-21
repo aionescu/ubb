@@ -163,16 +163,13 @@ class Graph:
     del self.__inbound[vertex]
 
   # Returns a string representation of the graph.
-  # Law: forall g. fromString(toString(g)) == g
+  # Law: forall g. fromString(str(g)) == g
   def __str__(self) -> str:
     s = ""
 
     for v1 in self.vertices():
-      outbound = self.outbound(v1)
-      inbound = self.inbound(v1)
-
-      if not outbound and not inbound:
-        s += str(v1) + "\n"
+      if not self.inDegree(v1) and not self.outDegree(v1):
+        s += str(v1) + " -1\n"
       else:
         for v2 in self.outbound(v1):
           s += str(v1) + " " + str(v2) + " " + str(self.getCost(v1, v2)) + "\n"

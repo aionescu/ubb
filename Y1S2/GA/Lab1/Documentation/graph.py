@@ -88,7 +88,7 @@ class Graph:
   def removeVertex(self, vertex: int) -> None: pass
 
   # Returns a string representation of the graph.
-  # Law: forall g. fromString(toString(g)) == g
+  # Law: forall g. fromString(str(g)) == g
   def __str__(self) -> str: pass
 
   # Returns an independent copy of the graph.
