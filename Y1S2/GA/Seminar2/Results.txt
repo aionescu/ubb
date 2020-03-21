@@ -1,0 +1,17 @@
+Adjacency matrix:
+n = 1000: 0.2904s
+n = 10000: 34.8341s
+n = 100000: Out of memory (8GB)
+n = 1000000: Out of memory (8GB)
+
+Outbound dict:
+n = 1000: 0.4381s
+n = 10000: 61.9713s
+n = 100000: 10+ min (Stopped counting)
+n = 1000000: 10+ min (Stopped counting)
+
+Inbound + outbound dict:
+n = 1000: 0.0013s
+n = 10000: 0.0193s
+n = 100000: 0.2200s
+n = 1000000: 2.5605s
