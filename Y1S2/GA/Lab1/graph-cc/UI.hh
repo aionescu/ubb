@@ -14,29 +14,29 @@ class UI {
   std::map<std::string, void (UI::*)(std::stringstream&)> _cmds;
 
 public:
-  UI() : _graph{} {
-    _cmds["help"] = &UI::help;
-    _cmds["exit"] = &UI::exit;
-    _cmds["vertex-count"] = &UI::vertexCount;
-    _cmds["vertices"] = &UI::vertices;
-    _cmds["is-vertex"] = &UI::isVertex;
-    _cmds["exists-edge"] = &UI::existsEdge;
-    _cmds["in-degree"] = &UI::inDegree;
-    _cmds["out-degree"] = &UI::outDegree;
-    _cmds["inbound"] = &UI::inbound;
-    _cmds["outbound"] = &UI::outbound;
-    _cmds["get-cost"] = &UI::getCost;
-    _cmds["set-cost"] = &UI::setCost;
-    _cmds["add-edge"] = &UI::addEdge;
-    _cmds["remove-edge"] = &UI::removeEdge;
-    _cmds["add-vertex"] = &UI::addVertex;
-    _cmds["remove-vertex"] = &UI::removeVertex;
-    _cmds["save-to-file"] = &UI::saveToFile;
-    _cmds["load-from-file"] = &UI::loadFromFile;
-    _cmds["load-old-fmt"] = &UI::loadOldFmt;
-    _cmds["print"] = &UI::print;
-    _cmds["random"] = &UI::random;
-  }
+  UI() : _graph{}, _cmds{{
+    { "help", &UI::help },
+    { "exit", &UI::exit },
+    { "vertex-count", &UI::vertexCount },
+    { "vertices", &UI::vertices },
+    { "is-vertex", &UI::isVertex },
+    { "exists-edge", &UI::existsEdge },
+    { "in-degree", &UI::inDegree },
+    { "out-degree", &UI::outDegree },
+    { "inbound", &UI::inbound },
+    { "outbound", &UI::outbound },
+    { "get-cost", &UI::getCost },
+    { "set-cost", &UI::setCost },
+    { "add-edge", &UI::addEdge },
+    { "remove-edge", &UI::removeEdge },
+    { "add-vertex", &UI::addVertex },
+    { "remove-vertex", &UI::removeVertex },
+    { "save-to-file", &UI::saveToFile },
+    { "load-from-file", &UI::loadFromFile },
+    { "load-old-fmt", &UI::loadOldFmt },
+    { "print", &UI::print },
+    { "random", &UI::random }
+  }} {}
 
   void help(std::stringstream& args) {
     std::cout << "Available commands:\n";
@@ -161,43 +161,26 @@ public:
     std::string s;
     args >> s;
 
-    std::ofstream{s} << _graph.toString();
+    std::ofstream{s} << _graph;
   }
 
   void loadFromFile(std::stringstream& args) {
     std::string s;
     args >> s;
 
-    std::ifstream t{s};
-    std::string str;
-
-    t.seekg(0, std::ios::end);   
-    str.reserve(t.tellg());
-    t.seekg(0, std::ios::beg);
-
-    str.assign((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
-
-    _graph = Graph::fromString(str);
+    std::ifstream{s} >> _graph;
   }
 
   void loadOldFmt(std::stringstream& args) {
     std::string s;
     args >> s;
 
-    std::ifstream t{s};
-    std::string str;
-
-    t.seekg(0, std::ios::end);   
-    str.reserve(t.tellg());
-    t.seekg(0, std::ios::beg);
-
-    str.assign((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
-
-    _graph = Graph::fromStringOld(str);
+    std::ifstream is{s};
+    _graph = Graph::fromStreamOld(is);
   }
 
   void print(std::stringstream& args) {
-    std::cout << _graph.toString();
+    std::cout << _graph;
   }
 
   void random(std::stringstream& args) {

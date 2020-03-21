@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <functional>
+#include <iostream>
 #include <map>
 #include <sstream>
 #include <stdexcept>
@@ -64,75 +65,27 @@ public:
     return g;
   }
 
-  // Constructs a graph from the given string.
-  static Graph fromString(std::string s) {
-    std::stringstream ss{s};
-    Graph g;
-
-    int v1, v2, c;
-
-    while (ss >> v1 >> v2) {
-      if (v2 == -1) {
-        g.addVertex(v1);
-        continue;
-      }
-
-      ss >> c;
-
-      if (!g.isVertex(v1))
-        g.addVertex(v1);
-
-      if (!g.isVertex(v2))
-        g.addVertex(v2);
-
-      g.addEdge(v1, v2, c);
-    }
-
-    return g;
-  }
-
-  // Constructs a graph from the given string, which is expected
+  // Reads a graph from the given stream, which is expected
   // to be in the "old" format (that assumes the graph contains all
   // vertices from 0 to n - 1).
-  static Graph fromStringOld(std::string s) {
-    std::stringstream ss{s};
+  static Graph fromStreamOld(std::istream& is) {
     Graph g;
 
     int vertexCount, edgeCount;
 
-    ss >> vertexCount >> edgeCount;
+    is >> vertexCount >> edgeCount;
 
     for (int i = 0; i < vertexCount; ++i)
       g.addVertex(i);
       
     for (int i = 0; i < edgeCount; ++i) {
       int v1, v2, cost;
-      ss >> v1 >> v2 >> cost;
+      is >> v1 >> v2 >> cost;
 
       g.addEdge(v1, v2, cost);
     }
 
     return g;
-  }
-
-  // Returns a string representation of the graph.
-  // Law: forall g. fromString(toString(g)) == g
-  std::string toString() const {
-    std::stringstream ss{};
-
-    for (auto v1 : vertices()) {
-      auto outbound = this->outbound(v1);
-      auto inbound = this->inbound(v1);
-
-      if (outbound.size() == 0 && inbound.size() == 0)
-        ss << v1 << " -1" << '\n';
-      else {
-        for (auto v2 : outbound)
-          ss << v1 << ' ' << v2 << ' ' << getCost(v1, v2) << '\n';
-      }
-    }
-
-    return ss.str();
   }
 
   // Returns the number of vertices in the graph.
@@ -186,19 +139,19 @@ public:
   // Returns a vector containing all the inbound edges of the specified vertex.
   // Throws: std::out_of_range if the specified vertex is not in the graph.
   // Law: forall v. forall v2 in inbound(v). existsEdge(v2, v)
-  std::vector<int> inbound(int vertex) const {
+  const std::vector<int>& inbound(int vertex) const {
     _assertVertexExists(vertex);
 
-    return std::vector<int>{_inbound.at(vertex)};
+    return _inbound.at(vertex);
   }
 
   // Returns a vector containing all the outbound edges of the specified vertex.
   // Throws: std::out_of_range if the specified vertex is not in the graph.
   // Law: forall v. forall v2 in outbound(v). existsEdge(v, v2)
-  std::vector<int> outbound(int vertex) const {
+  const std::vector<int>& outbound(int vertex) const {
     _assertVertexExists(vertex);
 
-    return std::vector<int>{_outbound.at(vertex)};
+    return _outbound.at(vertex);
   }
 
   // Returns the cost associated to the edge between `vertex1` and `vertex2`.
@@ -302,5 +255,44 @@ public:
     _inbound.erase(vertex);
   }
 };
+
+// Reads a graph from the given stream.
+std::istream& operator >>(std::istream& is, Graph& g) {
+  g.~Graph();
+  new (&g) Graph();
+
+  int v1, v2, c;
+
+  while (is >> v1 >> v2) {
+    if (v2 == -1) {
+      g.addVertex(v1);
+      continue;
+    }
+
+    is >> c;
+
+    if (!g.isVertex(v1))
+      g.addVertex(v1);
+
+    if (!g.isVertex(v2))
+      g.addVertex(v2);
+
+    g.addEdge(v1, v2, c);
+  }
+
+  return is;
+}
+
+// Writes the graph to the stream.
+std::ostream& operator <<(std::ostream& os, const Graph& g) {
+  for (auto v1 : g.vertices())
+    if (g.inDegree(v1) == 0 && g.outDegree(v1) == 0)
+      os << v1 << " -1" << '\n';
+    else
+      for (auto v2 : g.outbound(v1))
+        os << v1 << ' ' << v2 << ' ' << g.getCost(v1, v2) << '\n';
+
+  return os;
+}
 
 #endif
