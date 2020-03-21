@@ -11,17 +11,19 @@
 #include "Vector.hh"
 #include "Services.hh"
 
-Vector<std::string> splitString(std::string string, char delimiter) {
+inline Vector<std::string> splitString(std::string string, char delimiter) {
   Vector<std::string> vector;
 
-  std::stringstream stream(string);
+  std::stringstream stream{string};
   std::string token;
 
   while (std::getline(stream, token, delimiter)) {
+    // Trim beginning.
     token.erase(token.begin(), std::find_if(token.begin(), token.end(), [](int ch) {
       return !std::isspace(ch);
     }));
 
+    // Trim end.
     token.erase(std::find_if(token.rbegin(), token.rend(), [](int ch) {
       return !std::isspace(ch);
     }).base(), token.end());
@@ -32,7 +34,7 @@ Vector<std::string> splitString(std::string string, char delimiter) {
   return vector;
 }
 
-Task taskFromParts(Vector<std::string> parts) {
+inline Task taskFromParts(Vector<std::string> parts) {
   std::string title = parts[0];
   std::string type = parts[1];
   std::string lastPerformed = parts[2];
@@ -42,9 +44,7 @@ Task taskFromParts(Vector<std::string> parts) {
   return Task{title, type, lastPerformed, timesPerformed, vision};
 }
 
-std::string taskToString(Task task) {
-  std::stringstream stream;
-
+inline std::ostream& operator <<(std::ostream& stream, const Task& task) {
   stream
     << task.title() << ", "
     << task.type() << ", "
@@ -52,7 +52,7 @@ std::string taskToString(Task task) {
     << task.timesPerformed() << ", "
     << task.vision();
 
-  return stream.str();
+  return stream;
 }
 
 class UI {
@@ -122,7 +122,7 @@ public:
     auto data = _services.data();
 
     for (int i = 0; i < data.length(); ++i)
-      std::cout << taskToString(data[i]) << '\n';
+      std::cout << data[i] << '\n';
   }
 
   void handleCommand() {

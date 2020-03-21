@@ -1,1 +1,0 @@
-g++ -std=c++17 -Wall -O3 Test.cc -o test.out && ./grind.sh ./test.out
