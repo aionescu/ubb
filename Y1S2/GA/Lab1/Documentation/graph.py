@@ -106,5 +106,6 @@ class Graph:
 
   # Creates a graph with `vertexCount` vertices numbered from 0
   # to `vertexCount` - 1, and `edgeCount` randomly generated edges.
+  # Raises: Exception if `edgeCount` > `vertexCount` ** 2
   @staticmethod
   def randomGraph(vertexCount: int, edgeCount: int) -> 'Graph': pass

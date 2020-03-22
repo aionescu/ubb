@@ -42,7 +42,11 @@ class Graph {
 public:
   // Creates a graph with `vertexCount` vertices numbered from 0
   // to `vertexCount` - 1, and `edgeCount` randomly generated edges.
+  // Throws: std::invalid_argument if `edgeCount` > `vertexCount` ^ 2.
   static Graph randomGraph(int vertexCount, int edgeCount) {
+    if (edgeCount > vertexCount * vertexCount)
+      throw std::invalid_argument{"Edge count exceeds vertex count ^ 2."};
+      
     std::srand(std::time(0));
     Graph g;
 
@@ -157,13 +161,13 @@ public:
   // Returns the cost associated to the edge between `vertex1` and `vertex2`.
   // Throws:
   //   * std::out_of_range if either vertex is not in the graph.
-  //   * std::runtime_error if there is no edge between vertex1 and vertex2.
+  //   * std::invalid_argument if there is no edge between vertex1 and vertex2.
   int getCost(int vertex1, int vertex2) const {
     _assertVertexExists(vertex1);
     _assertVertexExists(vertex2);
 
     if (!existsEdge(vertex1, vertex2))
-      throw std::runtime_error{"Edge does not exist."};
+      throw std::invalid_argument{"Edge does not exist."};
 
     return _cost.at({vertex1, vertex2});
   }
@@ -172,13 +176,13 @@ public:
   // be equal to `cost`.
   // Throws:
   //   * std::out_of_range if either vertex is not in the graph.
-  //   * std::runtime_error if there is no edge between vertex1 and vertex2.
+  //   * std::invalid_argument if there is no edge between vertex1 and vertex2.
   void setCost(int vertex1, int vertex2, int cost) {
     _assertVertexExists(vertex1);
     _assertVertexExists(vertex2);
 
     if (!existsEdge(vertex1, vertex2))
-      throw std::runtime_error{"Edge does not exist."};
+      throw std::invalid_argument{"Edge does not exist."};
 
     _cost[{vertex1, vertex2}] = cost;
   }
@@ -187,14 +191,14 @@ public:
   // to `cost`.
   // Throws:
   //   * std::out_of_range if either vertex is not in the graph.
-  //   * std::runtime_error if there already exists an edge between
+  //   * std::invalid_argument if there already exists an edge between
   //     vertex1 and vertex2.
   void addEdge(int vertex1, int vertex2, int cost) {
     _assertVertexExists(vertex1);
     _assertVertexExists(vertex2);
 
     if (existsEdge(vertex1, vertex2))
-      throw std::runtime_error{"Edge already exists."};
+      throw std::invalid_argument{"Edge already exists."};
 
     _outbound[vertex1].push_back(vertex2);
     _inbound[vertex2].push_back(vertex1);
@@ -204,13 +208,13 @@ public:
   // Removes the edge between `vertex1` and `vertex2`.
   // Throws:
   //   * std::out_of_range if either vertex is not in the graph.
-  //   * std::runtime_error if there is no edge between vertex1 and vertex2.
+  //   * std::invalid_argument if there is no edge between vertex1 and vertex2.
   void removeEdge(int vertex1, int vertex2) {
     _assertVertexExists(vertex1);
     _assertVertexExists(vertex2);
 
     if (!existsEdge(vertex1, vertex2))
-      throw std::runtime_error{"Edge does not exist."};
+      throw std::invalid_argument{"Edge does not exist."};
 
     auto& vo = _outbound[vertex1];
     vo.erase(std::find(vo.begin(), vo.end(), vertex2));
@@ -222,17 +226,17 @@ public:
   }
 
   // Adds the specified vertex to the graph.
-  // Throws: std::runtime_error if the vertex already exists.
+  // Throws: std::invalid_argument if the vertex already exists.
   void addVertex(int vertex) {
     if (isVertex(vertex))
-      throw std::runtime_error{"Vertex already exists."};
+      throw std::invalid_argument{"Vertex already exists."};
 
     _outbound[vertex] = {};
     _inbound[vertex] = {};
   }
 
   // Removes the specified vertex from the graph.
-  // Throws: std::runtime_error if the vertex is not in the graph.
+  // Throws: std::invalid_argument if the vertex is not in the graph.
   void removeVertex(int vertex) {
     _assertVertexExists(vertex);
 

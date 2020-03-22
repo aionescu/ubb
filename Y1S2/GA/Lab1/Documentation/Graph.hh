@@ -33,6 +33,7 @@ class Graph {
 public:
   // Creates a graph with `vertexCount` vertices numbered from 0
   // to `vertexCount` - 1, and `edgeCount` randomly generated edges.
+  // Throws: std::invalid_argument if `edgeCount` > `vertexCount` ^ 2.
   static Graph randomGraph(int vertexCount, int edgeCount);
 
   // Reads a graph from the given stream, which is expected
@@ -77,36 +78,36 @@ public:
   // Returns the cost associated to the edge between `vertex1` and `vertex2`.
   // Throws:
   //   * std::out_of_range if either vertex is not in the graph.
-  //   * std::runtime_error if there is no edge between vertex1 and vertex2.
+  //   * std::invalid_argument if there is no edge between vertex1 and vertex2.
   int getCost(int vertex1, int vertex2) const;
 
   // Sets the cost associated to the edge between `vertex1` and `vertex2` to
   // be equal to `cost`.
   // Throws:
   //   * std::out_of_range if either vertex is not in the graph.
-  //   * std::runtime_error if there is no edge between vertex1 and vertex2.
+  //   * std::invalid_argument if there is no edge between vertex1 and vertex2.
   void setCost(int vertex1, int vertex2, int cost);
 
   // Adds a new edge between `vertex1` and `vertex2`, with the cost equal
   // to `cost`.
   // Throws:
   //   * std::out_of_range if either vertex is not in the graph.
-  //   * std::runtime_error if there already exists an edge between
+  //   * std::invalid_argument if there already exists an edge between
   //     vertex1 and vertex2.
   void addEdge(int vertex1, int vertex2, int cost);
 
   // Removes the edge between `vertex1` and `vertex2`.
   // Throws:
   //   * std::out_of_range if either vertex is not in the graph.
-  //   * std::runtime_error if there is no edge between vertex1 and vertex2.
+  //   * std::invalid_argument if there is no edge between vertex1 and vertex2.
   void removeEdge(int vertex1, int vertex2);
 
   // Adds the specified vertex to the graph.
-  // Throws: std::runtime_error if the vertex already exists.
+  // Throws: std::invalid_argument if the vertex already exists.
   void addVertex(int vertex);
 
   // Removes the specified vertex from the graph.
-  // Throws: std::runtime_error if the vertex is not in the graph.
+  // Throws: std::invalid_argument if the vertex is not in the graph.
   void removeVertex(int vertex);
 };
 
