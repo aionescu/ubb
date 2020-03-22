@@ -69,7 +69,7 @@ public:
     { "list", &UI::list }
   }} {}
 
-  void help(std::stringstream& args) {
+  void help(std::stringstream&) {
     std::cout << "Available commands:\n";
 
     for (auto command : _commands) {
@@ -77,7 +77,7 @@ public:
     }
   }
 
-  void exit(std::stringstream& args) {
+  void exit(std::stringstream&) {
     std::exit(0);
   }
 
@@ -118,7 +118,7 @@ public:
       std::cout << "Error: Invalid command.\n";
   }
 
-  void list(std::stringstream& args) {
+  void list(std::stringstream&) {
     auto data = _services.data();
 
     for (int i = 0; i < data.length(); ++i)
