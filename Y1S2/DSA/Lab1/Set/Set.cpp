@@ -9,7 +9,7 @@ bool Set::add(TElem elem) {
 		count = 1;
 		maxIdx = 0;
 
-		array = new TElem[1]{};
+		array = new bool[1]{};
 		array[0] = true;
 
 		minElem = elem;
@@ -52,7 +52,7 @@ bool Set::add(TElem elem) {
 		while (newCapacity < capacity + diff)
 		  newCapacity *= 2;
 
-		auto newArray = new TElem[newCapacity]{};
+		auto newArray = new bool[newCapacity]{};
 
 		for (int i = 0; i < capacity; ++i) {
 			newArray[i + diff] = array[i];
@@ -76,7 +76,7 @@ bool Set::add(TElem elem) {
 		while (newCapacity < capacity + diff)
 		  newCapacity *= 2;
 
-		auto newArray = new TElem[newCapacity]{};
+		auto newArray = new bool[newCapacity]{};
 
 		for (int i = 0; i < capacity; ++i) {
 			newArray[i] = array[i];

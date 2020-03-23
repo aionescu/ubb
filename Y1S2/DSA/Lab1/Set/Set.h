@@ -11,7 +11,7 @@ class Set {
 
 private:
   int capacity, count, maxIdx;
-  TElem* array;
+  bool* array;
   TElem minElem;
 
 public:
