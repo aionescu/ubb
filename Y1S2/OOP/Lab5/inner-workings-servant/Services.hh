@@ -11,7 +11,7 @@ class WrongModeException : public std::exception {};
 class Services {
   std::string _mode;
   Repo _repo;
-  Vector<Task> _servantTasks;
+  Repo _servantTasks;
   int _servantCurrentTaskIndex = -1;
 
   void _ensureMode(std::string mode) const {
@@ -37,12 +37,14 @@ public:
   bool update(Task task) {
     _ensureMode("A");
 
+    _servantTasks.update(task);
     return _repo.update(task);
   }
 
   bool remove(std::string title) {
     _ensureMode("A");
 
+    _servantTasks.remove(title);
     return _repo.remove(title);
   }
 
@@ -71,13 +73,9 @@ public:
   bool save(std::string title) {
     _ensureMode("B");
 
-    auto data = _repo.data();
-
-    for (int i = 0; i < data.length(); ++i)
-      if (data[i].title() == title) {
-        _servantTasks.append(data[i]);
-        return true;
-      }
+    for (auto task : _repo.data())
+      if (task.title() == title)
+        return _servantTasks.add(task);
 
     return false;
   }
@@ -88,9 +86,9 @@ public:
     Vector<Task> result;
     auto data = _repo.data();
 
-    for (int i = 0; i < data.length(); ++i)
-      if (data[i].type() == type && data[i].timesPerformed() < maxTimesPerformed)
-        result.append(data[i]);
+    for (auto task : _repo.data())
+      if (task.type() == type && task.timesPerformed() < maxTimesPerformed)
+        result.append(task);
 
     return result;
   }
@@ -98,7 +96,7 @@ public:
   Vector<Task> servantTasks() const {
     _ensureMode("B");
 
-    return _servantTasks;
+    return _servantTasks.data();
   }
 };
 

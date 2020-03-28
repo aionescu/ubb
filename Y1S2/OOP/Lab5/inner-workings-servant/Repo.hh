@@ -2,6 +2,7 @@
 #define REPO_HH
 
 #include <string>
+#include <utility>
 #include "Domain.hh"
 #include "Vector.hh"
 
@@ -10,18 +11,18 @@ class Repo {
 
 public:
   bool add(Task newTask) {
-    for (int i = 0; i < _tasks.length(); ++i)
-      if (_tasks[i].title() == newTask.title())
+    for (auto task : _tasks)
+      if (task.title() == newTask.title())
         return false;
 
     _tasks.append(newTask);
     return true;
   }
 
-  bool update(Task task) {
-    for (int i = 0; i < _tasks.length(); ++i)
-      if (_tasks[i].title() == task.title()) {
-        _tasks[i] = task;
+  bool update(Task newTask) {
+    for (auto& task : _tasks)
+      if (task.title() == newTask.title()) {
+        task = newTask;
         return true;
       }
 
@@ -29,6 +30,9 @@ public:
   }
 
   bool remove(std::string title) {
+    // Using basic for loop instead for range-based
+    // for because the index of the found element
+    // is needed.
     for (int i = 0; i < _tasks.length(); ++i)
       if (_tasks[i].title() == title) {
         _tasks.remove(i);

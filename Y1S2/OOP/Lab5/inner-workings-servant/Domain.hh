@@ -21,15 +21,15 @@ public:
   Task& operator =(const Task& task) = default;
   ~Task() = default;
 
-  std::string title() const {
+  const std::string& title() const {
     return _title;
   }
 
-  std::string type() const {
+  const std::string& type() const {
     return _type;
   }
 
-  std::string lastPerformed() const {
+  const std::string& lastPerformed() const {
     return _lastPerformed;
   }
 
@@ -37,7 +37,7 @@ public:
     return _timesPerformed;
   }
 
-  std::string vision() const {
+  const std::string& vision() const {
     return _vision;
   }
 };

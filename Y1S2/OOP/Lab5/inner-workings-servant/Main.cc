@@ -2,6 +2,6 @@
 #include "UI.hh"
 
 int main() {
-  UI ui;
+  UI ui{std::cin, std::cout};
   ui.mainLoop();
 }

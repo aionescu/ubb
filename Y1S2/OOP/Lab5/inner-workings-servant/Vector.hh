@@ -33,6 +33,33 @@ class Vector {
   }
 
 public:
+  class iterator {
+		T* _pointer;
+
+	public:
+		iterator(T* pointer) : _pointer{pointer} {}
+
+		T& operator*() {
+      return *_pointer;
+    }
+
+		bool operator !=(const iterator& iterator) {
+      return _pointer != iterator._pointer;
+    }
+
+		iterator& operator++() {
+      ++_pointer;
+      return *this;
+    }
+
+		iterator operator++(int) {
+      auto copy = *this;
+      ++_pointer;
+
+      return copy;
+    }
+	};
+
   Vector() : _capacity{0}, _length{0}, _data{nullptr} {}
 
   Vector(const Vector& vector) {
@@ -61,6 +88,14 @@ public:
       delete[] _data;
       _data = nullptr;
     }
+  }
+
+	iterator begin() {
+    return {_data};
+  }
+
+	iterator end() {
+    return {_data + _length};
   }
 
   int length() const {

@@ -61,16 +61,24 @@ inline std::ostream& operator <<(std::ostream& stream, const Task& task) {
 // as argument. The stringstream is used to read the command's
 // command-line arguments.
 class UI {
+  bool _interactiveMode;
+  std::istream& _inStream;
+  std::ostream& _outStream;
+
   Services _services;
-  std::map<std::string, void (UI::*)(std::stringstream&)> _commands;
+  std::map<std::string, void (UI::*)(std::istringstream&)> _commands;
 
   void _tryPerform(bool result) const {
     if (!result)
-      std::cout << "Error: Invalid arguments.\n";
+      _outStream << "Error: Invalid arguments.\n";
   }
 
 public:
-  UI() : _services{}, _commands{{
+  UI(std::istream& inStream, std::ostream& outStream, bool interactiveMode = true)
+  : _interactiveMode{interactiveMode},
+    _inStream{inStream},
+    _outStream{outStream},
+    _services{}, _commands{{
     { "help", &UI::help },
     { "exit", &UI::exit },
     { "mode", &UI::mode },
@@ -83,26 +91,26 @@ public:
     { "mylist", &UI::myList }
   }} {}
 
-  void help(std::stringstream&) {
-    std::cout << "Available commands:\n";
+  void help(std::istringstream&) {
+    _outStream << "Available commands:\n";
 
     for (auto command : _commands) {
-      std::cout << command.first << '\n';
+      _outStream << command.first << '\n';
     }
   }
 
-  void exit(std::stringstream&) {
+  void exit(std::istringstream&) {
     std::exit(0);
   }
 
-  void mode(std::stringstream& args) {
+  void mode(std::istringstream& args) {
     std::string mode;
     args >> mode;
 
     _services.setMode(mode);
   }
 
-  void add(std::stringstream& args) {
+  void add(std::istringstream& args) {
     std::string buffer;
     std::getline(args, buffer);
 
@@ -112,7 +120,7 @@ public:
     _tryPerform(_services.add(newTask));
   }
 
-  void update(std::stringstream& args) {
+  void update(std::istringstream& args) {
     std::string buffer;
     std::getline(args, buffer);
 
@@ -122,7 +130,7 @@ public:
     _tryPerform(_services.update(task));
   }
 
-  void remove(std::stringstream& args) {
+  void remove(std::istringstream& args) {
     std::string title;
     args >> title;
   
@@ -130,7 +138,7 @@ public:
     _tryPerform(_services.remove(title));
   }
 
-  void list(std::stringstream& args) {
+  void list(std::istringstream& args) {
     std::string buffer;
     std::getline(args, buffer);
 
@@ -143,35 +151,33 @@ public:
     else
       tasks = _services.tasksByTimesPerformed(parts[0], std::stoi(parts[1]));
 
-    for (int i = 0; i < tasks.length(); ++i)
-      std::cout << tasks[i] << '\n';
+    for (auto task : tasks)
+      _outStream << task << '\n';
   }
 
-  void next(std::stringstream&) {
+  void next(std::istringstream&) {
     auto task = _services.next();
 
     if (task.first)
-      std::cout << task.second << '\n';
+      _outStream << task.second << '\n';
   }
 
-  void save(std::stringstream& args) {
+  void save(std::istringstream& args) {
     std::string title;
     args >> title;
 
     _tryPerform(_services.save(title));
   }
 
-  void myList(std::stringstream&) {
-    auto servantTasks = _services.servantTasks();
-
-    for (int i = 0; i < servantTasks.length(); ++i)
-      std::cout << servantTasks[i] << '\n';
+  void myList(std::istringstream&) {
+    for (auto task : _services.servantTasks())
+      _outStream << task << '\n';
   }
 
   void handleCommand() {
     std::string inputBuffer;
-    std::getline(std::cin, inputBuffer);
-    std::stringstream inputStream{inputBuffer};
+    std::getline(_inStream, inputBuffer);
+    std::istringstream inputStream{inputBuffer};
 
     std::string commandString;
     inputStream >> commandString;
@@ -179,7 +185,7 @@ public:
     auto command = _commands.find(commandString);
 
     if (command == _commands.end()) {
-      std::cout << "Command not recognized.\n";
+      _outStream << "Command not recognized.\n";
       return;
     }
     
@@ -187,15 +193,17 @@ public:
       auto commandFunction = command->second;
       (this->*commandFunction)(inputStream);
     } catch (WrongModeException& e) {
-      std::cout << "Error: Wrong mode.\n";
+      _outStream << "Error: Wrong mode.\n";
     } catch (...) {
-      std::cout << "Error: Wrong arguments.\n";
+      _outStream << "Error: Wrong arguments.\n";
     }
   }
 
   void mainLoop() {
     while (true) {
-      std::cout << "> ";
+      if (_interactiveMode)
+        _outStream << "> ";
+
       handleCommand();
     }
   }
