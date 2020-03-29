@@ -35,31 +35,31 @@ class Vector {
 
 public:
   class iterator {
-		T* _pointer;
+    T* _pointer;
 
-	public:
-		iterator(T* pointer) : _pointer{pointer} {}
+  public:
+    iterator(T* pointer) : _pointer{pointer} {}
 
-		T& operator*() {
+    T& operator*() {
       return *_pointer;
     }
 
-		bool operator !=(const iterator& iterator) {
+    bool operator !=(const iterator& iterator) {
       return _pointer != iterator._pointer;
     }
 
-		iterator& operator++() {
+    iterator& operator++() {
       ++_pointer;
       return *this;
     }
 
-		iterator operator++(int) {
+    iterator operator++(int) {
       auto copy = *this;
       ++_pointer;
 
       return copy;
     }
-	};
+  };
 
   Vector() : _capacity{0}, _length{0}, _data{nullptr} {}
 
@@ -91,11 +91,11 @@ public:
     }
   }
 
-	iterator begin() const {
+  iterator begin() const {
     return {_data};
   }
 
-	iterator end() const {
+  iterator end() const {
     return {_data + _length};
   }
 
