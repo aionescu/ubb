@@ -61,7 +61,7 @@ inline std::ostream& operator <<(std::ostream& stream, const Task& task) {
 // as argument. The stringstream is used to read the command's
 // command-line arguments.
 class UI {
-  bool _interactiveMode;
+  bool _keepGoing, _interactiveMode;
   std::istream& _inStream;
   std::ostream& _outStream;
 
@@ -75,7 +75,8 @@ class UI {
 
 public:
   UI(std::istream& inStream, std::ostream& outStream, bool interactiveMode = true)
-  : _interactiveMode{interactiveMode},
+  : _keepGoing{true},
+    _interactiveMode{interactiveMode},
     _inStream{inStream},
     _outStream{outStream},
     _services{}, _commands{{
@@ -100,7 +101,7 @@ public:
   }
 
   void exit(std::istringstream&) {
-    std::exit(0);
+    _keepGoing = false;
   }
 
   void mode(std::istringstream& args) {
@@ -200,7 +201,7 @@ public:
   }
 
   void mainLoop() {
-    while (true) {
+    while (_keepGoing) {
       if (_interactiveMode)
         _outStream << "> ";
 

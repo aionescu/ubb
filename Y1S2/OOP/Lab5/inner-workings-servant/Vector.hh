@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <stdexcept>
 
+// Represents a mutable dynamic array that holds elements of type T.
 template <typename T>
 class Vector {
   int _capacity, _length;
@@ -90,18 +91,20 @@ public:
     }
   }
 
-	iterator begin() {
+	iterator begin() const {
     return {_data};
   }
 
-	iterator end() {
+	iterator end() const {
     return {_data + _length};
   }
 
+  // Returns the length of this vector.
   int length() const {
     return _length;
   }
 
+  // Returns the item at the specified index in this vector.
   T& operator [](int index) {
     if (index < 0 || index >= _length)
       throw std::out_of_range{"Vector<T>::operator[]: Index out of range."};
@@ -109,6 +112,7 @@ public:
     return _data[index];
   }
 
+  // Appends the specified element to the end of this vector.
   void append(T newElement) {
     if (_needsToGrow())
       _grow();
@@ -116,6 +120,7 @@ public:
     _data[_length++] = newElement;
   }
 
+  // Removes the element at the specified index from this vector.
   void remove(int index) {
     if (index < 0 || index >= _length)
       throw std::out_of_range{"Vector<T>::remove: Index out of range."};

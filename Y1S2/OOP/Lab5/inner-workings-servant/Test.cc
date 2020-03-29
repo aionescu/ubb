@@ -1,10 +1,11 @@
-#include <iostream>
-
 #include <cassert>
+#include <iostream>
+#include <sstream>
 #include "Domain.hh"
 #include "Vector.hh"
 #include "Repo.hh"
 #include "Services.hh"
+#include "UI.hh"
 
 void test_vector_append_anyInput_vectorGrows() {
   Vector<int> vector;
@@ -108,6 +109,66 @@ void test_services_remove_inexistentTask_operationFails() {
   assert(!services.remove(Task{}.title()));
 }
 
+void runIntegrationTest(std::string input, std::string expectedOutput) {
+  std::istringstream inStream{input};
+  std::ostringstream outStream;
+
+  UI ui{inStream, outStream, false};
+  ui.mainLoop();
+  
+  assert(outStream.str() == expectedOutput);
+}
+
+void integrationTest1() {
+  std::string input = "\
+mode A\n\
+add 100, abc, 01-01-2010, 123, zzz\n\
+add 200, def, 01-01-2010, 123, zzz\n\
+add 300, abc, 01-01-2000, 456, zzz\n\
+add 400, def, 01-01-2000, 456, zzz\n\
+mode B\n\
+list abc, 300\n\
+exit\n";
+
+  std::string expectedOutput = "100, abc, 01-01-2010, 123, zzz\n";
+
+  runIntegrationTest(input, expectedOutput);
+}
+
+void integrationTest2() {
+  std::string input = "inexistingCommand\nexit\n";
+  std::string expectedOutput = "Command not recognized.\n";
+
+  runIntegrationTest(input, expectedOutput);
+}
+
+void integrationTest3() {
+  std::string input = "\
+mode A\n\
+add 123, abc, 01-01-2000, 456, def\n\
+mode B\n\
+save 123\n\
+mylist\n\
+exit\n";
+
+  std::string expectedOutput = "123, abc, 01-01-2000, 456, def\n";
+
+  runIntegrationTest(input, expectedOutput);
+}
+
+void integrationTest4() {
+  std::string input = "\
+mode A\n\
+add 123, abc, 01-01-2000, 456, def\n\
+mode B\n\
+next\n\
+exit\n";
+
+  std::string expectedOutput = "123, abc, 01-01-2000, 456, def\n";
+
+  runIntegrationTest(input, expectedOutput);
+}
+
 void runAllTests() {
   test_vector_append_anyInput_vectorGrows();
   test_vector_remove_existingElement_vectorShrinks();
@@ -124,6 +185,11 @@ void runAllTests() {
   test_services_add_existingTask_operationFails();
   test_services_remove_existingTask_operationSucceeds();
   test_services_remove_inexistentTask_operationFails();
+
+  integrationTest1();
+  integrationTest2();
+  integrationTest3();
+  integrationTest4();
 }
 
 int main() {

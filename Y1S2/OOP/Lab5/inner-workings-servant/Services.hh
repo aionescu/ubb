@@ -6,54 +6,70 @@
 #include <utility>
 #include "Repo.hh"
 
+// Exception that is thrown if an operation is attempted
+// while being in the wrong mode.
 class WrongModeException : public std::exception {};
 
+// Class that hold the state of the application.
 class Services {
   std::string _mode;
   Repo _repo;
   Repo _servantTasks;
   int _servantCurrentTaskIndex = -1;
 
-  void _ensureMode(std::string mode) const {
+  void _ensureMode(const std::string& mode) const {
     if (_mode != mode)
       throw WrongModeException{};
   }
 
 public:
-  std::string mode() const {
+  // Returns this instance's mode.
+  const std::string& mode() const {
     return _mode;
   }
 
-  void setMode(std::string mode) {
+  // Sets the mode of this instance.
+  void setMode(const std::string& mode) {
     _mode = mode;
   }
 
-  bool add(Task newTask) {
+  // Attempts to add the specified task to the state
+  // of this instance, if it does not already exist.
+  // Requires mode A.
+  bool add(const Task& newTask) {
     _ensureMode("A");
 
     return _repo.add(newTask);
   }
 
-  bool update(Task task) {
+  // Attempts to update the specified task, if it exists.
+  // Requires mode A.
+  bool update(const Task& task) {
     _ensureMode("A");
 
     _servantTasks.update(task);
     return _repo.update(task);
   }
 
-  bool remove(std::string title) {
+  // Attempts to remove the specified task, if it exists.
+  // Requires mode A.
+  bool remove(const std::string& title) {
     _ensureMode("A");
 
     _servantTasks.remove(title);
     return _repo.remove(title);
   }
 
-  Vector<Task> allTasks() const {
+  // Returns all tasks stored in this instance.
+  // Requires mode A.
+  const Vector<Task>& allTasks() const {
     _ensureMode("A");
 
     return _repo.data();
   }
 
+  // Returns the next task in this instance.
+  // Requires mode B.
   std::pair<bool, Task> next() {
     _ensureMode("B");
 
@@ -70,7 +86,9 @@ public:
     return {true, data[_servantCurrentTaskIndex]};
   }
 
-  bool save(std::string title) {
+  // Saves the task with the specified title to the servant's task list.
+  // Requires mode B.
+  bool save(const std::string& title) {
     _ensureMode("B");
 
     for (auto task : _repo.data())
@@ -80,7 +98,9 @@ public:
     return false;
   }
 
-  Vector<Task> tasksByTimesPerformed(std::string type, int maxTimesPerformed) const {
+  // Returns a list of tasks filtered by the specified criteria.
+  // Requires mode B.
+  Vector<Task> tasksByTimesPerformed(const std::string& type, int maxTimesPerformed) const {
     _ensureMode("B");
 
     Vector<Task> result;
@@ -93,7 +113,9 @@ public:
     return result;
   }
 
-  Vector<Task> servantTasks() const {
+  // Returns the servant's task list.
+  // Requires mode B.
+  const Vector<Task>& servantTasks() const {
     _ensureMode("B");
 
     return _servantTasks.data();
