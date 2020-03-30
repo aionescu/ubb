@@ -101,6 +101,7 @@ class Graph:
   # Constructs a graph from the given string, which is expected
   # to be in the "old" format (that assumes the graph contains all
   # vertices from 0 to n - 1).
+  # Raises: Exception if edge count > vertex count ^ 2.
   @staticmethod
   def fromStringOld(s: str) -> 'Graph': pass
 

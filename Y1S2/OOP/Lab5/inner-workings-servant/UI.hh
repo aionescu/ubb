@@ -57,8 +57,8 @@ inline std::ostream& operator <<(std::ostream& stream, const Task& task) {
 
 // Class that represents the state of the app's user interface.
 // The convention for commands is that each command is a separate
-// member function that returns void and  takes a `stringstream&`
-// as argument. The stringstream is used to read the command's
+// member function that returns void and  takes a `istringstream&`
+// as argument. The istringstream is used to read the command's
 // command-line arguments.
 class UI {
   bool _keepGoing, _interactiveMode;

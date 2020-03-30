@@ -11,7 +11,7 @@
 
 class UI {
   Graph _graph;
-  std::map<std::string, void (UI::*)(std::stringstream&)> _cmds;
+  std::map<std::string, void (UI::*)(std::istringstream&)> _cmds;
 
 public:
   UI() : _graph{}, _cmds{{
@@ -38,7 +38,7 @@ public:
     { "random", &UI::random }
   }} {}
 
-  void help(std::stringstream& args) {
+  void help(std::istringstream&) {
     std::cout << "Available commands:\n";
 
     for (auto kvp : _cmds) {
@@ -46,22 +46,22 @@ public:
     }
   }
 
-  void exit(std::stringstream& args) {
+  void exit(std::istringstream&) {
     std::exit(0);
   }
 
-  void vertexCount(std::stringstream& args) {
+  void vertexCount(std::istringstream&) {
     std::cout << _graph.vertexCount() << '\n';
   }
 
-  void isVertex(std::stringstream& args) {
+  void isVertex(std::istringstream& args) {
     int v;
     args >> v;
 
     std::cout << _graph.isVertex(v) << '\n';
   }
 
-  void vertices(std::stringstream& args) {
+  void vertices(std::istringstream&) {
     std::cout << "[ ";
 
     for (auto v : _graph.vertices())
@@ -70,28 +70,28 @@ public:
     std::cout << "]\n";
   }
 
-  void existsEdge(std::stringstream& args) {
+  void existsEdge(std::istringstream& args) {
     int v1, v2;
     args >> v1 >> v2;
 
     std::cout << _graph.existsEdge(v1, v2) << '\n';
   }
 
-  void inDegree(std::stringstream& args) {
+  void inDegree(std::istringstream& args) {
     int v;
     args >> v;
 
     std::cout << _graph.inDegree(v) << '\n';
   }
 
-  void outDegree(std::stringstream& args) {
+  void outDegree(std::istringstream& args) {
     int v;
     args >> v;
 
     std::cout << _graph.outDegree(v) << '\n';
   }
 
-  void inbound(std::stringstream& args) {
+  void inbound(std::istringstream& args) {
     int v;
     args >> v;
 
@@ -103,7 +103,7 @@ public:
     std::cout << "]\n";
   }
 
-  void outbound(std::stringstream& args) {
+  void outbound(std::istringstream& args) {
     int v;
     args >> v;
 
@@ -115,63 +115,63 @@ public:
     std::cout << "]\n";
   }
 
-  void getCost(std::stringstream& args) {
+  void getCost(std::istringstream& args) {
     int v1, v2;
     args >> v1 >> v2;
 
     std::cout << _graph.getCost(v1, v2) << '\n';
   }
 
-  void setCost(std::stringstream& args) {
+  void setCost(std::istringstream& args) {
     int v1, v2, c;
     args >> v1 >> v2 >> c;
 
     _graph.setCost(v1, v2, c);
   }
 
-  void addEdge(std::stringstream& args) {
+  void addEdge(std::istringstream& args) {
     int v1, v2, c;
     args >> v1 >> v2 >> c;
 
     _graph.addEdge(v1, v2, c);
   }
 
-  void removeEdge(std::stringstream& args) {
+  void removeEdge(std::istringstream& args) {
     int v1, v2;
     args >> v1 >> v2;
 
     _graph.removeEdge(v1, v2);
   }
 
-  void addVertex(std::stringstream& args) {
+  void addVertex(std::istringstream& args) {
     int v;
     args >> v;
 
     _graph.addVertex(v);
   }
 
-  void removeVertex(std::stringstream& args) {
+  void removeVertex(std::istringstream& args) {
     int v;
     args >> v;
 
     _graph.removeVertex(v);
   }
 
-  void saveToFile(std::stringstream& args) {
+  void saveToFile(std::istringstream& args) {
     std::string s;
     args >> s;
 
     std::ofstream{s} << _graph;
   }
 
-  void loadFromFile(std::stringstream& args) {
+  void loadFromFile(std::istringstream& args) {
     std::string s;
     args >> s;
 
     std::ifstream{s} >> _graph;
   }
 
-  void loadOldFmt(std::stringstream& args) {
+  void loadOldFmt(std::istringstream& args) {
     std::string s;
     args >> s;
 
@@ -179,11 +179,11 @@ public:
     _graph = Graph::fromStreamOld(is);
   }
 
-  void print(std::stringstream& args) {
+  void print(std::istringstream&) {
     std::cout << _graph;
   }
 
-  void random(std::stringstream& args) {
+  void random(std::istringstream& args) {
     int vertexCount, edgeCount;
     args >> vertexCount >> edgeCount;
 
@@ -193,7 +193,7 @@ public:
   void handleCommand() {
     std::string s;
     std::getline(std::cin, s);
-    std::stringstream ss{s};
+    std::istringstream ss{s};
 
     ss >> s;
 

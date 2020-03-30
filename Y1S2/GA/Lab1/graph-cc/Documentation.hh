@@ -39,6 +39,7 @@ public:
   // Reads a graph from the given stream, which is expected
   // to be in the "old" format (that assumes the graph contains all
   // vertices from 0 to n - 1).
+  // Throws: std::invalid_argument if edge count > vertex count ^ 2.
   static Graph fromStreamOld(std::istream& is);
 
   // Returns the number of vertices in the graph.

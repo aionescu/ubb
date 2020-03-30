@@ -208,6 +208,7 @@ class Graph:
   # Constructs a graph from the given string, which is expected
   # to be in the "old" format (that assumes the graph contains all
   # vertices from 0 to n - 1).
+  # Raises: Exception if edge count > vertex count ^ 2.
   @staticmethod
   def fromStringOld(s: str) -> 'Graph':
     lines = s.split("\n")
@@ -215,6 +216,9 @@ class Graph:
 
     vertexCount = int(fstLine[0])
     edgeCount = int(fstLine[1])
+
+    if edgeCount > vertexCount ** 2:
+      raise Exception("Edge count exceeds vertex count ^ 2.")
 
     g = Graph()
 

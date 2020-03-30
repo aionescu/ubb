@@ -72,12 +72,16 @@ public:
   // Reads a graph from the given stream, which is expected
   // to be in the "old" format (that assumes the graph contains all
   // vertices from 0 to n - 1).
+  // Throws: std::invalid_argument if edge count > vertex count ^ 2.
   static Graph fromStreamOld(std::istream& is) {
     Graph g;
 
     int vertexCount, edgeCount;
 
     is >> vertexCount >> edgeCount;
+
+    if (edgeCount > vertexCount * vertexCount)
+      throw std::invalid_argument{"Edge count exceeds vertex count ^ 2."};
 
     for (int i = 0; i < vertexCount; ++i)
       g.addVertex(i);
