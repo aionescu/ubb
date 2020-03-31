@@ -1,18 +1,3 @@
-#ifndef GRAPH_HH
-#define GRAPH_HH
-
-#include <algorithm>
-#include <cstdlib>
-#include <ctime>
-#include <functional>
-#include <iostream>
-#include <map>
-#include <sstream>
-#include <stdexcept>
-#include <string>
-#include <utility>
-#include <vector>
-
 // Class that represents a directed graph.
 class Graph {
   // Representation of the graph:
@@ -117,5 +102,3 @@ inline std::istream& operator >>(std::istream& is, Graph& g);
 
 // Writes the graph to the stream.
 inline std::ostream& operator <<(std::ostream& os, const Graph& g);
-
-#endif

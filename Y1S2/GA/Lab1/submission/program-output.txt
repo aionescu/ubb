@@ -1,0 +1,26 @@
+> random 7 20
+> print
+0 2 33
+0 6 89
+1 0 -19
+1 5 83
+1 1 14
+1 6 -88
+2 3 33
+2 0 42
+2 2 -50
+3 5 -2
+3 4 -83
+3 6 61
+4 3 32
+4 2 -93
+4 1 -39
+4 6 -72
+4 4 68
+5 3 50
+6 6 33
+6 0 66
+> save-to-file random_graph1.txt
+> random 6 40
+Error: Edge count exceeds vertex count ^ 2.
+> exit

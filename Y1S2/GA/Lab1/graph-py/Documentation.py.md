@@ -1,3 +1,4 @@
+```py
 # Class that represents a directed graph.
 class Graph:
   # Representation of the graph:
@@ -106,3 +107,4 @@ class Graph:
   # Raises: Exception if `edgeCount` > `vertexCount` ** 2
   @staticmethod
   def randomGraph(vertexCount: int, edgeCount: int) -> 'Graph': pass
+```
