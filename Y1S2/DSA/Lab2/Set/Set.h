@@ -33,11 +33,11 @@ public:
   //checks whether an element belongs to the set or not
   bool search(TElem elem) const;
 
-  // O(1)
+  // Theta(1)
   //returns the number of elements;
   int size() const;
 
-  // O(1)
+  // Theta(1)
   //check whether the set is empty or not;
   bool isEmpty() const;
 

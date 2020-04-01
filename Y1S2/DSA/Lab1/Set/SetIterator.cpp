@@ -20,6 +20,15 @@ void SetIterator::next() {
 	} while (idx <= set.maxIdx && !set.array[idx]);
 }
 
+void SetIterator::previous() {
+  if (set.capacity == 0)
+    return;
+
+  do {
+    --idx;
+  } while (idx >= 0 && !set.array[idx]);
+}
+
 TElem SetIterator::getCurrent() {
 	if (!valid())
 	  throw std::out_of_range{"SetIterator::getCurrent: Invalid iterator"};

@@ -6,10 +6,12 @@ class InvalidIterator : public std::exception {};
 
 SetIterator::SetIterator(const Set &m) : set(m) {
   _crr = set._list.head();
+  _idx = 0;
 }
 
 void SetIterator::first() {
   _crr = set._list.head();
+  _idx = 0;
 }
 
 void SetIterator::next() {
@@ -17,6 +19,12 @@ void SetIterator::next() {
     throw InvalidIterator{};
 
   _crr = _crr->next;
+  ++_idx;
+}
+
+void SetIterator::previous() {
+  --_idx;
+  _crr = set._list.nodeAt(_idx);
 }
 
 TElem SetIterator::getCurrent() {

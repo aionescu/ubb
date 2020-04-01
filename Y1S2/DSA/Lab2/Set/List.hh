@@ -124,6 +124,19 @@ public:
     return false;
   }
 
+  Node<T>* nodeAt(int index) const {
+    if (index < 0 || index >= _length)
+      return nullptr;
+
+    auto crr = _head;
+
+    while (crr && index--) {
+      crr = crr->next;
+    }
+
+    return crr;
+  }
+
   void iter(std::function<void(T)> f) {
     auto crr = _head;
 

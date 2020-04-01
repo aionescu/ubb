@@ -1,7 +1,41 @@
 #include "ShortTest.h"
 #include <assert.h>
+#include <iostream>
 #include "Set.h"
 #include "SetIterator.h"
+
+void testPrevious() {
+  std::cout << "Test previous" << std::endl;
+
+  Set s;
+
+  for (int i = 0; i < 20; ++i)
+    s.add(i);
+
+  auto it = s.iterator();
+
+  it.previous();
+  assert(!it.valid());
+
+  it.first();
+
+  for (int i = 0; i < 10; ++i)
+    it.next();
+
+  assert(it.getCurrent() == 10);
+
+  while (it.valid())
+    it.next();
+
+  it.previous();
+
+  while (it.valid()) {
+    std::cout << it.getCurrent() << ' ' << std::flush;
+    it.previous();
+  }
+
+  std::cout << std::endl;
+}
 
 void testAll() {
   Set s;
@@ -31,4 +65,6 @@ void testAll() {
     it.next();
   }
   assert(sum == 19);
+
+  testPrevious();
 }

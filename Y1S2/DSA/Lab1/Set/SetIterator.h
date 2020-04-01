@@ -14,6 +14,11 @@ private:
 public:
 	void first();
 	void next();
+
+  // Best case: Theta(1)
+  // Worst case: Theta(n)
+  // Average case: O(n)
+  void previous();
 	TElem getCurrent();
 	bool valid() const;
 };
