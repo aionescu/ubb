@@ -1,6 +1,6 @@
 from copy import deepcopy
 from random import randint
-from typing import Dict, List, Tuple, Callable
+from typing import Dict, List, Set, Tuple
 
 class Graph:
   def __init__(self) -> None:
@@ -69,35 +69,48 @@ class Graph:
 
     del self.__adjacent[vertex]
 
-  def dfs(self, temp: List[int], v: int, visited: List[bool]) -> List[int]:
-    visited[v] = True
-    temp.append(v) 
+  def subgraph(self, vertices: List[int]) -> 'Graph':
+    g = deepcopy(self)
+    gVertices = g.vertices()
 
-    for i in self.__adjacent[v]: 
-      if not visited[i]:  
-        temp = self.dfs(temp, i, visited)
+    for vertex in gVertices:
+      if vertex not in vertices:
+        g.removeVertex(vertex)
 
-    return temp 
+    return g
 
-  def connectedComponents(self) -> List[List[int]]: 
+  def dfs(self, acc: List[int], vertex: int, visited: List[bool]) -> List[int]:
+    visited[vertex] = True
+    acc.append(vertex) 
+
+    for adj in self.__adjacent[vertex]: 
+      if not visited[adj]:  
+        self.dfs(acc, adj, visited)
+
+    return acc 
+
+  def connectedComponents(self) -> List['Graph']: 
     visited = [False for _ in range(self.vertexCount())]
     cc = []
 
-    for v in range(self.vertexCount()): 
-      if self.isVertex(v) and not visited[v]:
-        cc.append(self.dfs([], v, visited)) 
+    for vertex in range(self.vertexCount()): 
+      if self.isVertex(vertex) and not visited[vertex]:
+        cc.append(self.dfs([], vertex, visited)) 
 
-    return cc 
+    return list(map(lambda sg: self.subgraph(sg), cc))
 
   def __str__(self) -> str:
     s = ""
+    seen: Set[Tuple[int, int]] = set()
 
     for v1 in self.vertices():
       if not self.degree(v1):
         s += str(v1) + " -1\n"
       else:
         for v2 in self.adjacent(v1):
-          s += str(v1) + " " + str(v2) + "\n"
+          if (v2, v1) not in seen:
+            s += str(v1) + " " + str(v2) + "\n"
+            seen.add((v1, v2))
 
     return s
 
