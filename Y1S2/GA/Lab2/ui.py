@@ -73,12 +73,12 @@ class UI:
     print(self.__graph)
 
   def connectedComponents(self, args: List[str]) -> None:
-    cc = self.__graph.connectedComponents()
+    components = self.__graph.connectedComponents()
 
-    for g in cc:
-      print(g)
+    for subgraph in components:
+      print(subgraph)
 
-    print("# of CCs: ", len(cc))
+    print("# of CCs:", len(components))
 
   def handleCommand(self) -> bool:
     s = input("> ").split()

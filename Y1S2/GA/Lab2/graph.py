@@ -79,25 +79,25 @@ class Graph:
 
     return g
 
-  def dfs(self, acc: List[int], vertex: int, visited: List[bool]) -> List[int]:
+  def dfs(self, currentComponent: List[int], vertex: int, visited: List[bool]) -> List[int]:
     visited[vertex] = True
-    acc.append(vertex) 
+    currentComponent.append(vertex) 
 
     for adj in self.__adjacent[vertex]: 
       if not visited[adj]:  
-        self.dfs(acc, adj, visited)
+        self.dfs(currentComponent, adj, visited)
 
-    return acc 
+    return currentComponent 
 
   def connectedComponents(self) -> List['Graph']: 
     visited = [False for _ in range(self.vertexCount())]
-    cc = []
+    components = []
 
     for vertex in range(self.vertexCount()): 
       if self.isVertex(vertex) and not visited[vertex]:
-        cc.append(self.dfs([], vertex, visited)) 
+        components.append(self.dfs([], vertex, visited)) 
 
-    return list(map(lambda sg: self.subgraph(sg), cc))
+    return list(map(lambda sg: self.subgraph(sg), components))
 
   def __str__(self) -> str:
     s = ""
