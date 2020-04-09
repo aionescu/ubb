@@ -53,16 +53,14 @@ public:
 };
 
 inline void trimString(std::string& string) {
+  auto isNotSpace = [](char character) { return !std::isspace(character); };
+  
   // Trim beginning.
-  string.erase(string.begin(), std::find_if(string.begin(), string.end(), [](int ch) {
-    return !std::isspace(ch);
-  }));
+  string.erase(string.begin(), std::find_if(string.begin(), string.end(), isNotSpace));
 
   // Trim end.
-  string.erase(std::find_if(string.rbegin(), string.rend(), [](int ch) {
-    return !std::isspace(ch);
-  }).base(), string.end());
-}
+  string.erase(std::find_if(string.rbegin(), string.rend(), isNotSpace).base(), string.end());
+} 
 
 inline std::vector<std::string> splitString(const std::string& string, char delimiter) {
   std::vector<std::string> vector;
