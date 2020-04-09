@@ -19,7 +19,7 @@ class Services {
   std::string _mode;
   FileRepo _allTasks;
   Repo _servantTasks;
-  std::size_t _servantCurrentTaskIndex = -1;
+  int _servantCurrentTaskIndex;
 
   void _ensureMode(const std::string& mode) const {
     if (_mode != mode)
@@ -27,6 +27,13 @@ class Services {
   }
 
 public:
+  Services(const std::string& mode = "", const std::string& filePath = "")
+  : _mode{mode},
+    _allTasks{filePath},
+    _servantTasks{},
+    _servantCurrentTaskIndex{-1}
+  {}
+
   // Returns this instance's mode.
   const std::string& mode() const {
     return _mode;
@@ -35,6 +42,10 @@ public:
   // Sets the mode of this instance.
   void setMode(const std::string& mode) {
     _mode = mode;
+  }
+
+  const std::string& filePath() const {
+    return _allTasks.filePath();
   }
 
   void setFilePath(const std::string filePath) {
@@ -88,7 +99,7 @@ public:
 
     ++_servantCurrentTaskIndex;
 
-    if (_servantCurrentTaskIndex == data.size())
+    if (_servantCurrentTaskIndex == (int)data.size())
       _servantCurrentTaskIndex = 0;
 
     return {true, data.at(_servantCurrentTaskIndex)};

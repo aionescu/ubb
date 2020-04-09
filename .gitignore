@@ -1,11 +1,16 @@
 .vscode/
+
 .stack-work/
 *~
+
 __pycache__/
 .mypy_cache/
 .coverage
+
 *.lst
 *.obj
 *.exe
 *.out
 *.gch
+
+coverage-cc-html/

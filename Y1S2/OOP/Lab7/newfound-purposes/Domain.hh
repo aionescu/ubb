@@ -16,15 +16,30 @@ class Task {
   std::string _vision;
 
 public:
-  Task() : _title{}, _type{}, _lastPerformed{}, _timesPerformed{0}, _vision{} {}
-
-  Task(const std::string& title, const std::string& type, const std::string& lastPerformed, int timesPerformed, const std::string& vision)
+  Task(const std::string& title = "<title>",
+    const std::string& type = "<type>",
+    const std::string& lastPerformed = "<lastPerformed>",
+    int timesPerformed = 0,
+    const std::string& vision = "<vision>")
     : _title{title}, _type{type}, _lastPerformed{lastPerformed}, _timesPerformed{timesPerformed}, _vision{vision}
     {}
 
   Task(const Task& task) = default;
   Task& operator =(const Task& task) = default;
   ~Task() = default;
+
+  bool operator ==(const Task& task) const {
+    return
+      _title == task._title
+      && _type == task._type
+      && _lastPerformed == task._lastPerformed
+      && _timesPerformed == task._timesPerformed
+      && _vision == task._vision;
+  }
+
+  bool operator !=(const Task& task) const {
+    return !(*this == task);
+  }
 
   // Returns the title of this task.
   const std::string& title() const {

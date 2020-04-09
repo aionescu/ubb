@@ -54,6 +54,8 @@ class FileRepo: public Repo {
   }
 
 public:
+  FileRepo(const std::string& filePath = ""): _filePath{filePath} {}
+
   const std::string& filePath() const {
     return _filePath;
   }

@@ -13,8 +13,7 @@ protected:
   std::vector<Task> _tasks;
 
 public:
-  Repo() : _tasks{} {}
-  Repo(const std::vector<Task>& tasks) : _tasks{tasks} {}
+  Repo(const std::vector<Task>& tasks = {}) : _tasks{tasks} {}
 
   // Attempts to add the specified task to this repository, if it
   // does not already exist.
