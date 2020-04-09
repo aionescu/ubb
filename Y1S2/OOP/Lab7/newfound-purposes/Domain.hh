@@ -67,7 +67,7 @@ inline void trimString(std::string& string) {
 inline std::vector<std::string> splitString(const std::string& string, char delimiter) {
   std::vector<std::string> vector;
 
-  std::stringstream stream{string};
+  std::istringstream stream{string};
   std::string token;
   
   while (std::getline(stream, token, delimiter)) {
