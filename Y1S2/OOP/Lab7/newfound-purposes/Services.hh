@@ -7,19 +7,19 @@
 #include <iterator>
 #include <string>
 #include <utility>
-#include "Repo.hh"
+#include "InMemoryRepo.hh"
 #include "FileRepo.hh"
 
 // Exception that is thrown if an operation is attempted
 // while being in the wrong mode.
-class WrongModeException: public std::exception {};
+class WrongModeException: public std::exception { };
 
 // Class that hold the state of the application.
 class Services {
   std::string _mode;
-  FileRepo _allTasks;
-  Repo _servantTasks;
-  int _servantCurrentTaskIndex;
+  FileRepo _allTasks{""};
+  InMemoryRepo _servantTasks;
+  int _servantCurrentTaskIndex{-1};
 
   void _ensureMode(const std::string& mode) const {
     if (_mode != mode)
@@ -27,13 +27,6 @@ class Services {
   }
 
 public:
-  Services(const std::string& mode = "", const std::string& filePath = "")
-  : _mode{mode},
-    _allTasks{filePath},
-    _servantTasks{},
-    _servantCurrentTaskIndex{-1}
-  {}
-
   // Returns this instance's mode.
   const std::string& mode() const {
     return _mode;
@@ -49,7 +42,7 @@ public:
   }
 
   void setFilePath(const std::string filePath) {
-    _allTasks.setFilePath(filePath);
+    _allTasks = FileRepo{filePath};
   }
 
   // Attempts to add the specified task to the state
@@ -109,12 +102,16 @@ public:
   // Requires mode B.
   bool save(const std::string& title) {
     _ensureMode("B");
-    
-    for (const auto& task : _allTasks.data())
-      if (task.title() == title)
-        return _servantTasks.add(task);
 
-    return false;
+    auto tasks = _allTasks.data();
+
+    auto predicate = [&](const Task& task) { return task.title() == title; };
+    auto findResult = std::find_if(tasks.begin(), tasks.end(), predicate);
+
+    if (findResult == tasks.end())
+      return false;
+
+    return _servantTasks.add(*findResult);
   }
 
   // Returns a list of tasks filtered by the specified criteria.

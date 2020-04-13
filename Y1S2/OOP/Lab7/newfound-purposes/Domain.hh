@@ -16,17 +16,18 @@ class Task {
   std::string _vision;
 
 public:
-  Task(const std::string& title = "<title>",
+  Task(
+    const std::string& title = "<title>",
     const std::string& type = "<type>",
     const std::string& lastPerformed = "<lastPerformed>",
     int timesPerformed = 0,
     const std::string& vision = "<vision>")
-    : _title{title}, _type{type}, _lastPerformed{lastPerformed}, _timesPerformed{timesPerformed}, _vision{vision}
-    {}
-
-  Task(const Task& task) = default;
-  Task& operator =(const Task& task) = default;
-  ~Task() = default;
+    : _title{title},
+      _type{type},
+      _lastPerformed{lastPerformed},
+      _timesPerformed{timesPerformed},
+      _vision{vision}
+    { }
 
   bool operator ==(const Task& task) const {
     return
@@ -105,7 +106,8 @@ inline Task taskOfParts(const std::vector<std::string>& parts) {
 }
 
 inline std::ostream& operator <<(std::ostream& stream, const Task& task) {
-  return stream
+  return
+    stream
     << task.title() << ','
     << task.type() << ','
     << task.lastPerformed() << ','

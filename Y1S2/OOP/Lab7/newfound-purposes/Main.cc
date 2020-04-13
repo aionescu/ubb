@@ -1,4 +1,3 @@
-#include <iostream>
 #include "UI.hh"
 
 int main() {
