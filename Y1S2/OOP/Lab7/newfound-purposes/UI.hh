@@ -44,8 +44,8 @@ public:
 
   void help(std::istringstream&) {
     std::cout << "Available commands:\n";
-
-    for (auto command : _commands) {
+    
+    for (auto command: _commands) {
       std::cout << command.first << '\n';
     }
   }
@@ -54,64 +54,62 @@ public:
     _keepGoing = false;
   }
 
-  void mode(std::istringstream& args) {
+  void mode(std::istringstream& commandArguments) {
     std::string mode;
-    args >> mode;
+    commandArguments >> mode;
 
     _services.setMode(mode);
   }
 
-  void fileLocation(std::istringstream& args) {
+  void fileLocation(std::istringstream& commandArguments) {
     std::string filePath;
-    std::getline(args, filePath);
+    std::getline(commandArguments, filePath);
 
     trimString(filePath);
     _services.setFilePath(filePath);
   }
 
-  void add(std::istringstream& args) {
-    std::string buffer;
-    std::getline(args, buffer);
+  void add(std::istringstream& commandArguments) {
+    std::string untokenizedLine;
+    std::getline(commandArguments, untokenizedLine);
 
-    auto parts = splitString(buffer, ',');
-    auto newTask = taskOfParts(parts);
+    auto tokenizedLine = splitString(untokenizedLine, ',');
+    auto newTask = taskOfParts(tokenizedLine);
 
     _tryPerform(_services.add(newTask));
   }
 
-  void update(std::istringstream& args) {
-    std::string buffer;
-    std::getline(args, buffer);
+  void update(std::istringstream& commandArguments) {
+    std::string untokenizedLine;
+    std::getline(commandArguments, untokenizedLine);
 
-    auto parts = splitString(buffer, ',');
-    auto task = taskOfParts(parts);
+    auto tokenizedLine = splitString(untokenizedLine, ',');
+    auto task = taskOfParts(tokenizedLine);
 
     _tryPerform(_services.update(task));
   }
 
-  void remove(std::istringstream& args) {
+  void remove(std::istringstream& commandArguments) {
     std::string title;
-    args >> title;
+    commandArguments >> title;
   
-
     _tryPerform(_services.remove(title));
   }
 
-  void list(std::istringstream& args) {
-    std::string buffer;
-    std::getline(args, buffer);
+  void list(std::istringstream& commandArguments) {
+    std::string untokenizedLine;
+    std::getline(commandArguments, untokenizedLine);
 
-    auto parts = splitString(buffer, ',');
+    auto tokenizedLine = splitString(untokenizedLine, ',');
 
     std::vector<Task> tasks;
 
-    if (parts.size() == 0 || parts.at(0).empty())
+    if (tokenizedLine.size() == 0 || tokenizedLine.at(0).empty())
       tasks = _services.allTasks();
     else
-      tasks = _services.tasksByTimesPerformed(parts.at(0), std::stoi(parts.at(1)));
+      tasks = _services.tasksByTimesPerformed(tokenizedLine.at(0), std::stoi(tokenizedLine.at(1)));
 
-    for (auto task : tasks)
-      std::cout << task << '\n';
+    std::cout << tasks;
   }
 
   void next(std::istringstream&) {
@@ -121,9 +119,9 @@ public:
       std::cout << task.second << '\n';
   }
 
-  void save(std::istringstream& args) {
+  void save(std::istringstream& commandArguments) {
     std::string title;
-    args >> title;
+    commandArguments >> title;
 
     _tryPerform(_services.save(title));
   }

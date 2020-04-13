@@ -39,7 +39,7 @@ void test_Task_vision_noInput_returnsTaskVision() {
   assert(task.vision() == "vision");
 }
 
-void test_Task_equalsOperator_anyTask_taskIsEqualToItself() {
+void test_Task_equalsOperator_anyTask_operationIsReflexive() {
   Task task;
   assert(task == task);
 }
@@ -396,7 +396,7 @@ void runAllTests() {
   test_Task_timesPerformed_noInput_returnsTaskTimesPerformed();
   test_Task_vision_noInput_returnsTaskVision();
 
-  test_Task_equalsOperator_anyTask_taskIsEqualToItself();
+  test_Task_equalsOperator_anyTask_operationIsReflexive();
 
   test_Domain_trimString_paddedString_stringIsTrimmed();
   test_Domain_splitString_stringWithMultipleTokens_allTokensAreSeparated();

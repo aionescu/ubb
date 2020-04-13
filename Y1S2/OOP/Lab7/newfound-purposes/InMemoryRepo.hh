@@ -17,43 +17,19 @@ public:
   // Attempts to add the specified task to this repository, if it
   // does not already exist.
   virtual bool add(const Task& newTask) override {
-    auto predicate = [&](const Task& task) { return task.title() == newTask.title(); };
-    auto findResult = std::find_if(_tasks.begin(), _tasks.end(), predicate);
-
-    if (findResult != _tasks.end())
-      return false;
-
-    _tasks.push_back(newTask);
-    return true;
+    return _add(_tasks, newTask);
   }
 
   // Attempts to update the specified task in this repository,
   // if it exists.
   virtual bool update(const Task& newTask) override {
-    auto predicate = [&](const Task& task) { return task.title() == newTask.title(); };
-    auto findResult = std::find_if(_tasks.begin(), _tasks.end(), predicate);
-
-    if (findResult == _tasks.end())
-      return false;
-
-    *findResult = newTask;
-    return true;
+    return _update(_tasks, newTask);
   }
 
   // Attempts to remove the task with the specified title
   // from this repository, if it exists.
   virtual bool remove(const std::string& title) override {
-    auto predicate = [&](const Task& task) { return task.title() == title; };
-
-    auto findResult = std::find_if(_tasks.begin(), _tasks.end(), predicate);
-
-    if (findResult == _tasks.end())
-      return false;
-
-    auto removeResult = std::remove_if(_tasks.begin(), _tasks.end(), predicate);
-    _tasks.erase(removeResult, _tasks.end());
-
-    return true;
+    return _remove(_tasks, title);
   }
 
   // Returns a copy of this repository's data.

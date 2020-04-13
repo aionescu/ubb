@@ -9,43 +9,23 @@
 #include <iterator>
 #include <vector>
 #include "Domain.hh"
-#include "InMemoryRepo.hh"
 
-inline std::ostream& operator <<(std::ostream& stream, const std::vector<Task>& tasks) {
-  std::copy(
-    tasks.begin(),
-    tasks.end(),
-    std::ostream_iterator<Task>{stream, "\n"});
-
-  return stream;
-}
-
-inline std::istream& operator >>(std::istream& stream, std::vector<Task>& tasks) {
-  tasks.clear();
-
-  std::copy(
-    std::istream_iterator<Task>{stream},
-    std::istream_iterator<Task>{},
-    std::back_inserter(tasks));
-    
-  return stream;
-}
-
-class FileRepo: public InMemoryRepo {
+class FileRepo: public Repo {
   std::string _filePath;
 
-  void _loadData() {
+  std::vector<Task> _loadData() {
+    std::vector<Task> tasks;
     std::ifstream inFile{_filePath};
 
     if (inFile.good())
-      inFile >> _tasks;
-    else
-      _tasks.clear();
+      inFile >> tasks;
+      
+    return tasks;
   }
 
-  void _saveData() {
+  void _saveData(const std::vector<Task>& tasks) {
     std::ofstream outFile{_filePath};
-    outFile << _tasks;
+    outFile << tasks;
   }
 
 public:
@@ -56,38 +36,38 @@ public:
   }
 
   virtual bool add(const Task& newTask) override {
-    _loadData();
-    auto isSuccesful = InMemoryRepo::add(newTask);
+    auto tasks = _loadData();
+    auto isSuccesful = _add(tasks, newTask);
 
     if (isSuccesful)
-      _saveData();
+      _saveData(tasks);
 
     return isSuccesful;
   }
 
   virtual bool update(const Task& newTask) override {
-    _loadData();
-    auto isSuccesful = InMemoryRepo::update(newTask);
+    auto tasks = _loadData();
+    auto isSuccesful = _update(tasks, newTask);
 
     if (isSuccesful)
-      _saveData();
+      _saveData(tasks);
 
     return isSuccesful;
   }
 
   virtual bool remove(const std::string& title) override {
-    _loadData();
-    auto isSuccesful = InMemoryRepo::remove(title);
+    auto tasks = _loadData();
+    auto isSuccesful = _remove(tasks, title);
 
     if (isSuccesful)
-      _saveData();
+      _saveData(tasks);
 
     return isSuccesful;
   }
 
   virtual std::vector<Task> data() override {
-    _loadData();
-    return _tasks;
+    auto tasks = _loadData();
+    return tasks;
   }
 };
 
