@@ -44,6 +44,11 @@ void test_Task_equalsOperator_anyTask_operationIsReflexive() {
   assert(task == task);
 }
 
+void test_Task_notEqualsOperator_anyTask_operationIsReflexive() {
+  Task task;
+  assert(!(task != task));
+}
+
 void test_Domain_trimString_paddedString_stringIsTrimmed() {
   std::string string = "   abc   ";
   trimString(string);
@@ -397,7 +402,8 @@ void runAllTests() {
   test_Task_vision_noInput_returnsTaskVision();
 
   test_Task_equalsOperator_anyTask_operationIsReflexive();
-
+  test_Task_notEqualsOperator_anyTask_operationIsReflexive();
+  
   test_Domain_trimString_paddedString_stringIsTrimmed();
   test_Domain_splitString_stringWithMultipleTokens_allTokensAreSeparated();
 
