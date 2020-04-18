@@ -84,6 +84,16 @@ Task taskOfParts(const std::vector<std::string>& parts) {
   return Task{title, type, lastPerformed, timesPerformed, vision};
 }
 
+std::ostream& operator <<(std::ostream& stream, const Task& task) {
+  return
+    stream
+    << task.title() << ','
+    << task.type() << ','
+    << task.lastPerformed() << ','
+    << task.timesPerformed() << ','
+    << task.vision();
+}
+
 std::istream& operator >>(std::istream& stream, Task& task) {
   std::string buffer;
   std::getline(stream, buffer);

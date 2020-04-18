@@ -49,15 +49,7 @@ std::vector<std::string> splitString(const std::string& string, char delimiter);
 
 Task taskOfParts(const std::vector<std::string>& parts);
 
-inline std::ostream& operator <<(std::ostream& stream, const Task& task) {
-  return
-    stream
-    << task.title() << ','
-    << task.type() << ','
-    << task.lastPerformed() << ','
-    << task.timesPerformed() << ','
-    << task.vision();
-}
+std::ostream& operator <<(std::ostream& stream, const Task& task);
 
 std::istream& operator >>(std::istream& stream, Task& task);
 
