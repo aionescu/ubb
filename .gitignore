@@ -1,16 +1,20 @@
 .vscode/
 
+# Haskell
 .stack-work/
 *~
 
+# Python
 __pycache__/
 .mypy_cache/
 .coverage
 
+# Assembly
 *.lst
 *.obj
 *.exe
 *.out
-*.gch
 
+# C++
+*.gch
 coverage-cc-html/
