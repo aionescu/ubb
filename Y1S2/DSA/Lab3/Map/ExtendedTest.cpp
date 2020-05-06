@@ -102,10 +102,12 @@ void testRemove() {
 	for (int i = -100; i < 100; i++) { 
 		assert(m.remove(i) == NULL_TVALUE);
 	}
+
 	assert(m.size() == 0);
 	for (int i = -100; i < 100; i = i + 2) { 
 		assert(m.add(i, i) == NULL_TVALUE);
 	}
+
 	for (int i = -100; i < 100; i++) { 
 		if (i % 2 == 0) {
 			assert(m.remove(i) == i);
@@ -114,11 +116,13 @@ void testRemove() {
 			assert(m.remove(i) == NULL_TVALUE);
 		}
 	}
+
 	assert(m.size() == 0);
 
 	for (int i = -100; i <= 100; i = i + 2) { 
 		assert(m.add(i, i) == NULL_TVALUE);
 	}
+
 	testIteratorSteps(m);
 	for (int i = 100; i > -100; i--) { 
 		if (i % 2 == 0) {
@@ -142,6 +146,7 @@ void testRemove() {
 		assert(m.add(i, 3) == 2);
 		assert(m.add(i, 4) == 3);
 	}
+
 	assert(m.size() == 200);
 	for (int i = -200; i < 200; i++) { 
 		if (i < -100 || i >= 100) {
@@ -152,8 +157,8 @@ void testRemove() {
 			assert(m.remove(i) == NULL_TVALUE);
 		}
 	}
-	assert(m.size() == 0);
 
+	assert(m.size() == 0);
 }
 
 

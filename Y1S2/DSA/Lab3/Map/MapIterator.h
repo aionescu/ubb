@@ -5,8 +5,8 @@ class MapIterator
 	//DO NOT CHANGE THIS PART
 	friend class Map;
 private:
-	const Map& map;
-	//TODO - Representation
+	const Map& _map;
+  Index _crr;
 
 	MapIterator(const Map& m);
 public:
@@ -15,5 +15,3 @@ public:
 	TElem getCurrent();
 	bool valid() const;
 };
-
-
