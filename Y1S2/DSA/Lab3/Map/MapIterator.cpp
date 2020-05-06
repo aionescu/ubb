@@ -30,3 +30,14 @@ TElem MapIterator::getCurrent() {
 bool MapIterator::valid() const {
 	return _crr != -1;
 }
+
+void MapIterator::jumpBackward(int k) {
+  if (k <= 0)
+    throw std::out_of_range{"MapIterator::jumpBackward: Number of steps must be strictly positive."};
+
+  if (_crr == -1)
+    throw std::runtime_error{"MapIterator::jumpBackward: Invalid iterator."};
+
+  while (k-- && _crr != -1)
+    _crr = _map._array[_crr].prev;
+}

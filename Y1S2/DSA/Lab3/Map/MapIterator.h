@@ -14,4 +14,9 @@ public:
 	void next();
 	TElem getCurrent();
 	bool valid() const;
+
+  // Best-case: Th(1)
+  // Worst-case: Th(k)
+  // Average-case: O(k)
+  void jumpBackward(int k);
 };

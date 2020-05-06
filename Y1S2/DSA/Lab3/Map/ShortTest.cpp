@@ -4,7 +4,43 @@
 #include "MapIterator.h"
 #include <iostream> //!
 
+void testJumpBackward() {
+  std::cout << "Test jumpBackward" << std::endl;
+
+  Map m;
+  
+  for (int i = 0; i < 10; ++i)
+    m.add(i, i * 10);
+
+  auto it = m.iterator();
+
+  it.first();
+
+  for (int i = 0; i < 5; ++i)
+    it.next();
+
+  auto crr = it.getCurrent(); // {5, 50}
+
+  try {
+    it.jumpBackward(-1);
+    assert(false);
+  } catch (std::exception&) { }
+
+  it.jumpBackward(1);
+  crr = {4, 40};
+  assert(it.getCurrent() == crr);
+
+  it.jumpBackward(3);
+  crr = {1, 10};
+  assert(it.getCurrent() == crr);
+
+  it.jumpBackward(2);
+  assert(!it.valid());
+}
+
 void testAll() { //call each function to see if it is implemented
+  testJumpBackward();
+
 	Map m;
 	assert(m.isEmpty() == true);
 	assert(m.size() == 0); //add elements
@@ -21,7 +57,6 @@ void testAll() { //call each function to see if it is implemented
 	assert(m.remove(1) == 1);
 	assert(m.remove(6) == NULL_TVALUE);
 	assert(m.size() == 4);
-
 
 	TElem e;
 	MapIterator id = m.iterator();

@@ -34,21 +34,25 @@ public:
 	// implicit constructor
 	Map();
 
-  int capacity() { return _capacity; }
 	// adds a pair (key,value) to the map
 	//if the key already exists in the map, then the value associated to the key is replaced by the new value and the old value is returned
 	//if the key does not exist, a new pair is added and the value null is returned
+  // Th(1) amortized
 	TValue add(TKey c, TValue v);
 
+  // O(n)
 	//searches for the key and returns the value associated with the key if the map contains the key or null: NULL_TVALUE otherwise
 	TValue search(TKey c) const;
 
+  // O(n)
 	//removes a key from the map and returns the value associated with the key if the key existed ot null: NULL_TVALUE otherwise
 	TValue remove(TKey c);
 
+  // O(1)
 	//returns the number of pairs (key,value) from the map
 	int size() const;
 
+  // O(1)
 	//checks whether the map is empty or not
 	bool isEmpty() const;
 
