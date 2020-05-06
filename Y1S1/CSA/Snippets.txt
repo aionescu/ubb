@@ -1,2 +1,5 @@
--oPE -subsys console -entry start // alink args
-legacy_stdio_definitions.lib // cl /link arg
+# alink args
+-oPE -subsys console -entry start
+
+# cl /link arg
+legacy_stdio_definitions.lib
