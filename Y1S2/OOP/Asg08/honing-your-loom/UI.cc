@@ -119,7 +119,7 @@ void UI::myList(std::istringstream&) {
   auto extension = filePath.substr(filePath.find_last_of(".") + 1);
 
   if (extension == "html")
-    std::ignore = system(("google-chrome " + filePath).c_str());
+    std::ignore = system(("google-chrome-stable " + filePath).c_str());
   else if (extension == "csv" || extension == "txt")
     std::ignore = system(("libreoffice --calc " + filePath).c_str());
   else
