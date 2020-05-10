@@ -7,6 +7,7 @@
 #include <utility>
 #include "FileRepo.hh"
 #include "CSVRepo.hh"
+#include "TaskValidator.hh"
 
 // Exception that is thrown if an operation is attempted
 // while being in the wrong mode.
@@ -19,6 +20,7 @@ class InvalidFileTypeException: public std::exception { };
 // Class that hold the state of the application.
 class Services {
   std::string _mode;
+  TaskValidator _taskValidator;
   CSVRepo _allTasks{""};
   std::unique_ptr<FileRepo> _servantTasks;
   int _servantCurrentTaskIndex{-1};

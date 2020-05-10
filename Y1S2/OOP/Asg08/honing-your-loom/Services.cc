@@ -42,6 +42,7 @@ void Services::setServantTasksFilePath(const std::string& filePath) {
 
 void Services::add(const Task& newTask) {
   _ensureMode("A");
+  _taskValidator.validateTask(newTask);
 
   try {
     _allTasks.add(newTask);
@@ -52,7 +53,8 @@ void Services::add(const Task& newTask) {
 
 void Services::update(const Task& task) {
   _ensureMode("A");
-
+  _taskValidator.validateTask(task);
+  
   try {
     _servantTasks->update(task);
   } catch (InvalidRepoActionException&) { }

@@ -150,6 +150,8 @@ void UI::handleCommand() {
     std::cout << "Error: Invalid file type.\n";
   } catch (InvalidServicesActionException&) {
     std::cout << "Error: Invalid arguments.\n";
+  } catch (InvalidTaskException& exception) {
+    std::cout << "Invalid task: " << exception.what() << '\n';
   } catch (...) {
     std::cout << "Error: Ill-formatted arguments.\n";
   }
