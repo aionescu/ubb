@@ -9,6 +9,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include "Domain.hh"
+#include "Services.hh"
 
 constexpr const int LINE_EDIT_COUNT = 5;
 constexpr const int BUTTON_COUNT = 2;
@@ -18,11 +19,11 @@ class GUI: public QWidget
   Q_OBJECT
 
 public:
-  GUI(std::vector<Task> tasks, QWidget* parent = nullptr);
+  GUI(QWidget* parent = nullptr);
   ~GUI();
 
 private:
-  std::vector<Task> _tasks;
+  Services _services;
 
   QListWidget* _tasksList;
   std::vector<QLineEdit*> _lineEdits;

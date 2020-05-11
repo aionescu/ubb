@@ -5,7 +5,10 @@ const QFont FONT{"Cascadia Code", 14};
 const std::vector<QString> LABEL_TEXT{{"&Title:", "&Type:", "&Last performed:", "&Times performed:", "&Vision:"}};
 const std::vector<QString> BUTTON_TEXT{{"Add task", "Delete task"}};
 
-GUI::GUI(std::vector<Task> tasks, QWidget* parent): QWidget{parent}, _tasks{tasks} {
+GUI::GUI(QWidget* parent) : QWidget{parent} {
+  _services.setFilePath("Tasks.csv");
+  _services.setMode("A");
+
   this->initGUI();
   this->connectSignalsAndSlots();
   this->populateTasksList();
@@ -88,7 +91,9 @@ void GUI::connectSignalsAndSlots() {
 
 void GUI::addTask(const std::vector<std::string>& parts)
 {
-  _tasks.push_back(taskOfParts(parts));
+  try {
+    _services.add(taskOfParts(parts));
+  } catch (...) { }
 
   // emit the signal: the tasks were updated
   emit tasksUpdatedSignal();
@@ -109,10 +114,13 @@ void GUI::deleteTaskButtonHandler() {
   // get the selected index and delete the task
   int idx = this->getSelectedIndex();
 
-  if (idx < 0 || (std::size_t)idx >= _tasks.size())
+  auto tasks = _services.allTasks();
+
+  if (idx < 0 || (std::size_t)idx >= tasks.size())
     return;
 
-  _tasks.erase(_tasks.begin() + idx);
+  auto task = tasks[idx];
+  _services.remove(task.title());
 
   // emit the signal: the tasks were updated
   emit tasksUpdatedSignal();
@@ -123,7 +131,9 @@ void GUI::populateTasksList() {
   if (_tasksList->count() > 0)
     _tasksList->clear();
 
-  for (auto task : _tasks) {
+  auto tasks = _services.allTasks();
+
+  for (auto task : tasks) {
     QString itemInList = QString::fromStdString(task.toString());
       
     QListWidgetItem* item = new QListWidgetItem{itemInList};
@@ -133,7 +143,7 @@ void GUI::populateTasksList() {
   }
 
   // set the selection on the first item in the list
-  if (_tasks.size() > 0)
+  if (tasks.size() > 0)
     _tasksList->setCurrentRow(0);
 }
 
@@ -156,11 +166,13 @@ int GUI::getSelectedIndex() {
 }
 
 void GUI::listItemChanged() {
+  auto tasks = _services.allTasks();
+
   int idx = this->getSelectedIndex();
-  if (idx < 0 || (std::size_t)idx >= _tasks.size())
+  if (idx < 0 || (std::size_t)idx >= tasks.size())
     return;
 
-  auto task = _tasks[idx];
+  auto task = tasks[idx];
   auto parts = task.toParts();
 
   for (auto i = 0; i < LINE_EDIT_COUNT; ++i)
