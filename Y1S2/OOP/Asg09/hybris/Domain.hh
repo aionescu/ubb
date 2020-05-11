@@ -41,6 +41,9 @@ public:
 
   // Returns the vision of this task's outcome.
   const std::string& vision() const;
+
+  std::string toString() const;
+  std::vector<std::string> toParts() const;
 };
 
 void trimString(std::string& string);

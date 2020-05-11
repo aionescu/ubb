@@ -1,195 +1,152 @@
 #include <QDebug>
 #include "GUI.hh"
 
-GUI::GUI(std::vector<Task> tasks, QWidget* parent): QWidget{parent}, tasks{tasks}
-{
+const QFont FONT{"Cascadia Code", 14};
+const std::vector<QString> LABEL_TEXT{{"&Title:", "&Type:", "&Last performed:", "&Times performed:", "&Vision:"}};
+const std::vector<QString> BUTTON_TEXT{{"Add task", "Delete task"}};
+
+GUI::GUI(std::vector<Task> tasks, QWidget* parent): QWidget{parent}, _tasks{tasks} {
   this->initGUI();
   this->connectSignalsAndSlots();
   this->populateTasksList();
 }
 
-GUI::~GUI()
-{
-}
+GUI::~GUI() { }
 
-void GUI::initGUI()
-{
+void GUI::initGUI() {
   //Taskral layout of the window
   QHBoxLayout* layout = new QHBoxLayout{this};
 
   // left side - just the list
-  this->tasksList = new QListWidget{};
+  _tasksList = new QListWidget;
   // set the selection model
-  this->tasksList->setSelectionMode(QAbstractItemView::SingleSelection);
-  layout->addWidget(this->tasksList);
+  _tasksList->setSelectionMode(QAbstractItemView::SingleSelection);
+  layout->addWidget(_tasksList);
 
-  // right side - gene information + buttons
-  QWidget* rightSide = new QWidget{};
+  // right side - task information + buttons
+  QWidget* rightSide = new QWidget;
   QVBoxLayout* vLayout = new QVBoxLayout{rightSide};
 
-  // gene information
-  QWidget* taskDataWidget = new QWidget{};
+  // Task information
+  QWidget* taskDataWidget = new QWidget;
   QFormLayout* formLayout = new QFormLayout{taskDataWidget};
 
-  this->titleEdit = new QLineEdit{};
-  this->typeEdit = new QLineEdit{};
-  this->lastPerformedEdit = new QLineEdit{};
-  this->timesPerformedEdit = new QLineEdit{};
-  this->visionEdit = new QLineEdit{};
+  std::vector<QLabel*> labels;
 
-  QFont f{"Verdana", 15};
+  for (int i = 0; i < LINE_EDIT_COUNT; ++i) {
+    auto lineEdit = new QLineEdit;
+    lineEdit->setFont(FONT);
 
-  QLabel* titleLabel = new QLabel{"&Title:"};
-  titleLabel->setBuddy(this->titleEdit);
+    auto label = new QLabel{LABEL_TEXT.at(i)};
+    label->setBuddy(lineEdit);
+    label->setFont(FONT);
 
-  QLabel* typeLabel = new QLabel{ "&Type: " };
-  typeLabel->setBuddy(this->typeEdit);
+    formLayout->addRow(label, lineEdit);
 
-  QLabel* lastPerformedLabel = new QLabel{ "&Last performed:" };
-  lastPerformedLabel->setBuddy(this->lastPerformedEdit);
-
-  QLabel* timesPerformedLabel = new QLabel{ "&Times performed:" };
-  timesPerformedLabel->setBuddy(this->timesPerformedEdit);
-
-  QLabel* visionLabel = new QLabel{ "&Vision:" };
-  visionLabel->setBuddy(this->visionEdit);
-
-  titleLabel->setFont(f);
-  typeLabel->setFont(f);
-  lastPerformedLabel->setFont(f);
-  timesPerformedLabel->setFont(f);
-  visionLabel->setFont(f);
-
-  this->titleEdit->setFont(f);
-  this->typeEdit->setFont(f);
-  this->lastPerformedEdit->setFont(f);
-  this->timesPerformedEdit->setFont(f);
-  this->visionEdit->setFont(f);
-
-  formLayout->addRow(titleLabel, this->titleEdit);
-  formLayout->addRow(typeLabel, this->typeEdit);
-  formLayout->addRow(lastPerformedLabel, this->lastPerformedEdit);
-  formLayout->addRow(timesPerformedLabel, this->timesPerformedEdit);
-  formLayout->addRow(visionLabel, this->visionEdit);
+    _lineEdits.push_back(lineEdit);
+    labels.push_back(label);
+  }
 
   vLayout->addWidget(taskDataWidget);
 
   // buttons
-  QWidget* buttonsWidget = new QWidget{};
+  QWidget* buttonsWidget = new QWidget;
   QHBoxLayout* hLayout = new QHBoxLayout{buttonsWidget};
-  
-  this->addTaskButton = new QPushButton("Add Task");
-  this->addTaskButton->setFont(f);
-  this->deleteTaskButton = new QPushButton("Delete Task");
-  this->deleteTaskButton->setFont(f);
-  hLayout->addWidget(this->addTaskButton);
-  hLayout->addWidget(this->deleteTaskButton);
+
+  for (int i = 0; i < BUTTON_COUNT; ++i) {
+    auto button = new QPushButton{BUTTON_TEXT.at(i)};
+    button->setFont(FONT);
+
+    _buttons.push_back(button);
+    hLayout->addWidget(button);
+  }
 
   vLayout->addWidget(buttonsWidget);
 
   // add everything to the big layout
-  layout->addWidget(this->tasksList);
+  layout->addWidget(_tasksList);
   layout->addWidget(rightSide);
 }
 
-void GUI::connectSignalsAndSlots()
-{
-  // when the vector of genes is updated - re-populate the list
-  //QObject::connect(this, SIGNAL(genesUpdatedSignal()), this, SLOT(populateTasksList()));
+void GUI::connectSignalsAndSlots() {
+  // when the vector of tasks is updated - re-populate the list
+  //QObject::connect(this, SIGNAL(tasksUpdatedSignal()), this, SLOT(populateTasksList()));
   QObject::connect(this, &GUI::tasksUpdatedSignal, this, &GUI::populateTasksList);
 
   // add a connection: function listItemChanged() will be called when an item in the list is selected
-  QObject::connect(this->tasksList, &QListWidget::itemSelectionChanged, this, [this]() {this->listItemChanged(); });
+  QObject::connect(_tasksList, &QListWidget::itemSelectionChanged, this, [this]() {this->listItemChanged(); });
 
   // add button connections
-  QObject::connect(this->addTaskButton, &QPushButton::clicked, this, &GUI::addTaskButtonHandler);
-  QObject::connect(this->deleteTaskButton, &QPushButton::clicked, this, &GUI::deleteTaskButtonHandler);
+  QObject::connect(_buttons.at(0), &QPushButton::clicked, this, &GUI::addTaskButtonHandler);
+  QObject::connect(_buttons.at(1), &QPushButton::clicked, this, &GUI::deleteTaskButtonHandler);
 
-  // connect the addTask signal to the addTask slot, which adds a gene to vector
-    QObject::connect(this, SIGNAL(addTaskSignal(const std::string&, const std::string&, const std::string&, const std::string&, const std::string&)),
-                        this, SLOT(addTask(const std::string&, const std::string&, const std::string&, const std::string&, const std::string&)));
+  // connect the addTask signal to the addTask slot, which adds a task to vector
+  QObject::connect(
+    this, SIGNAL(addTaskSignal(const std::vector<std::string>&)),
+    this, SLOT(addTask(const std::vector<std::string>&)));
 }
 
-void GUI::addTask(
-    const std::string& title,
-    const std::string& type,
-    const std::string& lastPerformed,
-    const std::string& timesPerformed,
-    const std::string& vision) {
-  this->tasks.push_back(Task{title, type, lastPerformed, std::stoi(timesPerformed), vision});
+void GUI::addTask(const std::vector<std::string>& parts)
+{
+  _tasks.push_back(taskOfParts(parts));
 
-  // emit the signal: the genes were updated
+  // emit the signal: the tasks were updated
   emit tasksUpdatedSignal();
 }
 
-void GUI::addTaskButtonHandler()
-{
-  // read data from the textboxes and add the new gene
-  QString title = this->titleEdit->text();
-  QString type = this->typeEdit->text();
-  QString lastPerformed = this->lastPerformedEdit->text();
-  QString timesPerformed = this->timesPerformedEdit->text();
-  QString vision = this->visionEdit->text();
+void GUI::addTaskButtonHandler() {
+  std::vector<std::string> parts;
+
+  // read data from the textboxes and add the new task
+  for (auto lineEdit : _lineEdits)
+    parts.push_back(lineEdit->text().toStdString());
 
   // emit the addTask signal
-  emit addTaskSignal(
-    title.toStdString(),
-    type.toStdString(),
-    lastPerformed.toStdString(),
-    timesPerformed.toStdString(),
-    vision.toStdString());
+  emit addTaskSignal(parts);
 }
 
 void GUI::deleteTaskButtonHandler() {
-  // get the selected index and delete the gene
+  // get the selected index and delete the task
   int idx = this->getSelectedIndex();
 
-  if (idx < 0 || idx >= this->tasks.size())
+  if (idx < 0 || (std::size_t)idx >= _tasks.size())
     return;
 
-  this->tasks.erase(this->tasks.begin() + idx);
+  _tasks.erase(_tasks.begin() + idx);
 
-  // emit the signal: the genes were updated
+  // emit the signal: the tasks were updated
   emit tasksUpdatedSignal();
 }
 
 void GUI::populateTasksList() {
   // clear the list, if there are elements in it
-  if (this->tasksList->count() > 0)
-    this->tasksList->clear();
+  if (_tasksList->count() > 0)
+    _tasksList->clear();
 
-  for (auto g : this->tasks) {
-    QString itemInList = QString::fromStdString(
-      g.title()
-      + ", " + g.type()
-      + ", " + g.lastPerformed()
-      + ", " + std::to_string(g.timesPerformed())
-      + ", " + g.vision());
+  for (auto task : _tasks) {
+    QString itemInList = QString::fromStdString(task.toString());
       
-    QFont f{"Verdana", 15};
     QListWidgetItem* item = new QListWidgetItem{itemInList};
-    item->setFont(f);
-    this->tasksList->addItem(item);
+    item->setFont(FONT);
+
+    _tasksList->addItem(item);
   }
 
   // set the selection on the first item in the list
-  if (this->tasks.size() > 0)
-    this->tasksList->setCurrentRow(0);
+  if (_tasks.size() > 0)
+    _tasksList->setCurrentRow(0);
 }
 
 int GUI::getSelectedIndex() {
-  if (this->tasksList->count() == 0)
+  if (_tasksList->count() == 0)
     return -1;
 
   // get selected index
-  QModelIndexList index = this->tasksList->selectionModel()->selectedIndexes();
+  QModelIndexList index = _tasksList->selectionModel()->selectedIndexes();
 
   if (index.size() == 0) {
-    this->titleEdit->clear();
-    this->typeEdit->clear();
-    this->lastPerformedEdit->clear();
-    this->timesPerformedEdit->clear();
-    this->visionEdit->clear();
+    for (auto lineEdit : _lineEdits)
+      lineEdit->clear();
 
     return -1;
   }
@@ -200,14 +157,12 @@ int GUI::getSelectedIndex() {
 
 void GUI::listItemChanged() {
   int idx = this->getSelectedIndex();
-  if (idx < 0 || idx >= this->tasks.size())
+  if (idx < 0 || (std::size_t)idx >= _tasks.size())
     return;
 
-  auto task = this->tasks[idx];
+  auto task = _tasks[idx];
+  auto parts = task.toParts();
 
-  this->titleEdit->setText(QString::fromStdString(task.title()));
-  this->typeEdit->setText(QString::fromStdString(task.type()));
-  this->lastPerformedEdit->setText(QString::fromStdString(task.lastPerformed()));
-  this->timesPerformedEdit->setText(QString::fromStdString(std::to_string(task.timesPerformed())));
-  this->visionEdit->setText(QString::fromStdString(task.vision()));
+  for (auto i = 0; i < LINE_EDIT_COUNT; ++i)
+    _lineEdits.at(i)->setText(QString::fromStdString(parts.at(i)));
 }

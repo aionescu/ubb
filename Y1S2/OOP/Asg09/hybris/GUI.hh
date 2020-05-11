@@ -10,34 +10,29 @@
 #include <QLabel>
 #include "Domain.hh"
 
+constexpr const int LINE_EDIT_COUNT = 5;
+constexpr const int BUTTON_COUNT = 2;
+
 class GUI: public QWidget
 {
   Q_OBJECT
 
 public:
-  GUI(std::vector<Task> tasks, QWidget *parent = nullptr);
+  GUI(std::vector<Task> tasks, QWidget* parent = nullptr);
   ~GUI();
 
 private:
-  std::vector<Task> tasks;
+  std::vector<Task> _tasks;
 
-  QListWidget* tasksList;
-
-  QLineEdit* titleEdit;
-  QLineEdit* typeEdit;
-  QLineEdit* lastPerformedEdit;
-  QLineEdit* timesPerformedEdit;
-  QLineEdit* visionEdit;
-
-  QPushButton* addTaskButton;
-  QPushButton* deleteTaskButton;
+  QListWidget* _tasksList;
+  std::vector<QLineEdit*> _lineEdits;
+  std::vector<QPushButton*> _buttons;
 
   void initGUI();
   int getSelectedIndex();
   void connectSignalsAndSlots();
 
   void populateTasksList();
-  // When an item in the list is clicked, the text boxes get filled with the item's information
   void listItemChanged();
 
   void addTaskButtonHandler();
@@ -45,20 +40,10 @@ private:
 
 signals:
   void tasksUpdatedSignal();
-  void addTaskSignal(
-    const std::string& title,
-    const std::string& type,
-    const std::string& lastPerformed,
-    const std::string& timesPerformed,
-    const std::string& vision);
+  void addTaskSignal(const std::vector<std::string>& parts);
 
 public slots:
-  void addTask(
-    const std::string& title,
-    const std::string& type,
-    const std::string& lastPerformed,
-    const std::string& timesPerformed,
-    const std::string& vision);
+  void addTask(const std::vector<std::string>& parts);
 };
 
 #endif

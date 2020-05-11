@@ -47,6 +47,24 @@ const std::string& Task::vision() const {
   return _vision;
 }
 
+std::string Task::toString() const {
+  std::ostringstream stream;
+  stream << *this;
+
+  return stream.str();
+}
+
+std::vector<std::string> Task::toParts() const {
+  std::vector<std::string> parts{{
+    _title,
+    _type,
+    _lastPerformed,
+    std::to_string(_timesPerformed),
+    _vision}};
+
+  return parts;
+}
+
 void trimString(std::string& string) {
   auto isNotSpace = [](char character) { return !std::isspace(character); };
   
