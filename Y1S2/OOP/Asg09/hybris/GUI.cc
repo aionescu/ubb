@@ -5,6 +5,8 @@ const QFont FONT{"Cascadia Code", 14};
 const std::vector<QString> LABEL_TEXT{{"&Title:", "&Type:", "&Last performed:", "&Times performed:", "&Vision:"}};
 const std::vector<QString> BUTTON_TEXT{{"Add task", "Delete task"}};
 
+using namespace QtCharts;
+
 GUI::GUI(QWidget* parent) : QWidget{parent} {
   _services.setFilePath("Tasks.csv");
   _services.setMode("A");
@@ -17,8 +19,9 @@ GUI::GUI(QWidget* parent) : QWidget{parent} {
 GUI::~GUI() { }
 
 void GUI::initGUI() {
+  QWidget* repoWidget = new QWidget;
   //Taskral layout of the window
-  QHBoxLayout* layout = new QHBoxLayout{this};
+  QHBoxLayout* layout = new QHBoxLayout{repoWidget};
 
   // left side - just the list
   _tasksList = new QListWidget;
@@ -69,6 +72,26 @@ void GUI::initGUI() {
   // add everything to the big layout
   layout->addWidget(_tasksList);
   layout->addWidget(rightSide);
+
+  _tabWidget = new QTabWidget;
+  _tabWidget->addTab(repoWidget, "Repo view");
+
+  auto finalLayout = new QHBoxLayout{this};
+  finalLayout->addWidget(_tabWidget);
+
+  QPieSeries *series = new QPieSeries();
+
+  for (auto task : _services.allTasks())
+    series->append(QString::fromStdString(task.title()), task.timesPerformed());
+
+  _chart = new QChart();
+  _chart->addSeries(series);
+  _chart->setTitle("Times performed for each task");
+  
+  QChartView *chartView = new QChartView(_chart);
+  chartView->setRenderHint(QPainter::Antialiasing);
+
+  _tabWidget->addTab(chartView, "Chart view");
 }
 
 void GUI::connectSignalsAndSlots() {
@@ -87,6 +110,16 @@ void GUI::connectSignalsAndSlots() {
   QObject::connect(
     this, SIGNAL(addTaskSignal(const std::vector<std::string>&)),
     this, SLOT(addTask(const std::vector<std::string>&)));
+}
+
+void GUI::_updateChart() {
+  QPieSeries *series = new QPieSeries();
+
+  for (auto task : _services.allTasks())
+    series->append(QString::fromStdString(task.title()), task.timesPerformed());
+
+  _chart->removeAllSeries();
+  _chart->addSeries(series);
 }
 
 void GUI::addTask(const std::vector<std::string>& parts)
@@ -145,6 +178,8 @@ void GUI::populateTasksList() {
   // set the selection on the first item in the list
   if (tasks.size() > 0)
     _tasksList->setCurrentRow(0);
+
+  _updateChart();
 }
 
 int GUI::getSelectedIndex() {

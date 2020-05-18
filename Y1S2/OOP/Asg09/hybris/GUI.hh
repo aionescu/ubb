@@ -8,6 +8,10 @@
 #include <QTextEdit>
 #include <QPushButton>
 #include <QLabel>
+#include <QTabWidget>
+#include <QtCharts/QChartView>
+#include <QtCharts/QPieSeries>
+#include <QtCharts/QPieSlice>
 #include "Domain.hh"
 #include "Services.hh"
 
@@ -28,6 +32,8 @@ private:
   QListWidget* _tasksList;
   std::vector<QLineEdit*> _lineEdits;
   std::vector<QPushButton*> _buttons;
+  QTabWidget* _tabWidget;
+  QtCharts::QChart* _chart;
 
   void initGUI();
   int getSelectedIndex();
@@ -38,6 +44,8 @@ private:
 
   void addTaskButtonHandler();
   void deleteTaskButtonHandler();
+
+  void _updateChart();
 
 signals:
   void tasksUpdatedSignal();
