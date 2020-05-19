@@ -24,6 +24,11 @@ private:
 
   QLabel* _currentTaskLabel;
   QListWidget* _mylistWidget;
+  QListWidget* _filteredListWidget;
+
+  QLineEdit* _typeFilter;
+  QLineEdit* _timesPerformedFilter;
+  
   std::vector<QPushButton*> _buttons;
 
   void _initialize();
@@ -32,6 +37,8 @@ private:
 
   void _saveButtonHandler();
   void _nextButtonHandler();
+  void _openExternalButtonHandler();
+  void _filterButtonHandler();
 
 public:
   ModeB(Services& services, QWidget* parent = nullptr);
