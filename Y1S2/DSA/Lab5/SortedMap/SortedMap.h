@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <utility>
+#include <vector>
 
 //DO NOT CHANGE THIS PART
 typedef int TKey;
@@ -30,7 +31,7 @@ struct HT {
 class SortedMap {
   friend class SMIterator;
 
-  Relation _lt;
+  Relation _lte;
   std::size_t _n;
   HT _ht;
 
@@ -43,26 +44,37 @@ public:
   // implicit constructor
   SortedMap(Relation r);
 
+  // Amortized Th(1)
   // adds a pair (key,value) to the map
   //if the key already exists in the map, then the value associated to the key is replaced by the new value and the old value is returned
   //if the key SMes not exist, a new pair is added and the value null is returned
   TValue add(TKey c, TValue v);
 
+  // Th(1)
   //searches for the key and returns the value associated with the key if the map contains the key or null: NULL_TVALUE otherwise
   TValue search(TKey c) const;
 
+  // Th(1)
   //removes a key from the map and returns the value associated with the key if the key existed ot null: NULL_TVALUE otherwise
   TValue remove(TKey c);
 
+  // Th(1)
   //returns the number of pairs (key,value) from the map
   int size() const;
 
+  // Th(1)
   //checks whether the map is empty or not
   bool isEmpty() const;
 
+  // Th(n)
   // return the iterator for the map
   // the iterator will return the keys following the order given by the relation
   SMIterator iterator() const;
+
+  // Worst case: Th(n)
+  // Best case: Th(n)
+  // Average case: Th(n)
+  std::vector<TValue> valueBag() const;
 
   // destructor
   ~SortedMap();

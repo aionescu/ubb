@@ -9,7 +9,7 @@ std::size_t defaultHash(TKey key) {
 }
 
 SortedMap::SortedMap(Relation lt)
-  : _lt{lt}
+  : _lte{lt}
   , _n{0}
   , _ht{defaultHash, 8, new Node*[8]{}}
 { }
@@ -64,19 +64,34 @@ void SortedMap::_resize() {
 }
 
 TValue SortedMap::add(TKey k, TValue v) {
-  if ((double)_n / (double)_ht.m >= 1)
+  if ((double)_n / (double)_ht.m >= 0.7)
     _resize();
 
   auto slot = _getSlot(k);
+
+  if (!*slot) {
+    *slot = new Node{{k, v}, nullptr};
+    ++_n;
+    return NULL_TVALUE;
+  }
   
-  while (*slot && (*slot)->kvp.first != k)
+  while (*slot && (*slot)->kvp.first != k && _lte((*slot)->kvp.first, k))
     slot = &((*slot)->next);
 
   if (*slot) {
-    auto old = (*slot)->kvp.second;
-    (*slot)->kvp.second = v;
+    if ((*slot)->kvp.first == k) {
+      auto old = (*slot)->kvp.second;
+      (*slot)->kvp.second = v;
 
-    return old;
+      return old;
+    } else {
+      auto kvp = (*slot)->kvp;
+      (*slot)->kvp = {k, v};
+      (*slot)->next = new Node{kvp, (*slot)->next};
+
+      ++_n;
+      return NULL_TVALUE;
+    }
   } else {
     *slot = new Node{{k, v}, nullptr};
     ++_n;
@@ -141,6 +156,13 @@ bool SortedMap::isEmpty() const {
 
 SMIterator SortedMap::iterator() const {
   return SMIterator{*this};
+}
+
+std::vector<TValue> SortedMap::valueBag() const {
+  std::vector<TValue> vec;
+  _forEach([&](TElem kvp) { vec.push_back(kvp.second); });
+  
+  return vec;
 }
 
 SortedMap::~SortedMap() {

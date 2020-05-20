@@ -6,8 +6,12 @@ class SMIterator {
   friend class SortedMap;
 
   const SortedMap& _map;
-  TElem* _kvps;
-  std::size_t _crr;
+
+  std::size_t _listCount;
+  Node** _lists;
+  
+  std::size_t _crrList;
+  Node* _crrNode;
 
   SMIterator(const SortedMap& mapionar);
 
