@@ -67,15 +67,12 @@ void ModeA::_initialize() {
 
   _undoButton = new QPushButton{"&Undo"};
   _redoButton = new QPushButton{"&Redo"};
-  _mylistButton = new QPushButton{"&Mylist"};
 
   _undoButton->setFont(FONT);
   _redoButton->setFont(FONT);
-  _mylistButton->setFont(FONT);
 
   undoRedoLayout->addWidget(_undoButton);
   undoRedoLayout->addWidget(_redoButton);
-  undoRedoLayout->addWidget(_mylistButton);
 
   vLayout->addWidget(undoRedoWidget);
 
@@ -105,7 +102,6 @@ void ModeA::connectSignalsAndSlots() {
 
   QObject::connect(_undoButton, &QPushButton::clicked, this, &ModeA::undoButtonHandler);
   QObject::connect(_redoButton, &QPushButton::clicked, this, &ModeA::redoButtonHandler);
-  QObject::connect(_mylistButton, &QPushButton::clicked, this, &ModeA::mylistButtonHandler);
 
   QObject::connect(_undoShortcut, &QShortcut::activated, this, &ModeA::undoButtonHandler);
   QObject::connect(_redoShortcut, &QShortcut::activated, this, &ModeA::redoButtonHandler);
@@ -188,11 +184,6 @@ void ModeA::redoButtonHandler() {
   } catch (...) { }
 
   emit tasksUpdatedSignal();
-}
-
-void ModeA::mylistButtonHandler() {
-  auto mylistWindow = new MylistWindow{_services, _tasksList->size(), this};
-  mylistWindow->show();
 }
 
 void ModeA::populateTasksList() {

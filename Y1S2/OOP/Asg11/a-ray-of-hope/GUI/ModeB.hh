@@ -28,6 +28,8 @@ private:
 
   QLineEdit* _typeFilter;
   QLineEdit* _timesPerformedFilter;
+
+  QPushButton* _mylistButton;
   
   std::vector<QPushButton*> _buttons;
 
@@ -39,7 +41,8 @@ private:
   void _nextButtonHandler();
   void _openExternalButtonHandler();
   void _filterButtonHandler();
-
+  void _mylistButtonHandler();
+  
 public:
   ModeB(Services& services, QWidget* parent = nullptr);
   void getFocus();

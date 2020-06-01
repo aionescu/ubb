@@ -31,7 +31,7 @@ private:
   std::vector<QLineEdit*> _lineEdits;
   std::vector<QPushButton*> _buttons;
 
-  QPushButton *_undoButton, *_redoButton, *_mylistButton;
+  QPushButton *_undoButton, *_redoButton;
   QShortcut *_undoShortcut, *_redoShortcut;
 
   void _initialize();
@@ -47,7 +47,6 @@ private:
   
   void undoButtonHandler();
   void redoButtonHandler();
-  void mylistButtonHandler();
 
 signals:
   void tasksUpdatedSignal();

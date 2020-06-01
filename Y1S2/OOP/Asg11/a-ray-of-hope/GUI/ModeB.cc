@@ -1,7 +1,8 @@
 #include "ModeB.hh"
+#include "MylistWindow.hh"
 
 const QFont FONT{"Cascadia Code", 14};
-const std::vector<QString> BUTTON_TEXT{{"Next task", "Save Task", "Open External", "Filter Data"}};
+const std::vector<QString> BUTTON_TEXT{{"Next task", "Save Task", "Open External", "Filter Data", "Mylist"}};
 
 ModeB::ModeB(Services& services, QWidget* parent) : QWidget{parent}, _services{services} {
   _initialize();
@@ -79,11 +80,16 @@ void ModeB::_initialize() {
     hLayout2->addWidget(button);
   }
 
+  _mylistButton = new QPushButton{"&Mylist"};
+  _mylistButton->setFont(FONT);
+
   auto buttonsLayout = new QVBoxLayout{buttonsWidget};
   buttonsLayout->addLayout(hLayout);
   buttonsLayout->addLayout(hLayout2);
 
   vLayout->addWidget(buttonsWidget);
+  vLayout->addWidget(_mylistButton);
+
   layout->addWidget(rightSide);
   layout->addWidget(_filteredListWidget);
 }
@@ -140,6 +146,8 @@ void ModeB::_setupSlotsSignals() {
   QObject::connect(_buttons.at(1), &QPushButton::clicked, this, &ModeB::_saveButtonHandler);
   QObject::connect(_buttons.at(2), &QPushButton::clicked, this, &ModeB::_openExternalButtonHandler);
   QObject::connect(_buttons.at(3), &QPushButton::clicked, this, &ModeB::_filterButtonHandler);
+
+  QObject::connect(_mylistButton, &QPushButton::clicked, this, &ModeB::_mylistButtonHandler);
 }
 
 void ModeB::_saveButtonHandler() {
@@ -159,6 +167,11 @@ void ModeB::_nextButtonHandler() {
   _currentTask = nextResult.second;
 
   emit updateMylistSignal();
+}
+
+void ModeB::_mylistButtonHandler() {
+  auto mylistWindow = new MylistWindow{_services, _mylistWidget->size(), this};
+  mylistWindow->show();
 }
 
 void ModeB::getFocus() {
