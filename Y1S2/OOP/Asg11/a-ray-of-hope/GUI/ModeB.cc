@@ -2,7 +2,7 @@
 #include "MylistWindow.hh"
 
 const QFont FONT{"Cascadia Code", 14};
-const std::vector<QString> BUTTON_TEXT{{"Next task", "Save Task", "Open External", "Filter Data", "Mylist"}};
+const std::vector<QString> BUTTON_TEXT{{"Next task", "Save Task", "Open External", "Filter Data"}};
 
 ModeB::ModeB(Services& services, QWidget* parent) : QWidget{parent}, _services{services} {
   _initialize();
