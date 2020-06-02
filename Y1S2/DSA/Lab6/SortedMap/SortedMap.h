@@ -35,7 +35,7 @@ class SortedMap {
   void _deallocate(Index node);
 
   bool _canInsertAfter(Index node, TKey key);
-  Index _findParentOfMaximum(Index startingNode);
+  Index _findParentOfMaximum(Index original);
 
   void _inOrderTraversal(Index node, std::function<void(TElem)> f) const;
 

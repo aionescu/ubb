@@ -70,19 +70,32 @@ void SortedMap::_inOrderTraversal(Index node, std::function<void(TElem)> f) cons
   _inOrderTraversal(_array[node].right, f);
 }
 
-Index SortedMap::_findParentOfMaximum(Index startingNode) {
+Index SortedMap::_findParentOfMaximum(Index original) {
+  if (original == -1 || _array[original].left == -1)
+    return -1;
+
+  auto startingNode = _array[original].left;
+
+  if (startingNode == -1)
+    return -1;
+  
+  if (_array[startingNode].left == -1 && _array[startingNode].right == -1)
+    return original;
+
   if (startingNode == -1 || _array[startingNode].right == -1)
     return -1;
 
-  auto prev = startingNode;
-  auto node = _array[startingNode].right;
+  auto parent = startingNode;
+  auto prev = _array[startingNode].right;
+  auto node = _array[prev].right;
 
   while (node != -1) {
+    parent = prev;
     prev = node;
     node = _array[node].right;
   }
 
-  return prev;
+  return parent;
 }
 
 TValue SortedMap::add(TKey k, TValue v) {
@@ -152,10 +165,17 @@ TValue SortedMap::remove(TKey k) {
       _deallocate(oldRoot);
     } else {
       auto parentMax = _findParentOfMaximum(_root);
-      auto max = _array[parentMax].right;
 
+      Index max;
+      if (parentMax != _root) {
+        max = _array[parentMax].right;
+        _array[parentMax].right = -1;
+      } else {
+        max = _array[parentMax].left;
+        _array[parentMax].left = -1;
+      }
+      
       _array[_root].kvp = _array[max].kvp;
-      _array[parentMax].right = -1;
       _deallocate(max);
     }
 
@@ -200,10 +220,17 @@ TValue SortedMap::remove(TKey k) {
     _deallocate(node);
   } else {
     auto parentMax = _findParentOfMaximum(node);
-    auto max = _array[parentMax].right;
     
+    Index max;
+    if (parentMax != node) {
+      max = _array[parentMax].right;
+      _array[parentMax].right = -1;
+    } else {
+      max = _array[parentMax].left;
+      _array[parentMax].left = -1;
+    }
+
     _array[node].kvp = _array[max].kvp;
-    _array[parentMax].right = -1;
     _deallocate(max);
   }
 
