@@ -141,6 +141,7 @@ TValue SortedMap::remove(TKey k) {
 
     if (_array[_root].left == -1 && _array[_root].right == -1) {
       _deallocate(_root);
+      _root = -1;
     } else if (_array[_root].left == -1) {
       auto oldRoot = _root;
       _root = _array[_root].right;
@@ -199,9 +200,8 @@ TValue SortedMap::remove(TKey k) {
     _deallocate(node);
   } else {
     auto parentMax = _findParentOfMaximum(node);
-
     auto max = _array[parentMax].right;
-
+    
     _array[node].kvp = _array[max].kvp;
     _array[parentMax].right = -1;
     _deallocate(max);
