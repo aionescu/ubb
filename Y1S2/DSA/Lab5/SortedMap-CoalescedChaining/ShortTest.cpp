@@ -4,6 +4,9 @@
 #include "SMIterator.h"
 #include "ShortTest.h"
 #include <exception>
+#include <stdexcept>
+#include <iostream>
+
 using namespace std;
 
 bool relatie1(TKey cheie1, TKey cheie2) {
@@ -15,7 +18,45 @@ bool relatie1(TKey cheie1, TKey cheie2) {
   }
 }
 
+void testIteratorRemove() {
+  std::cout << "Testing iterator remove." << std::endl;
+
+  SortedMap m{relatie1};
+
+  auto invalid = m.iterator();
+  assert(!invalid.valid());
+
+  std::cout << "Created" << std::endl;
+
+  try {
+    invalid.remove();
+    assert(false);
+  } catch (std::runtime_error&) {
+    assert(true);
+  }
+
+  for (int i = 0; i < 10; ++i)
+    m.add(i, i);
+
+  auto it = m.iterator();
+  it.next();
+  it.next();
+  it.next();
+
+  assert(it.getCurrent().first == 3);
+  it.remove();
+  assert(it.getCurrent().first == 4);
+
+  while (it.getCurrent().first < 9)
+    it.next();
+
+  it.remove();
+  assert(!it.valid());
+}
+
 void testAll(){
+  testIteratorRemove();
+
   SortedMap sm(relatie1);
   assert(sm.size() == 0);
   assert(sm.isEmpty());

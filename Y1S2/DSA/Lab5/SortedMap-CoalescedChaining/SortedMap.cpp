@@ -210,7 +210,7 @@ bool SortedMap::isEmpty() const {
   return n == 0;
 }
 
-SMIterator SortedMap::iterator() const {
+SMIterator SortedMap::iterator() {
   return SMIterator(*this);
 }
 

@@ -82,14 +82,23 @@ public:
   //returns the number of columns
   int nrColumns() const;
 
-  // Th(h)
+  // Best case: Th(1)
+  // Worst case: Th(h)
+  // Average case: O(h)
   //returns the element from line i and column j (indexing starts from 0)
   //throws exception if (i,j) is not a valid position in the Matrix
   TElem element(int i, int j) const;
 
-  // Th(h)
+  // Best case: Th(1)
+  // Worst case: Th(h)
+  // Average case: O(h)
   //modifies the value from line i and column j
   //returns the previous value from the position
   //throws exception if (i,j) is not a valid position in the Matrix
   TElem modify(int i, int j, TElem e);
+
+  // Best case: Th(1)
+  // Worst case: Th(h * nrLines)
+  // Average case: O(h * nrLines)
+  int numberOfNonZeroElems(int col) const;
 };

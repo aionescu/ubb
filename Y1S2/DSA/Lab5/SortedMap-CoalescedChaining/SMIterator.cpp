@@ -34,7 +34,7 @@ void quickSort(TElem arr[], int low, int high, Relation r) {
   }
 }
 
-SMIterator::SMIterator(const SortedMap& m) : map(m) {
+SMIterator::SMIterator(SortedMap& m) : map(m) {
   this->elems = new TElem[map.n];
   this->currentIndex = 0;
 
@@ -69,4 +69,17 @@ TElem SMIterator::getCurrent() const {
     throw std::runtime_error{"Invalid iterator in getCurrent() function."};
 
   return this->elems[this->currentIndex];
+}
+
+TElem SMIterator::remove() {
+  if (!valid())
+    throw std::runtime_error{"SMIterator::remove: Invalid iterator."};
+
+  this->map.remove(this->elems[this->currentIndex].first);
+  auto removed = this->elems[this->currentIndex];
+
+  for (std::size_t i = this->currentIndex; i < this->map.n; ++i)
+    this->elems[i] = this->elems[i + 1];
+
+  return removed;
 }

@@ -3,7 +3,7 @@
 #include "SMIterator.h"
 #include "SortedMap.h"
 
-SMIterator::SMIterator(const SortedMap& m) : _map{m} {
+SMIterator::SMIterator(SortedMap& m) : _map{m} {
   if (_map._size == 0) {
     _current = 0;
     _elems = nullptr;
@@ -43,4 +43,17 @@ TElem SMIterator::getCurrent() const {
     throw std::runtime_error{"SMIterator::getCurrent: Invalid iterator."};
 
   return _elems[_current];
+}
+
+TElem SMIterator::remove() {
+  if (!valid())
+    throw std::runtime_error{"SMIterator::remove: Invalid iterator."};
+
+  _map.remove(_elems[_current].first);
+  auto removed = _elems[_current];
+
+  for (int i = _current; i < _map._size; ++i)
+    _elems[i] = _elems[i + 1];
+
+  return removed;
 }

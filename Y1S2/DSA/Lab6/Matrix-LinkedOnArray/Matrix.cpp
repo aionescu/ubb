@@ -301,3 +301,17 @@ TElem Matrix::modify(int i, int j, TElem e) {
   else
     return add(i, j, e);
 }
+
+int Matrix::numberOfNonZeroElems(int col) const {
+  if (col < 0 || col >= nrColumns())
+    throw std::runtime_error{"Matrix::numberOfNonZeroElems: Invalid column specified."};
+    
+  int number = 0;
+
+  for (int i = 0; i < nrLines(); ++i) {
+    if (element(i, col) != 0)
+      ++number;
+  }
+
+  return number;
+}

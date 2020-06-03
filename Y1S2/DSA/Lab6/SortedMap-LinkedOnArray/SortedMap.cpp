@@ -245,7 +245,7 @@ bool SortedMap::isEmpty() const {
   return _size == 0;
 }
 
-SMIterator SortedMap::iterator() const {
+SMIterator SortedMap::iterator() {
   return SMIterator(*this);
 }
 

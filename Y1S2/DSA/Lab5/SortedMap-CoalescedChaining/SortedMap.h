@@ -60,7 +60,7 @@ public:
   // Th(1)
   // return the iterator for the map
   // the iterator will return the keys following the order given by the relation
-  SMIterator iterator() const;
+  SMIterator iterator();
 
   // destructor
   ~SortedMap();
