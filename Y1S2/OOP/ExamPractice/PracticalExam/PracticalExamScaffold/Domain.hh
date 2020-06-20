@@ -53,6 +53,13 @@ public:
     return _data != rhs._data;
   }
 
+  std::string toString() const {
+    std::ostringstream ss;
+    ss << this;
+    
+    return ss.str();
+  }
+  
   friend std::istream& operator >>(std::istream& stream, Entity& entity) {
     if constexpr (sizeof...(TFields) > 0) {
       std::string buf;

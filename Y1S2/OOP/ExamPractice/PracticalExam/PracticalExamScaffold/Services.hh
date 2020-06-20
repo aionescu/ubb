@@ -34,6 +34,11 @@ public:
   void remove(TEntity entity) {
     _repo.Repo<TEntity>::remove(entity);
   }
+  
+  template <typename TEntity>
+  TEntity& getByPredicate(std::function<bool(const TEntity&)> predicate) {
+    return _repo.Repo<TEntity>::getByPredicate(predicate);
+  }
 
   template <typename TEntity>
   std::vector<TEntity> getAllData() {
