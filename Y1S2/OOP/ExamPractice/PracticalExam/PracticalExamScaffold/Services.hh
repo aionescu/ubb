@@ -32,6 +32,11 @@ public:
   void remove(TEntity entity) {
     _repo.Repo<TEntity>::remove(entity);
   }
+
+  template <typename TEntity>
+  std::vector<TEntity> getAllData() {
+    return _repo.Repo<TEntity>::getAllData();
+  }
 };
 
 #endif
