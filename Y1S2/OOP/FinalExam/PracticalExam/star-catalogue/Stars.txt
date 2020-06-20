@@ -1,0 +1,12 @@
+Star11,Const1,1,1,1
+Star12,Const1,2,2,2
+Star13,Const1,3,3,3
+Star14,Const1,4,4,4
+Star21,Const2,1,1,1
+Star22,Const2,2,2,2
+Star23,Const2,3,3,3
+Star24,Const2,4,4,4
+Star31,Const3,1,1,1
+Star32,Const3,2,2,2
+Star33,Const3,3,3,3
+Star34,Const3,4,4,4
