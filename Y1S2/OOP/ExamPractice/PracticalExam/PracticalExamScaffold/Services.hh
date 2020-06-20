@@ -8,6 +8,8 @@ class Services {
   TRepo _repo;
 
 public:
+  virtual ~Services() = default;
+  
   template <typename TEntity>
   void loadFromFile(std::string path) {
     _repo.Repo<TEntity>::loadFromFile(path);

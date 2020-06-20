@@ -33,7 +33,8 @@ protected:
 public:
   Entity() { }
   Entity(TFields... fields) : _data{fields...} { }
-
+  virtual ~Entity() = default;
+  
   template <std::size_t TIdx>
   auto get() const {
     return std::get<TIdx>(_data);

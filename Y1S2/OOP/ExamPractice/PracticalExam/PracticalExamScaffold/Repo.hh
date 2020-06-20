@@ -38,6 +38,8 @@ class Repo {
   std::vector<TEntity> _data;
 
 public:
+  virtual ~Repo() = default;
+  
   void loadFromFile(std::string path) {
     std::ifstream{path} >> _data;
   }
