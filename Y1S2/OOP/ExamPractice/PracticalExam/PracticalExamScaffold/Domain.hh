@@ -55,7 +55,7 @@ public:
 
   std::string toString() const {
     std::ostringstream ss;
-    ss << this;
+    ss << *this;
     
     return ss.str();
   }
