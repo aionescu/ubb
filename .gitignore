@@ -21,3 +21,6 @@ coverage-cc-html/
 
 # Qt
 qt-build-output/
+
+# Java
+*.class
