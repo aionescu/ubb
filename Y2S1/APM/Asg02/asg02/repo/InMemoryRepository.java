@@ -1,11 +1,12 @@
-package edu.asg02.repo;
+package asg02.repo;
 
 import java.util.Arrays;
-import java.util.List;
-import edu.asg02.models.Attendee;
-import edu.asg02.models.exn.*;
+import java.util.stream.Stream;
 
-public class InMemoryRepository implements Repository {
+import asg02.models.Attendee;
+import asg02.exn.*;
+
+public final class InMemoryRepository implements Repository {
   private int _attendeeCount;
   private final Attendee[] _attendees;
 
@@ -20,6 +21,9 @@ public class InMemoryRepository implements Repository {
 
     if (_attendeeCount == _attendees.length)
       throw new RepositoryFullException();
+
+    if (attendees().anyMatch(a -> a.name().equals(attendee.name())))
+      throw new DuplicateAttendeeException();
 
     _attendees[_attendeeCount++] = attendee;
   }
@@ -43,7 +47,7 @@ public class InMemoryRepository implements Repository {
     _attendees[--_attendeeCount] = null;
   }
 
-  public List<Attendee> attendees() {
-    return Arrays.asList(_attendees);
+  public Stream<Attendee> attendees() {
+    return Arrays.stream(_attendees, 0, _attendeeCount);
   }
 }

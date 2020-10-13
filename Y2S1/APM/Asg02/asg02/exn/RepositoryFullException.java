@@ -1,4 +1,4 @@
-package edu.asg02.models.exn;
+package asg02.exn;
 
 public class RepositoryFullException extends RuntimeException {
   private static final long serialVersionUID = 1;
@@ -6,7 +6,7 @@ public class RepositoryFullException extends RuntimeException {
   public RepositoryFullException() {
     super();
   }
-  
+
   public RepositoryFullException(String message) {
     super(message);
   }

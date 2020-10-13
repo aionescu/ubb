@@ -1,8 +1,8 @@
-package edu.asg02.models;
+package asg02.models;
 
-import edu.asg02.models.exn.InvalidAttendeeException;
+import asg02.exn.InvalidAttendeeException;
 
-public class Student implements Attendee {
+public final class Student implements Attendee {
   private final String _name, _major;
 
   public Student(String name, String major) {
@@ -16,6 +16,7 @@ public class Student implements Attendee {
     _major = major;
   }
 
+  @Override
   public final String name() {
     return _name;
   }
@@ -24,7 +25,15 @@ public class Student implements Attendee {
     return _major;
   }
 
+  @Override
   public boolean hasPresentedWorks() {
     return false;
+  }
+
+  @Override
+  public String toString() {
+    return String.format(
+      "Student { name = %s, major = %s }",
+      _name, _major);
   }
 }

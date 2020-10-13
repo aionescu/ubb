@@ -1,4 +1,4 @@
-package edu.asg02.view;
+package asg02.view;
 
 public interface View {
   void run();

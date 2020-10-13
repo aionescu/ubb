@@ -1,4 +1,4 @@
-package edu.asg02.models;
+package asg02.models;
 
 public interface Attendee {
   String name();

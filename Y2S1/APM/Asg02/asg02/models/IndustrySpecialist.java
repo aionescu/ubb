@@ -1,8 +1,8 @@
-package edu.asg02.models;
+package asg02.models;
 
-import edu.asg02.models.exn.InvalidAttendeeException;
+import asg02.exn.InvalidAttendeeException;
 
-public class IndustrySpecialist implements Attendee {
+public final class IndustrySpecialist implements Attendee {
   private final String _name, _company;
   private boolean _hasPresentedWorks;
 
@@ -18,6 +18,7 @@ public class IndustrySpecialist implements Attendee {
     _hasPresentedWorks = hasPresentedWorks;
   }
 
+  @Override
   public final String name() {
     return _name;
   }
@@ -26,7 +27,15 @@ public class IndustrySpecialist implements Attendee {
     return _company;
   }
 
+  @Override
   public boolean hasPresentedWorks() {
     return _hasPresentedWorks;
+  }
+
+  @Override
+  public String toString() {
+    return String.format(
+      "IndustrySpecialist { name = %s, company = %s, hasPresentedWorks = %s }",
+      _name, _company, _hasPresentedWorks);
   }
 }
