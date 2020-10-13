@@ -142,6 +142,9 @@ public final class CLIView implements View {
     var cmd = pair.fst;
     var args = pair.snd;
 
+    if (cmd.isEmpty())
+      return;
+
     var mtd = _cmds.get(cmd);
 
     if (mtd == null)
