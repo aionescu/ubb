@@ -1,4 +1,4 @@
-package com.aionescu.shapes;
+package asg01;
 
 public final class Main {
   public static void main(String[] args) {

@@ -1,17 +1,17 @@
-package com.aionescu.shapes;
+package asg01;
 
 public class Triangle implements Shape {
   private final double _sideA, _sideB, _sideC;
 
-  public double getSideA() {
+  public double sideA() {
     return _sideA;
   }
 
-  public double getSideB() {
+  public double sideB() {
     return _sideB;
   }
 
-  public double getSideC() {
+  public double sideC() {
     return _sideC;
   }
 
@@ -21,10 +21,12 @@ public class Triangle implements Shape {
     _sideC = sideC;
   }
 
+  @Override
   public String toString() {
     return "Triangle { sides = (" + _sideA + ", " + _sideB + ", " + _sideC + "), perimeter = " + perimeter() + " }";
   }
 
+  @Override
   public double perimeter() {
     return _sideA + _sideB + _sideC;
   }

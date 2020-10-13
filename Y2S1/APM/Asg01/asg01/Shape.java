@@ -1,4 +1,4 @@
-package com.aionescu.shapes;
+package asg01;
 
 public interface Shape {
   double perimeter();

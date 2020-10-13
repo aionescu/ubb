@@ -1,9 +1,7 @@
-package com.aionescu.shapes;
+package asg01;
 
-import java.lang.Exception;
-
-public class IncorrectShapeExtension extends Exception {
-  private static final long serialVersionUID = 0; // ?
+public final class IncorrectShapeExtension extends RuntimeException {
+  private static final long serialVersionUID = 0;
 
   public IncorrectShapeExtension(String message, Throwable err) {
     super(message, err);

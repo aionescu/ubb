@@ -1,10 +1,10 @@
-package com.aionescu.shapes;
+package asg01;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ShapeCollection {
+public final class ShapeCollection {
   private final ArrayList<Shape> _shapes;
 
   public ShapeCollection(Shape... shapes) {

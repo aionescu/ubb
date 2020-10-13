@@ -1,9 +1,9 @@
-package com.aionescu.shapes;
+package asg01;
 
-public class Square implements Shape {
+public final class Square implements Shape {
   private final double _sideLength;
 
-  public double getSideLength() {
+  public double sideLength() {
     return _sideLength;
   }
 
@@ -11,10 +11,12 @@ public class Square implements Shape {
     _sideLength = sideLength;
   }
 
+  @Override
   public String toString() {
     return "Square { sideLength = " + _sideLength + ", perimeter = " + perimeter() + " }";
   }
 
+  @Override
   public double perimeter() {
     return _sideLength * 4;
   }

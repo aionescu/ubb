@@ -1,11 +1,11 @@
-package com.aionescu.shapes;
+package asg01;
 
 import java.lang.Math;
 
-public class Circle implements Shape {
+public final class Circle implements Shape {
   private final double _radius;
 
-  public double getRadius() {
+  public double radius() {
     return _radius;
   }
 
@@ -13,10 +13,12 @@ public class Circle implements Shape {
     _radius = radius;
   }
 
+  @Override
   public String toString() {
     return "Circle { radius = " + _radius + ", perimeter = " + perimeter() + " }";
   }
 
+  @Override
   public double perimeter() {
     return _radius * 2 * Math.PI;
   }
