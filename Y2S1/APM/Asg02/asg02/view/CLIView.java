@@ -164,6 +164,7 @@ public final class CLIView implements View {
     var console = System.console();
 
     while (true) {
+      System.out.print("\nconf> ");
       var line = console.readLine();
       _runCommand(line);
     }
