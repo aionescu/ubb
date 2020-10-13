@@ -54,7 +54,7 @@ public final class CLIView implements View {
     };
   }
 
-  private static void _printExn(Throwable e) {
+  private static void _showExn(Throwable e) {
     var message =
       switch (e.getClass().getSimpleName()) {
         case "ArrayIndexOutOfBoundsException" -> "Not enough arguments were specified";
@@ -150,9 +150,9 @@ public final class CLIView implements View {
       try {
         mtd.invoke(this, new Object[] { args });
       } catch (InvocationTargetException e) {
-        _printExn(e.getTargetException());
+        _showExn(e.getTargetException());
       } catch (Exception e) {
-        _printExn(e);
+        _showExn(e);
       }
   }
 
