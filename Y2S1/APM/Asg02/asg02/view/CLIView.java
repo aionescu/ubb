@@ -25,7 +25,7 @@ public final class CLIView implements View {
 
   public CLIView(Controller controller) {
     if (controller == null)
-      throw new IllegalArgumentException();
+      throw new InvalidArgumentException();
 
     _controller = controller;
     _cmds = new HashMap<String, Method>();

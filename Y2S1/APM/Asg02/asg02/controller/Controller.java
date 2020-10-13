@@ -2,6 +2,7 @@ package asg02.controller;
 
 import java.util.stream.Stream;
 
+import asg02.exn.InvalidArgumentException;
 import asg02.models.Attendee;
 import asg02.models.IndustrySpecialist;
 import asg02.models.Professor;
@@ -13,7 +14,7 @@ public final class Controller {
 
   public Controller(Repository repository) {
     if (repository == null)
-      throw new IllegalArgumentException();
+      throw new InvalidArgumentException();
 
     _repo = repository;
   }

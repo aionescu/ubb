@@ -17,7 +17,7 @@ public final class InMemoryRepository implements Repository {
 
   public void add(Attendee attendee) {
     if (attendee == null)
-      throw new IllegalArgumentException();
+      throw new InvalidArgumentException();
 
     if (_attendeeCount == _attendees.length)
       throw new RepositoryFullException();
@@ -30,7 +30,7 @@ public final class InMemoryRepository implements Repository {
 
   public void remove(String name) {
     if (name == null || name.isEmpty())
-      throw new IllegalArgumentException();
+      throw new InvalidArgumentException();
 
     var i = 0;
 
