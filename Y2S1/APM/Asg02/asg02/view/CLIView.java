@@ -59,7 +59,7 @@ public final class CLIView implements View {
       switch (e.getClass().getSimpleName()) {
         case "ArrayIndexOutOfBoundsException" -> "Not enough arguments were specified";
         case "DuplicateAttendeeException" -> "An attendee with that name already exists";
-        case "InvalidAttendeeException" -> "Some arguments are not in the correct format";
+        case "InvalidAttendeeException", "InvalidArgumentException" -> "Some arguments were not in the correct format";
         case "InexistentAttendeeException" -> "No attendees with that name exist";
         case "RepositoryFullException" -> "The repository is at full capacity";
         default -> e.toString();
