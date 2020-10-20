@@ -5,9 +5,7 @@ import utils.collections.map.Map;
 
 import tli.ast.Ident;
 import tli.ast.stmt.Stmt;
-import tli.ast.type.Type;
 import tli.ast.val.Val;
-import tli.exn.eval.EvaluationFinishedException;
 
 public final class ProgState {
   public final List<Stmt> toDo;
@@ -35,11 +33,11 @@ public final class ProgState {
   }
 
   public String output() {
-    return out.reverse().foldl(String::concat, "");
+    return out.reverse().unlines();
   }
 
   @Override
   public String toString() {
-    return String.format("ProgState {\n  toDo = %s,\n  sym = %s,\n  out = %s\n}", toDo, sym, out);
+    return String.format("toDo = %s\nsym = %s\nout = %s\n", toDo, sym, out);
   }
 }

@@ -11,6 +11,10 @@ public final class Assign implements Stmt {
   private final Ident _ident;
   private final Expr _expr;
 
+  public static Assign of(Ident ident, Expr expr) {
+    return new Assign(ident, expr);
+  }
+
   public Assign(Ident ident, Expr expr) {
     _ident = ident;
     _expr = expr;

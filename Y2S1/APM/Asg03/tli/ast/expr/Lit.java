@@ -11,6 +11,10 @@ import tli.exn.typeck.UndecidableTypeException;
 public final class Lit implements Expr {
   private final Val _val;
 
+  public static Lit of(Val val) {
+    return new Lit(val);
+  }
+
   public Lit(Val val) {
     _val = val;
   }

@@ -10,6 +10,10 @@ import utils.collections.map.Map;
 public final class Print implements Stmt {
   private final Expr _expr;
 
+  public static Print of(Expr expr) {
+    return new Print(expr);
+  }
+
   public Print(Expr expr) {
     _expr = expr;
   }

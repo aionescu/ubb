@@ -54,6 +54,12 @@ public abstract class List<T> {
     return match(() -> this, (h, t) -> t.reverse().append(List.cons(h, List.nil())));
   }
 
+  public final String unlines() {
+    return match(
+      () -> "",
+      (h, t) -> h.toString() + t.foldl((s, a) -> s + "\n" + a, ""));
+  }
+
   public final boolean empty() {
     return match(() -> true, (h, t) -> false);
   }

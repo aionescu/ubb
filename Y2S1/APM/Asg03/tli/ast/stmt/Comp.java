@@ -9,6 +9,10 @@ import utils.collections.map.Map;
 public final class Comp implements Stmt {
   private final Stmt _stmt1, _stmt2;
 
+  public static Comp of(Stmt stmt1, Stmt stmt2) {
+    return new Comp(stmt1, stmt2);
+  }
+
   public Comp(Stmt stmt1, Stmt stmt2) {
     _stmt1 = stmt1;
     _stmt2 = stmt2;

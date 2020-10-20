@@ -12,6 +12,10 @@ public final class Decl implements Stmt {
   private final Type _type;
   private final Ident _ident;
 
+  public static Decl of(Type type, Ident ident) {
+    return new Decl(type, ident);
+  }
+
   public Decl(Type type, Ident ident) {
     _type = type;
     _ident = ident;
