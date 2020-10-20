@@ -37,7 +37,6 @@ instance Show ProgState where
 mkProgState :: Stmt -> ProgState
 mkProgState stmt = ProgState { toDo = [stmt], sym = M.empty, out = [] }
 
-
 showSteps :: [ProgState] -> String
 showSteps = unlines . (show <$>)
 
@@ -92,6 +91,8 @@ evalStmt ProgState{..} (Decl ident _) =
 evalStmt ProgState{..} (Assign ident expr) = do
   v <- evalExpr sym expr
   pure $ ProgState {sym =  M.insert ident (Defined v) sym, .. }
+evalStmt ProgState{..} (DeclAssign ident type' expr) =
+  pure $ ProgState { toDo = Decl ident type' : Assign ident expr : toDo, .. }
 evalStmt ProgState{..} (Print expr) = do
   v <- evalExpr sym expr
   pure $ ProgState { out = show v : out, .. }

@@ -99,15 +99,20 @@ expr = chainl1 termLogic opLogic
 print' :: Parser Stmt
 print' = Print <$> (string "print" <* ws *> expr)
 
+colon :: Parser ()
+colon = ws <* char ':' <* ws
+
+arrow :: Parser ()
+arrow = ws <* string "<-" <* ws
+
 decl :: Parser Stmt
 decl = liftA2 Decl (ident <* colon) type'
-  where
-    colon = ws <* char ':' <* ws
 
 assign :: Parser Stmt
 assign = liftA2 Assign (ident <* arrow) expr
-  where
-    arrow = ws *> string "<-" *> ws
+
+declAssign :: Parser Stmt
+declAssign = DeclAssign <$> (ident <* colon) <*> (type' <* arrow) <*> expr
 
 block :: Parser Stmt
 block =
@@ -127,7 +132,7 @@ while = While <$> cond <*> block
     cond = string "while" *> ws *> expr <* ws
 
 stmt' :: Parser Stmt
-stmt' = choice [try while, try if', try assign, try decl, print'] <* ws
+stmt' = choice [try while, try if', try declAssign, try assign, try decl, print'] <* ws
 
 stmt :: Parser Stmt
 stmt = option Nop $ stmt' `chainr1` (char ';' *> ws $> Compound)

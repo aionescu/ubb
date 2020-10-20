@@ -94,6 +94,9 @@ public final class TLParser {
     var arrow = ws._and(Parser.string("<-"))._and(ws);
     Parser<Stmt> assign = Parser.liftA2(Assign::of, ident.and_(arrow), expr);
 
+    var declAssign_ = ident.and_(colon).<Function<Type, Function<Expr, Stmt>>>map(i -> t -> e -> DeclAssign.of(i, t, e));
+    var declAssign = Parser.ap(Parser.ap(declAssign_, type.and_(arrow)), expr);
+
     var stmtFwdRef = Parser.<Stmt>fwdRef();
     var stmt = stmtFwdRef.fst;
 
@@ -108,7 +111,7 @@ public final class TLParser {
     var whileCond = Parser.string("while")._and(ws)._and(expr).and_(ws);
     Parser<Stmt> while_ = Parser.liftA2(While::of, whileCond, block);
 
-    var stmt_ = Parser.choice(while_, if_, assign, decl, print).and_(ws);
+    var stmt_ = Parser.choice(while_, if_, declAssign, assign, decl, print).and_(ws);
     var compound = stmt_.chainr1(Parser.ch(';').and_(ws).map_(Compound::of)).option(Nop.nop);
     stmtFwdRef.snd.set(compound);
 

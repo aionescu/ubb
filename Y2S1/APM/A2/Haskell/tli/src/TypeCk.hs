@@ -65,6 +65,9 @@ typeCheckStmt sym (Assign ident expr) = do
   typ2 <- typeCheckExpr sym expr
   typ2 `mustBe` typ
   pure sym
+typeCheckStmt sym (DeclAssign ident type' expr) = do
+  sym2 <- typeCheckStmt sym (Decl ident type')
+  typeCheckStmt sym2 (Assign ident expr)
 typeCheckStmt sym (Print e) = sym <$ typeCheckExpr sym e
 typeCheckStmt sym (If cond then' else') = do
   tc <- typeCheckExpr sym cond

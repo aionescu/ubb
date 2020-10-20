@@ -95,6 +95,7 @@ data Stmt
   = Nop
   | Decl Ident Type
   | Assign Ident Expr
+  | DeclAssign Ident Type Expr
   | Print Expr
   | If Expr Stmt Stmt
   | While Expr Stmt
@@ -104,6 +105,7 @@ instance Show Stmt where
   show Nop = ""
   show (Decl ident type') = ident ++ " : " ++ show type'
   show (Assign ident expr) = ident ++ " <- " ++ show expr
+  show (DeclAssign ident type' expr) = ident ++ " : " ++ show type' ++ " <- " ++ show expr
   show (Print expr) = "print " ++ show expr
   show (If cond then' Nop) = "if " ++ show cond ++ " { " ++ show then' ++ " }"
   show (If cond then' else') =
