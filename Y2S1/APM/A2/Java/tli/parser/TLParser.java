@@ -17,16 +17,16 @@ public final class TLParser {
     var multiLineFwdRef = Parser.<Unit>fwdRef();
     var multiLine = multiLineFwdRef.fst;
 
-    var multiLine_ = Parser.string("{-")._and(multiLine.or(Parser.anyChar().skip()).manyTill(Parser.string("-}"))).skip();
+    var multiLine_ = Parser.string("{-")._and(multiLine.or(Parser.anyChar.skip()).manyTill(Parser.string("-}"))).skip();
     multiLineFwdRef.snd.set(multiLine_);
 
-    var singleLine = Parser.string("--")._and(Parser.anyChar().manyTill(Parser.newline())).skip();
+    var singleLine = Parser.string("--")._and(Parser.anyChar.manyTill(Parser.newline)).skip();
 
     var comment = singleLine.or(multiLine);
-    var ws = Parser.spaces()._and(comment._and(Parser.spaces()).many()).skip();
+    var ws = Parser.spaces._and(comment._and(Parser.spaces).many()).skip();
 
     Parser<Function<Integer, Integer>> sign = Parser.ch('-').map_(i -> -i);
-    var number = Parser.digit().many1().map(List::asString).map(Integer::parseInt);
+    var number = Parser.digit.many1().map(List::asString).map(Integer::parseInt);
     Parser<Val> int_ = Parser.ap(sign.option(i -> i), number).map(Int::of);
 
     Parser<Val> bool_ = Parser.choice(
@@ -36,8 +36,8 @@ public final class TLParser {
 
     var val = int_.or(bool_);
 
-    var fstChar = Parser.letter().or(Parser.ch('_'));
-    var sndChar = fstChar.or(Parser.digit()).or(Parser.ch('\''));
+    var fstChar = Parser.letter.or(Parser.ch('_'));
+    var sndChar = fstChar.or(Parser.digit.or(Parser.ch('\'')));
 
     var ident = Parser.liftA2(List::cons, fstChar, sndChar.many()).and_(ws).map(List::asString).map(Ident::of);
 
@@ -115,7 +115,7 @@ public final class TLParser {
     var compound = stmt_.chainr1(Parser.ch(';').and_(ws).map_(Compound::of)).option(Nop.nop);
     stmtFwdRef.snd.set(compound);
 
-    var program = ws._and(stmt).and_(Parser.eof());
+    var program = ws._and(stmt).and_(Parser.eof);
     return program;
   }
 

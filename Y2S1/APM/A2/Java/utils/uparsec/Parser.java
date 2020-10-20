@@ -69,40 +69,25 @@ public interface Parser<A> {
     return s -> this.run(s).match(Result::fail, (a, s2) -> f.apply(a).run(s2));
   }
 
-  public static Parser<Character> anyChar() {
-    return s -> s.isEmpty() ? Result.fail() : Result.of(s.charAt(0), s.substring(1));
-  }
+  public static final Parser<Character> anyChar =
+    s -> s.isEmpty() ? Result.fail() : Result.of(s.charAt(0), s.substring(1));
 
   public static Parser<Character> satisfy(Predicate<Character> p) {
-    return anyChar().bind(c -> p.test(c) ? pure(c) : fail());
+    return anyChar.bind(c -> p.test(c) ? pure(c) : fail());
   }
+
+  public static final Parser<Character> digit = satisfy(Character::isDigit);
+  public static final Parser<Character> letter = satisfy(Character::isLetter);
+  public static final Parser<Character> newline = satisfy(c -> c == '\n' || c == '\r');
+  public static final Parser<Unit> spaces = s -> Result.of(Unit.UNIT, s.replaceFirst("^\\s+", ""));
+  public static final Parser<Unit> eof = s -> s.isEmpty() ? Result.of(Unit.UNIT, s) : Result.fail();
 
   public static Parser<Character> ch(char c) {
     return satisfy(c2 -> c == c2);
   }
 
-  public static Parser<Character> digit() {
-    return satisfy(Character::isDigit);
-  }
-
-  public static Parser<Character> letter() {
-    return satisfy(Character::isLetter);
-  }
-
-  public static Parser<Character> newline() {
-    return satisfy(c -> c == '\n' || c == '\r');
-  }
-
-  public static Parser<Unit> spaces() {
-    return s -> Result.of(Unit.UNIT, s.replaceFirst("^\\s+", ""));
-  }
-
   public static Parser<String> string(String string) {
     return s -> s.startsWith(string) ? Result.of(string, s.substring(string.length())) : Result.fail();
-  }
-
-  public static Parser<Unit> eof() {
-    return s -> s.isEmpty() ? Result.of(Unit.UNIT, s) : Result.fail();
   }
 
   public default Parser<A> option(A a) {

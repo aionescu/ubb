@@ -34,7 +34,7 @@ public final class CLIView implements View {
         System.out.println("Type check succeeded.");
         break;
 
-      case "show":
+      case "show-state":
         System.out.println(_controller.state());
         break;
 
