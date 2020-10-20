@@ -3,6 +3,7 @@
 # Haskell
 .stack-work/
 *~
+dist-newstyle/
 
 # Python
 __pycache__/
