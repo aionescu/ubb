@@ -5,20 +5,20 @@ import utils.collections.map.Map;
 import tli.ast.Ident;
 import tli.ast.prog.ProgState;
 import tli.ast.type.Type;
-import tli.ast.val.Undefined;
+import tli.ast.varstate.Undefined;
 import tli.exn.typeck.VariableAlreadyDeclaredException;
 
 public final class Decl implements Stmt {
-  private final Type _type;
   private final Ident _ident;
+  private final Type _type;
 
-  public static Decl of(Type type, Ident ident) {
-    return new Decl(type, ident);
+  public static Decl of(Ident ident, Type type) {
+    return new Decl(ident, type);
   }
 
-  public Decl(Type type, Ident ident) {
-    _type = type;
+  public Decl(Ident ident, Type type) {
     _ident = ident;
+    _type = type;
   }
 
   @Override
@@ -36,6 +36,6 @@ public final class Decl implements Stmt {
 
   @Override
   public String toString() {
-    return String.format("%s %s", _type, _ident);
+    return String.format("%s : %s", _ident, _type);
   }
 }

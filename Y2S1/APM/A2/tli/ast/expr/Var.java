@@ -5,6 +5,8 @@ import utils.collections.map.Map;
 import tli.ast.Ident;
 import tli.ast.type.Type;
 import tli.ast.val.Val;
+import tli.ast.varstate.VarState;
+import tli.exn.eval.UninitializedVariableException;
 import tli.exn.typeck.UndeclaredVariableException;
 
 public final class Var implements Expr {
@@ -29,8 +31,10 @@ public final class Var implements Expr {
   }
 
   @Override
-  public Val eval(Map<Ident, Val> sym) {
-    return sym.lookup(_ident).get();
+  public Val eval(Map<Ident, VarState> sym) {
+    return sym.lookup(_ident).get().val().orElseGet(() -> {
+      throw new UninitializedVariableException(_ident);
+    });
   }
 
   @Override

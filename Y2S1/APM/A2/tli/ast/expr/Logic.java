@@ -6,6 +6,7 @@ import tli.ast.Ident;
 import tli.ast.type.Type;
 import tli.ast.val.Bool;
 import tli.ast.val.Val;
+import tli.ast.varstate.VarState;
 
 public final class Logic implements Expr {
   public static enum Op {
@@ -42,7 +43,7 @@ public final class Logic implements Expr {
   }
 
   @Override
-  public Val eval(Map<Ident, Val> sym) {
+  public Val eval(Map<Ident, VarState> sym) {
     var lhs = ((Bool)_lhs.eval(sym)).val;
     var rhs = ((Bool)_rhs.eval(sym)).val;
 

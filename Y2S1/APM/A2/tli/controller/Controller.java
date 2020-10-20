@@ -15,6 +15,10 @@ public final class Controller {
     return _repo.state();
   }
 
+  public void setState(ProgState state) {
+    _repo.setState(state);
+  }
+
   public void typeCheck() {
     _repo.typeCheck();
   }

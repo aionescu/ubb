@@ -30,6 +30,14 @@ public abstract class List<T> {
     return stream.reduce(List.<T>nil(), (l, a) -> cons(a, l), List::append).reverse();
   }
 
+  private static String _asString(List<Character> chars, String acc) {
+    return chars.match(() -> acc, (h, t) -> _asString(t, acc + h));
+  }
+
+  public static String asString(List<Character> chars) {
+    return _asString(chars, "");
+  }
+
   public final List<T> append(List<T> b) {
     return match(() -> b, (h, t) -> List.cons(h, t.append(b)));
   }
@@ -44,6 +52,10 @@ public abstract class List<T> {
 
   public final <S> S foldl(BiFunction<S, T, S> f, S s) {
     return match(() -> s, (h, t) -> t.foldl(f, f.apply(s, h)));
+  }
+
+  public final <S> S foldr(BiFunction<T, S, S> f, S s) {
+    return match(() -> s, (h, t) -> f.apply(h, t.foldr(f, s)));
   }
 
   public final Optional<Pair<T, List<T>>> uncons() {

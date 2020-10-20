@@ -6,6 +6,7 @@ import tli.ast.Ident;
 import tli.ast.type.Type;
 import tli.ast.val.Int;
 import tli.ast.val.Val;
+import tli.ast.varstate.VarState;
 import tli.exn.eval.DivisionByZeroException;
 
 public final class Arith implements Expr {
@@ -49,7 +50,7 @@ public final class Arith implements Expr {
   }
 
   @Override
-  public Val eval(Map<Ident, Val> sym) {
+  public Val eval(Map<Ident, VarState> sym) {
     var lhs = ((Int)_lhs.eval(sym)).val;
     var rhs = ((Int)_rhs.eval(sym)).val;
 

@@ -9,13 +9,14 @@ import utils.collections.map.Map;
 public final class SingleStateRepository implements Repository {
   private ProgState _state;
 
-  public SingleStateRepository(ProgState state) {
-    _state = state;
-  }
-
   @Override
   public ProgState state() {
     return _state;
+  }
+
+  @Override
+  public void setState(ProgState state) {
+    _state = state;
   }
 
   @Override

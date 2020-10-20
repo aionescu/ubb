@@ -4,6 +4,7 @@ import tli.ast.Ident;
 import tli.ast.expr.Expr;
 import tli.ast.prog.ProgState;
 import tli.ast.type.Type;
+import tli.ast.varstate.Defined;
 import tli.exn.typeck.UndeclaredVariableException;
 import utils.collections.map.Map;
 
@@ -33,7 +34,7 @@ public final class Assign implements Stmt {
 
   @Override
   public ProgState eval(ProgState prog) {
-    return prog.withSym(prog.sym.insert(_ident, _expr.eval(prog.sym)));
+    return prog.withSym(prog.sym.insert(_ident, Defined.of(_expr.eval(prog.sym))));
   }
 
   @Override
