@@ -3,6 +3,8 @@ package utils.collections.map;
 import java.util.HashMap;
 import java.util.Optional;
 
+import utils.collections.list.List;
+
 public final class Map<K, V> {
   private final HashMap<K, V> _hm;
 
@@ -27,6 +29,14 @@ public final class Map<K, V> {
 
   @Override
   public String toString() {
-    return "{ " + _hm.entrySet().stream().map(e -> e.getKey() + " <- " + e.getValue()).reduce("", (s, a) -> s + ", " + a) + " }";
+    var entries = List.ofStream(_hm.entrySet().stream());
+
+    return
+      entries
+      .map(e -> e.getKey() + " <- " + e.getValue())
+      .toString()
+      .replace("[]", "{ }")
+      .replace("[", "{ ")
+      .replace("]", " }");
   }
 }

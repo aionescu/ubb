@@ -34,27 +34,12 @@ public final class ProgState {
     return new ProgState(this.toDo, this.sym, out);
   }
 
-  public void typeCheck() {
-    toDo.foldl((sym, stmt) -> stmt.typeCheck(sym), Map.<Ident, Type>empty());
-  }
-
-  public ProgState eval() {
-    var opt = toDo.uncons();
-
-    if (!opt.isPresent())
-      throw new EvaluationFinishedException();
-
-    var p = opt.get();
-
-    return p.fst.eval(withToDo(p.snd));
-  }
-
   public String output() {
     return out.reverse().foldl(String::concat, "");
   }
 
   @Override
   public String toString() {
-    return String.format("ProgState {\n  toDo = %s\n  sym = %s\n  out = %s}", toDo, sym, out);
+    return String.format("ProgState {\n  toDo = %s,\n  sym = %s,\n  out = %s\n}", toDo, sym, out);
   }
 }

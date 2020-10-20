@@ -34,6 +34,6 @@ public final class Assign implements Stmt {
 
   @Override
   public String toString() {
-    return String.format("%s = %s", _ident, _expr);
+    return String.format("%s <- %s", _ident, _expr);
   }
 }

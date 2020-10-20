@@ -3,6 +3,8 @@ package utils.collections.list;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -20,12 +22,24 @@ public abstract class List<T> {
     return new Cons<>(head, tail);
   }
 
+  public static <T> List<T> singleton(T value) {
+    return cons(value, nil());
+  }
+
   public static <T> List<T> ofStream(Stream<T> stream) {
     return stream.reduce(List.<T>nil(), (l, a) -> cons(a, l), List::append).reverse();
   }
 
   public final List<T> append(List<T> b) {
     return match(() -> b, (h, t) -> List.cons(h, t.append(b)));
+  }
+
+  public final <U> List<U> map(Function<T, U> f) {
+    return match(() -> nil(), (h, t) -> List.cons(f.apply(h), t.map(f)));
+  }
+
+  public final void iter(Consumer<T> f) {
+    matchDo(() -> { }, (h, t) -> { f.accept(h); t.iter(f); });
   }
 
   public final <S> S foldl(BiFunction<S, T, S> f, S s) {

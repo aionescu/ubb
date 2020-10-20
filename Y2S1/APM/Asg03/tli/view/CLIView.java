@@ -12,7 +12,9 @@ public final class CLIView implements View {
   @Override
   public void run() {
     _controller.typeCheck();
-    _controller.allSteps();
+    _controller.allSteps().map(Object::toString).iter(System.out::println);
+
+    System.out.println("\nOutput:");
     System.out.println(_controller.state().output());
   }
 }

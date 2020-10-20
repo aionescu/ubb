@@ -2,6 +2,7 @@ package tli.controller;
 
 import tli.ast.prog.ProgState;
 import tli.repo.Repository;
+import utils.collections.list.List;
 
 public final class Controller {
   Repository _repo;
@@ -18,16 +19,23 @@ public final class Controller {
     _repo.typeCheck();
   }
 
-  public void oneStep() {
+  public ProgState oneStep() {
     _repo.oneStep();
+    return _repo.state();
   }
 
   public boolean done() {
     return _repo.done();
   }
 
-  public void allSteps() {
-    while (!done())
+  public List<ProgState> allSteps() {
+    if (done())
+      return List.singleton(state());
+    else {
+      var current = state();
       oneStep();
+
+      return List.cons(current, allSteps());
+    }
   }
 }
