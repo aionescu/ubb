@@ -58,7 +58,11 @@ public interface Parser<A> {
   }
 
   public static <A, B, C> Parser<C> liftA2(BiFunction<A, B, C> f, Parser<A> pa, Parser<B> pb) {
-    return pa.and(pb).map(pr -> pr.match(f));
+    return pa.and(pb).map(Pair.match(f));
+  }
+
+  public static <A, B, C, D> Parser<D> liftA3(TriFunction<A, B, C, D> f, Parser<A> pa, Parser<B> pb, Parser<C> pc) {
+    return ap(ap(pa.map(f.curried()), pb), pc);
   }
 
   public static <A, B> Parser<B> ap(Parser<Function<A, B>> pf, Parser<A> pa) {
@@ -107,11 +111,11 @@ public interface Parser<A> {
   }
 
   public default <B> Parser<A> and_(Parser<B> pb) {
-    return this.and(pb).map(Pair::fstF);
+    return this.and(pb).map(Pair::fst_);
   }
 
   public default <B> Parser<B> _and(Parser<B> pb) {
-    return this.and(pb).map(Pair::sndF);
+    return this.and(pb).map(Pair::snd_);
   }
 
   public default Parser<A> or(Parser<A> p) {
@@ -160,7 +164,7 @@ public interface Parser<A> {
   }
 
   public default <Sep> Parser<List<A>> sepBy(Parser<Sep> sep) {
-    return this.and(sep._and(this).many()).map(r -> r.match(List::cons));
+    return this.and(sep._and(this).many()).map(Pair.match(List::cons));
   }
 
   public default <Sep> Parser<List<A>> sepBy1(Parser<Sep> sep) {
@@ -182,10 +186,10 @@ public interface Parser<A> {
   }
 
   public default Parser<A> chainl1(Parser<BinaryOperator<A>> op) {
-    return liftA2((a, l) -> l.foldl((s, p) -> p.match((f, b) -> f.apply(s, b)), a), this, op.and(this).many());
+    return liftA2((a, l) -> l.foldl((s, p) -> p.fst.apply(s, p.snd), a), this, op.and(this).many());
   }
 
   public default Parser<A> chainr1(Parser<BinaryOperator<A>> op) {
-    return liftA2((l, a) -> l.foldr((p, s) -> p.match((b, f) -> f.apply(b, s)), a), this.and(op).many(), this);
+    return liftA2((l, a) -> l.foldr((p, s) -> p.snd.apply(p.fst, s), a), this.and(op).many(), this);
   }
 }

@@ -94,8 +94,7 @@ public final class TLParser {
     var arrow = ws._and(Parser.string("<-"))._and(ws);
     Parser<Stmt> assign = Parser.liftA2(Assign::of, ident.and_(arrow), expr);
 
-    var declAssign_ = ident.and_(colon).<Function<Type, Function<Expr, Stmt>>>map(i -> t -> e -> DeclAssign.of(i, t, e));
-    var declAssign = Parser.ap(Parser.ap(declAssign_, type.and_(arrow)), expr);
+    Parser<Stmt> declAssign = Parser.liftA3(DeclAssign::of, ident.and_(colon), type.and_(arrow), expr);
 
     var stmtFwdRef = Parser.<Stmt>fwdRef();
     var stmt = stmtFwdRef.fst;
@@ -105,8 +104,7 @@ public final class TLParser {
     var ifCond = Parser.string("if")._and(ws)._and(expr).and_(ws);
     var elseBlock = Parser.string("else")._and(ws)._and(block).option(Nop.nop);
 
-    var ifCondF = ifCond.<Function<Stmt, Function<Stmt, Stmt>>>map(c -> b -> e -> If.of(c, b, e));
-    Parser<Stmt> if_ = Parser.ap(Parser.ap(ifCondF, block), elseBlock);
+    Parser<Stmt> if_ = Parser.liftA3(If::of, ifCond, block, elseBlock);
 
     var whileCond = Parser.string("while")._and(ws)._and(expr).and_(ws);
     Parser<Stmt> while_ = Parser.liftA2(While::of, whileCond, block);

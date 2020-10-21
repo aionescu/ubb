@@ -2,6 +2,8 @@ package utils;
 
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public final class Pair<A, B> {
   public final A fst;
@@ -16,20 +18,20 @@ public final class Pair<A, B> {
     this.snd = snd;
   }
 
-  public A fstF() {
+  public A fst_() {
     return fst;
   }
 
-  public B sndF() {
+  public B snd_() {
     return snd;
   }
 
-  public <C> C match(BiFunction<A, B, C> f) {
-    return f.apply(fst, snd);
+  public static <A, B, C> Function<Pair<A, B>, C> match(BiFunction<A, B, C> f) {
+    return p -> f.apply(p.fst, p.snd);
   }
 
-  public void matchDo(BiConsumer<A, B> f) {
-    f.accept(fst, snd);
+  public static <A, B> Consumer<Pair<A, B>> matchDo(BiConsumer<A, B> f) {
+    return p -> f.accept(p.fst, p.snd);
   }
 
   @Override
