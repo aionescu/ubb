@@ -27,11 +27,7 @@ public final class CLIView implements View {
         var code = Files.readString(Path.of(parts[1]));
         var ast = TLParser.parse(code);
         _controller.setState(ProgState.empty.withToDo(List.singleton(ast)));
-        break;
-
-      case "typeck":
         _controller.typeCheck();
-        System.out.println("Type check succeeded.");
         break;
 
       case "show-state":
@@ -41,11 +37,13 @@ public final class CLIView implements View {
       case "run":
         var state = _controller.state();
 
-        _controller.typeCheck();
-        _controller.allSteps();
-        System.out.println(_controller.state().output());
+        try {
+          _controller.allSteps();
+          System.out.println(_controller.state().output());
+        } finally {
+          _controller.setState(state);
+        }
 
-        _controller.setState(state);
         break;
 
       case "all-steps":
@@ -60,6 +58,7 @@ public final class CLIView implements View {
       case "parse":
         var ast_ = TLParser.parse(parts[1]);
         _controller.setState(ProgState.empty.withToDo(List.singleton(ast_)));
+        _controller.typeCheck();
         break;
 
       case "exit":

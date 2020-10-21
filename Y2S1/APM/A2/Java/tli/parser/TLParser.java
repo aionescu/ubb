@@ -10,6 +10,7 @@ import tli.ast.type.Type;
 import tli.ast.val.*;
 import utils.collections.list.List;
 import utils.uparsec.Parser;
+import static utils.uparsec.Parser.*;
 import utils.uparsec.Unit;
 
 public final class TLParser {
@@ -17,64 +18,64 @@ public final class TLParser {
     var multiLineFwdRef = Parser.<Unit>fwdRef();
     var multiLine = multiLineFwdRef.fst;
 
-    var multiLine_ = Parser.string("{-")._and(multiLine.or(Parser.anyChar.skip()).manyTill(Parser.string("-}"))).skip();
+    var multiLine_ = string("{-")._and(multiLine.or(anyChar.skip()).manyTill(string("-}"))).skip();
     multiLineFwdRef.snd.set(multiLine_);
 
-    var singleLine = Parser.string("--")._and(Parser.anyChar.manyTill(Parser.newline)).skip();
+    var singleLine = string("--")._and(anyChar.manyTill(newline)).skip();
 
     var comment = singleLine.or(multiLine);
-    var ws = Parser.spaces._and(comment._and(Parser.spaces).many()).skip();
+    var ws = spaces._and(comment._and(spaces).many()).skip();
 
-    Parser<Function<Integer, Integer>> sign = Parser.ch('-').map_(i -> -i);
-    var number = Parser.digit.many1().map(List::asString).map(Integer::parseInt);
-    Parser<Val> int_ = Parser.ap(sign.option(i -> i), number).map(Int::of);
+    Parser<Function<Integer, Integer>> sign = ch('-').map_(i -> -i);
+    var number = digit.many1().map(List::asString).map(Integer::parseInt);
+    Parser<Val> int_ = ap(sign.option(i -> i), number).map(Int::of);
 
-    Parser<Val> bool_ = Parser.choice(
-      Parser.string("True").map_(true),
-      Parser.string("False").map_(false)
+    Parser<Val> bool_ = choice(
+      string("True").map_(true),
+      string("False").map_(false)
     ).map(Bool::of);
 
     var val = int_.or(bool_);
 
-    var fstChar = Parser.letter.or(Parser.ch('_'));
-    var sndChar = fstChar.or(Parser.digit.or(Parser.ch('\'')));
+    var fstChar = letter.or(ch('_'));
+    var sndChar = fstChar.or(digit.or(ch('\'')));
 
-    var ident = Parser.liftA2(List::cons, fstChar, sndChar.many()).and_(ws).map(List::asString).map(Ident::of);
+    var ident = liftA2(List::cons, fstChar, sndChar.many()).and_(ws).map(List::asString).map(Ident::of);
 
-    var type = Parser.choice(
-      Parser.string("Int").map_(Type.INT),
-      Parser.string("Bool").map_(Type.BOOL));
+    var type = choice(
+      string("Int").map_(Type.INT),
+      string("Bool").map_(Type.BOOL));
 
     var opMul = Parser.<BinaryOperator<Expr>>choice(
-      Parser.ch('*').map_((a, b) -> Arith.of(a, Arith.Op.MUL, b)),
-      Parser.ch('/').map_((a, b) -> Arith.of(a, Arith.Op.DIV, b)),
-      Parser.ch('%').map_((a, b) -> Arith.of(a, Arith.Op.REM, b))
+      ch('*').map_((a, b) -> Arith.of(a, Arith.Op.MUL, b)),
+      ch('/').map_((a, b) -> Arith.of(a, Arith.Op.DIV, b)),
+      ch('%').map_((a, b) -> Arith.of(a, Arith.Op.REM, b))
     ).and_(ws);
 
     var opAdd = Parser.<BinaryOperator<Expr>>choice(
-      Parser.ch('+').map_((a, b) -> Arith.of(a, Arith.Op.ADD, b)),
-      Parser.ch('-').map_((a, b) -> Arith.of(a, Arith.Op.SUB, b))
+      ch('+').map_((a, b) -> Arith.of(a, Arith.Op.ADD, b)),
+      ch('-').map_((a, b) -> Arith.of(a, Arith.Op.SUB, b))
     ).and_(ws);
 
     var opComp = Parser.<BinaryOperator<Expr>>choice(
-      Parser.string("<=").map_((a, b) -> Comp.of(a, Comp.Op.LTE, b)),
-      Parser.string(">=").map_((a, b) -> Comp.of(a, Comp.Op.GTE, b)),
-      Parser.string("<>").map_((a, b) -> Comp.of(a, Comp.Op.NEQ, b)),
-      Parser.ch('<').map_((a, b) -> Comp.of(a, Comp.Op.LT, b)),
-      Parser.ch('>').map_((a, b) -> Comp.of(a, Comp.Op.GT, b)),
-      Parser.ch('=').map_((a, b) -> Comp.of(a, Comp.Op.EQ, b))
+      string("<=").map_((a, b) -> Comp.of(a, Comp.Op.LTE, b)),
+      string(">=").map_((a, b) -> Comp.of(a, Comp.Op.GTE, b)),
+      string("<>").map_((a, b) -> Comp.of(a, Comp.Op.NEQ, b)),
+      ch('<').map_((a, b) -> Comp.of(a, Comp.Op.LT, b)),
+      ch('>').map_((a, b) -> Comp.of(a, Comp.Op.GT, b)),
+      ch('=').map_((a, b) -> Comp.of(a, Comp.Op.EQ, b))
     ).and_(ws);
 
     var opLogic = Parser.<BinaryOperator<Expr>>choice(
-      Parser.string("and").map_((a, b) -> Logic.of(a, Logic.Op.AND, b)),
-      Parser.string("or").map_((a, b) -> Logic.of(a, Logic.Op.OR, b))
+      string("and").map_((a, b) -> Logic.of(a, Logic.Op.AND, b)),
+      string("or").map_((a, b) -> Logic.of(a, Logic.Op.OR, b))
     ).and_(ws);
 
     var exprFwdRef = Parser.<Expr>fwdRef();
     var expr = exprFwdRef.fst;
 
-    Parser<Expr> termMul = Parser.choice(
-      expr.between(Parser.ch('(').and_(ws), Parser.ch(')').and(ws)),
+    Parser<Expr> termMul = choice(
+      expr.between(ch('(').and_(ws), ch(')').and(ws)),
       val.map(Lit::of),
       ident.map(Var::of)
     ).and_(ws);
@@ -86,34 +87,34 @@ public final class TLParser {
     var termFinal = termLogic.chainl1(opLogic);
     exprFwdRef.snd.set(termFinal);
 
-    Parser<Stmt> print = Parser.string("print").and_(ws)._and(expr).map(Print::of);
+    Parser<Stmt> print = string("print").and_(ws)._and(expr).map(Print::of);
 
-    var colon = ws._and(Parser.ch(':'))._and(ws);
-    Parser<Stmt> decl = Parser.liftA2(Decl::of, ident.and_(colon), type);
+    var colon = ws._and(ch(':'))._and(ws);
+    Parser<Stmt> decl = liftA2(Decl::of, ident.and_(colon), type);
 
-    var arrow = ws._and(Parser.string("<-"))._and(ws);
-    Parser<Stmt> assign = Parser.liftA2(Assign::of, ident.and_(arrow), expr);
+    var arrow = ws._and(string("<-"))._and(ws);
+    Parser<Stmt> assign = liftA2(Assign::of, ident.and_(arrow), expr);
 
-    Parser<Stmt> declAssign = Parser.liftA3(DeclAssign::of, ident.and_(colon), type.and_(arrow), expr);
+    Parser<Stmt> declAssign = liftA3(DeclAssign::of, ident.and_(colon), type.and_(arrow), expr);
 
     var stmtFwdRef = Parser.<Stmt>fwdRef();
     var stmt = stmtFwdRef.fst;
 
-    var block = Parser.ch('{')._and(ws)._and(stmt).and_(ws).and_(Parser.ch('}')).and_(ws);
+    var block = ch('{')._and(ws)._and(stmt).and_(ws).and_(ch('}')).and_(ws);
 
-    var ifCond = Parser.string("if")._and(ws)._and(expr).and_(ws);
-    var elseBlock = Parser.string("else")._and(ws)._and(block).option(Nop.nop);
+    var ifCond = string("if")._and(ws)._and(expr).and_(ws);
+    var elseBlock = string("else")._and(ws)._and(block).option(Nop.nop);
 
-    Parser<Stmt> if_ = Parser.liftA3(If::of, ifCond, block, elseBlock);
+    Parser<Stmt> if_ = liftA3(If::of, ifCond, block, elseBlock);
 
-    var whileCond = Parser.string("while")._and(ws)._and(expr).and_(ws);
-    Parser<Stmt> while_ = Parser.liftA2(While::of, whileCond, block);
+    var whileCond = string("while")._and(ws)._and(expr).and_(ws);
+    Parser<Stmt> while_ = liftA2(While::of, whileCond, block);
 
-    var stmt_ = Parser.choice(while_, if_, declAssign, assign, decl, print).and_(ws);
-    var compound = stmt_.chainr1(Parser.ch(';').and_(ws).map_(Compound::of)).option(Nop.nop);
+    var stmt_ = choice(while_, if_, declAssign, assign, decl, print).and_(ws);
+    var compound = stmt_.chainr1(ch(';').and_(ws).map_(Compound::of)).option(Nop.nop);
     stmtFwdRef.snd.set(compound);
 
-    var program = ws._and(stmt).and_(Parser.eof);
+    var program = ws._and(stmt).and_(eof);
     return program;
   }
 

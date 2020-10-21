@@ -62,7 +62,10 @@ public final class Arith implements Expr {
         case 0 -> throw new DivisionByZeroException();
         default -> lhs / rhs;
       };
-      case REM -> lhs % rhs;
+      case REM -> switch (rhs) {
+        case 0 -> throw new DivisionByZeroException();
+        default -> lhs % rhs;
+      };
     });
   }
 
