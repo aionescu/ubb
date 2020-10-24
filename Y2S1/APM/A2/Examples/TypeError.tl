@@ -1,2 +1,0 @@
-a : Int;
-a <- True
