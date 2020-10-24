@@ -14,8 +14,12 @@
 %   , intersect(l2..ln, k1..km), otherwise
 %   }
 
+% Flow model: (i i), (i i)
+
 elem(A, [A|_]).
 elem(A, [_|T]) :- elem(A, T).
+
+% Flow model: (i i i), (i i o)
 
 intersect([], _, []).
 intersect([H|T], L, [H|R]) :- elem(H, L), intersect(T, L, R).
@@ -32,10 +36,19 @@ intersect([_|T], L, R) :- intersect(T, L, R).
 %   , m : iota(m + 1, n), otherwise
 %   }
 
-iota(M, N, []) :- M @> N.
-iota(M, N, [M|T]) :- Mn is M + 1, iota(Mn, N, T).
+% Flow model: (i i i), (i i o)
+
+iota(M, N, R) :- M < N, iota_asc(M, N, R).
+iota(M, N, R) :- M >= N, iota_desc(M, N, R).
+
+iota_asc(M, N, []) :- M > N.
+iota_asc(M, N, [M|T]) :- Mn is M + 1, iota_asc(Mn, N, T).
+
+iota_desc(M, N, []) :- M < N.
+iota_desc(M, N, [M|T]) :- Mn is M - 1, iota_desc(Mn, N, T).
 
 :- X = 1, Y = 0, iota(X, Y, Z), format('iota(~w, ~w) is ~w~n', [X, Y, Z]).
 :- X = 1, Y = 4, iota(X, Y, Z), format('iota(~w, ~w) is ~w~n', [X, Y, Z]).
 :- X = 1, Y = 1, iota(X, Y, Z), format('iota(~w, ~w) is ~w~n', [X, Y, Z]).
 :- X = 4, Y = 10, iota(X, Y, Z), format('iota(~w, ~w) is ~w~n', [X, Y, Z]).
+:- X = 10, Y = 1, iota(X, Y, Z), format('iota(~w, ~w) is ~w~n', [X, Y, Z]).
