@@ -31,13 +31,13 @@ mergeUnique(As, Bs, Lu) :- merge(As, Bs, L), unique(L, Lu).
 
 % b)
 
-% mergeLs(a1..an) =
+% mergeLists(a1..an) =
 %   { [], if n = 0
-%   ; mergeLs(a2..an), if a1 is number
-%   ; mergeUnique(a1, mergeLs(a2..an)), otherwise
+%   ; mergeLists(a2..an), if a1 is number
+%   ; mergeUnique(a1, mergeLists(a2..an)), otherwise
 %   }
 
 % (i, o)
-mergeLs([], []).
-mergeLs([A | As], M) :- number(A), mergeLs(As, M).
-mergeLs([As | Es], L) :- mergeLs(Es, M), mergeUnique(As, M, L).
+mergeLists([], []).
+mergeLists([A | As], M) :- number(A), mergeLists(As, M).
+mergeLists([As | Es], L) :- mergeLists(Es, M), mergeUnique(As, M, L).
