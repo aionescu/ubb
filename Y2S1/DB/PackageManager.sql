@@ -1,4 +1,4 @@
-IF exists (select name from master.sys.databases where name = N'PackageManager')
+if exists (select name from master.sys.databases where name = N'PackageManager')
   drop database PackageManager
 
 go
@@ -32,7 +32,7 @@ create table Users
 create table Packages
   ( id int not null primary key identity
   , name nvarchar(50) not null
-  , maintainer int not null foreign key references Users(id)
+  , maintainer int foreign key references Users(id)
   , decription nvarchar(500)
   , sourceRepo nvarchar(200)
   , license int not null foreign key references Licenses(id)
@@ -64,6 +64,7 @@ create table PackageDependencies
 create table Distributions
   ( id int not null primary key identity
   , name nvarchar(50) not null
+  , maintainer int foreign key references Users(id)
   )
 
 create table DistributionVersions
@@ -85,7 +86,7 @@ create table DistributionsPackages
 go
 
 insert into Tags values
-  ('Compiler')
+  ('Tool')
 , ('GUI')
 , ('Web Browser')
 , ('Compiler')
@@ -98,39 +99,45 @@ insert into Licenses values
 , ('MIT', 'https://opensource.org/licenses/MIT')
 , ('Apache-2', 'https://opensource.org/licenses/Apache-2.0')
 
+-- Pretend the passwordSalt and passwordHash values are real hashes :-).
 insert into Users values
   ('torvalds', 'Linus Torvalds', 'torvalds@osdl.org', 'ABCDEF', 'ABCDEFGHIJKL')
-, ('rms', 'Richard M. Stallman', 'rms@gnu.org', 'GHIJKL', 'ASDFASDGDEGA')
+, ('rms', 'Richard M. Stallman', 'rms@gnu.org', 'GHIJKASDL', 'ASDFASASDADGDEGA')
 , ('aionescu', 'Alex Ionescu', 'alxi.2001@gmail.com', 'GHIJKL', 'ASDFASDGDEGA')
 , ('guido', 'Guido van Rossum', 'guido@something.com', 'ASDSAD', 'GDSGETGSAGF')
 , ('simonpj', 'Simon Peyton Jones', 'simonpj@microsoft.com', 'KHUHHN', 'ESIKGUHESKI')
+, ('arch-team', 'Arch Development Team', 'arch@something.com', 'AAAA', 'ASFAEGAEWEAG')
+, ('nix-team', 'Nix Development Team', 'nix@something.com', 'ASDSAAG', 'ASFAGEEGESGEGES')
 
 insert into Packages values
   ('linux', 1, 'A cool kernel', 'https://github.com/torvalds/linux', 1)
 , ('coreutils', 2, 'Cool GNU utilities', 'https://gnu.org/coreutils.git', 2)
-, ('tli', 3, 'Toy Language Interpreter', NULL, 4)
+, ('tli', 3, 'Toy Language Interpreter', null, 4)
 , ('python3', 4, 'A cool language', 'https://github.com/python/cpython', 4)
-, ('ghc', 3, 'The Glorious Glasgow Haskell Compilation System', 'https://gitlab.haskell.org/ghc/ghc', 4)
+, ('ghc', 5, 'The Glorious Glasgow Haskell Compilation System', 'https://gitlab.haskell.org/ghc/ghc', 4)
 
 insert into PackageVersions values
-  (1, '1.0.0.0', 'someTarballURI')
-, (2, '1.0.0.0', 'someTarballURI')
-, (3, '1.0.0.0', 'someTarballURI')
-, (4, '1.0.0.0', 'someTarballURI')
-, (5, '1.0.0.0', 'someTarballURI')
-, (5, '1.1.0.0', 'someTarballURI')
+  (1, '1.0.0.0', 'https://pkgman.com/pkg/linux/1.0.0.0')
+, (2, '1.0.0.0', 'https://pkgman.com/pkg/coreutils/1.0.0.0')
+, (3, '0.0.0.0', 'https://pkgman.com/pkg/tli/1.0.0.0')
+, (4, '1.0.0.0', 'https://pkgman.com/pkg/python3/1.0.0.0')
+, (5, '0.1.0.0', 'https://pkgman.com/pkg/ghc/0.1.0.0')
+, (5, '1.0.0.0', 'https://pkgman.com/pkg/ghc/1.0.0.0')
+, (5, '1.1.0.0', 'https://pkgman.com/pkg/ghc/1.1.0.0')
 
 insert into PackagesTags values
   (1, 5)
 , (2, 5)
+, (2, 1)
 , (3, 4)
 , (4, 4)
 , (5, 4)
+, (5, 1)
 
 insert into PackageDependencies values
-  (3, '1.0.0.0', 1, '1.0.0.0')
-, (3, '1.0.0.0', 2, '1.0.0.0')
-, (3, '1.0.0.0', 5, '1.0.0.0')
+  (3, '0.0.0.0', 1, '1.0.0.0')
+, (3, '0.0.0.0', 2, '1.0.0.0')
+, (3, '0.0.0.0', 5, '1.0.0.0')
 , (4, '1.0.0.0', 1, '1.0.0.0')
 , (4, '1.0.0.0', 2, '1.0.0.0')
 , (5, '1.0.0.0', 1, '1.0.0.0')
@@ -139,11 +146,11 @@ insert into PackageDependencies values
 , (5, '1.1.0.0', 2, '1.0.0.0')
 
 insert into Distributions values
-  ('Arch')
-, ('Debian')
-, ('Nix')
-, ('Stackage')
-, ('VoidLinux')
+  ('Arch', 6)
+, ('Debian', null)
+, ('Nix', 7)
+, ('Stackage', 5)
+, ('VoidLinux', null)
 
 insert into DistributionVersions values
   (1, '1.0.0.0')
@@ -162,6 +169,7 @@ insert into DistributionsPackages values
 , (2, '1.0.0.0', 2, '1.0.0.0')
 , (3, '1.0.0.0', 1, '1.0.0.0')
 , (3, '1.0.0.0', 2, '1.0.0.0')
+, (3, '1.0.0.0', 5, '1.1.0.0')
 , (4, '1.0.0.0', 1, '1.0.0.0')
 , (4, '1.0.0.0', 2, '1.0.0.0')
 
