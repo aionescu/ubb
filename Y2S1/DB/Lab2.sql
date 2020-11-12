@@ -25,7 +25,7 @@ set name = 'Text Editor'
 where name = 'TextEditor'
 
 update Packages
-set decription = 'The coolest progrma ever'
+set description = 'The coolest progrma ever'
 where name = 'coolpkg'
 
 update Packages

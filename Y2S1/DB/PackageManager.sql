@@ -33,7 +33,7 @@ create table Packages
   ( id int not null primary key identity
   , name nvarchar(50) not null
   , maintainer int foreign key references Users(id)
-  , decription nvarchar(500)
+  , description nvarchar(500)
   , sourceRepo nvarchar(200)
   , license int not null foreign key references Licenses(id)
   )
