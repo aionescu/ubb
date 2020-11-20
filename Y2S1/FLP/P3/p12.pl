@@ -2,9 +2,9 @@
 % Flow model: (i)
 valid(X) :- member(X, [-1, 0, 1]).
 
-% validDiff(x) = x ∈ { 1, 2 }
+% validDiff(x) = |x| ∈ { 1, 2 }
 % Flow model: (i)
-validDiff(X) :- member(X, [1, 2]).
+validDiff(X) :- Y is abs(X), member(Y, [1, 2]).
 
 % string(n) =
 %   1. [], if n = 0
