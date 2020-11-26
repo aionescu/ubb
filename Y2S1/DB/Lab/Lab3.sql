@@ -24,7 +24,7 @@ go
 create or alter procedure addDefaultPackageDescription as
   alter table Packages
   add constraint df_description
-  default 'No description.' for decription
+  default 'No description.' for description
 go
 
 create or alter procedure removeDefaultPackageDescription as
@@ -34,13 +34,31 @@ go
 
 -- d)
 create or alter procedure makeLoginNamePrimaryKey as
+  alter table Distributions
+  drop constraint fk_distroMaintainer
+
+  alter table Packages
+  drop constraint fk_packageMaintainer
+
   alter table Users
-  add constraint pk_loginName primary key (loginName)
+  drop constraint pk_userId
+
+  alter table Users
+  add constraint pk_userId_loginName primary key (id, loginName)
 go
 
 create or alter procedure removeLoginNamePrimaryKey as
   alter table Users
-  drop constraint pk_loginName
+  drop constraint pk_userId_loginName
+
+  alter table Users
+  add constraint pk_userId primary key (id)
+
+  alter table Packages
+  add constraint fk_packageMaintainer foreign key (maintainer) references Users(id)
+
+  alter table Distributions
+  add constraint fk_distroMaintainer foreign key (maintainer) references Users(id)
 go
 
 -- e)
@@ -63,9 +81,6 @@ create or alter procedure createPackageAliasesTabel as
     )
 go
 
-exec createPackageAliasesTabel
-go
-
 create or alter procedure dropPackageAliasesTabel as
 	drop table PackageAliases
 go
@@ -86,10 +101,15 @@ go
 create table CurrentVersion(currentVersion int)
 insert into CurrentVersion values (0)
 
-create table Versions(version int, doProc nvarchar(100), undoProc nvarchar(100))
+create table Versions(versionFrom int, versionTo int, doProc nvarchar(100), undoProc nvarchar(100))
 insert into Versions values
-  (1, 'extendTagNameColumn', 'shrinkTagNameColumn')
-, (2, 'addOSIApprovalColumn', 'removeOSIApprovalColumn')
+  (0, 1, 'extendTagNameColumn', 'shrinkTagNameColumn')
+, (1, 2, 'addOSIApprovalColumn', 'removeOSIApprovalColumn')
+, (2, 3, 'addDefaultPackageDescription', 'removeDefaultPackageDescription')
+, (3, 4, 'makeLoginNamePrimaryKey', 'removeLoginNamePrimaryKey')
+, (4, 5, 'makePackageNameCandidateKey', 'removePackageNameCandidateKey')
+, (5, 6, 'createPackageAliasesTabel', 'dropPackageAliasesTabel')
+, (6, 7, 'addPackageAliasForeignKey', 'removePackageAliasForeignKey')
 go
 
 create or alter procedure goToVersion @version int as begin
@@ -105,17 +125,21 @@ create or alter procedure goToVersion @version int as begin
 		return 
 	end
 
+  declare @versionDelta int
+
 	if @version > @crrVersion begin
+    set @versionDelta = 1
 		declare versionCursor cursor for
 			select doProc from Versions
-			where version <= @version and version > @crrVersion
-			order by version
+			where versionTo <= @version and versionFrom >= @crrVersion
+			order by versionFrom
 	end
 	else begin
+    set @versionDelta = -1
 		declare versionCursor cursor for
 			select undoProc from Versions
-			where version > @version and version <= @crrVersion
-			order by version desc
+			where versionFrom >= @version and versionTo <= @crrVersion
+			order by versionTo desc
 	end
 
 	declare @proc nvarchar(100)
@@ -124,13 +148,16 @@ create or alter procedure goToVersion @version int as begin
 
 	while @@FETCH_STATUS = 0 begin
 		exec @proc
+
+    update CurrentVersion
+    set currentVersion = @crrVersion + @versionDelta
+
+    set @crrVersion = @crrVersion + @versionDelta
+
 		fetch next from versionCursor into @proc
 	end
   
 	close versionCursor
 	deallocate versionCursor
-
-	update CurrentVersion
-	set currentVersion = @version
 end
 go

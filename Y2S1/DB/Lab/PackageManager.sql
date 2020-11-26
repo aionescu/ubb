@@ -21,21 +21,23 @@ create table Licenses
   )
 
 create table Users
-  ( id int not null primary key identity
+  ( id int not null identity
   , loginName nvarchar(50) not null
   , fullName nvarchar(100) not null
   , email nvarchar(50) not null
   , passwordSalt nvarchar(20) not null
   , passwordHash nvarchar(64) not null
+  , constraint pk_userId primary key (id)
   )
 
 create table Packages
   ( id int not null primary key identity
   , name nvarchar(50) not null
-  , maintainer int foreign key references Users(id)
+  , maintainer int
   , description nvarchar(500)
   , sourceRepo nvarchar(200)
   , license int not null foreign key references Licenses(id)
+  , constraint fk_packageMaintainer foreign key (maintainer) references Users(id)
   )
 
 create table PackageVersions
@@ -64,7 +66,8 @@ create table PackageDependencies
 create table Distributions
   ( id int not null primary key identity
   , name nvarchar(50) not null
-  , maintainer int foreign key references Users(id)
+  , maintainer int
+  , constraint fk_distroMaintainer foreign key (maintainer) references Users(id)
   )
 
 create table DistributionVersions
