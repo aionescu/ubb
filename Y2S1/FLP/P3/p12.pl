@@ -9,7 +9,7 @@ validDiff(X) :- Y is abs(X), member(Y, [1, 2]).
 % string(n) =
 %   1. [], if n = 0
 %   2. [x], if n = 1 and valid(x)
-%   3. a ⋃ b ⋃ l, if n >= 2 and b ⋃ l = string(n - 1) and valid(a) and valid(b) and validDiff(b - a)
+%   3. a ∪ b ∪ l, if n >= 2 and b ∪ l = string(n - 1) and valid(a) and valid(b) and validDiff(b - a)
 % Flow model: (i, o)
 string(0, []).
 string(1, [H]) :- valid(H).
