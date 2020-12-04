@@ -23,7 +23,7 @@
     (t (max (deep-max (car as)) (deep-max (cdr as))))))
 
 (defun max-helper (a) (if (listp a) (deep-max-2 a) a))
-(defun deep-max-2 (as) (reduce #'max (mapcar #'max-helper as)))
+(defun deep-max-2 (as) (if (null as) 0 (reduce #'max (mapcar #'max-helper as))))
 
 ; c)
 ; op?(op) = op ϵ { +, -, *, / }
