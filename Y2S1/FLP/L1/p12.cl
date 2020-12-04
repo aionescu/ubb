@@ -43,7 +43,7 @@
 ;   ; (op(a1)(a, b), rest2), if op?(a1), (a, rest) = eval-arith-mvb(a2..an), (b, rest2) = eval-arith-mvb(rest2)
 (defun eval-arith-mvb (as)
   (cond
-    ((null as) 0)
+    ((null as) (values 0 nil))
     ((numberp (car as)) (values (car as) (cdr as)))
     ((op? (car as))
       (multiple-value-bind (a rest) (eval-arith-mvb (cdr as))
