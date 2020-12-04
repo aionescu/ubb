@@ -1,18 +1,20 @@
 ; a)
-; dotProduct(a1..am, b1..bn) =
-;   { 0, if m = ∅ or n = ∅
-;   ; a1 * b1 + dotProduct(a2..am, b2..bn), otherwise
+; dot-product(a1..am, b1..bn) =
+;   { 0, if m = 0 or n = 0
+;   ; a1 * b1 + dot-product(a2..am, b2..bn), otherwise
 ;   }
 (defun dot-product (as bs)
-  (cond
-    ((or (null as) (null bs)) 0)
-    (t (+ (* (car as) (car bs)) (dot-product (cdr as) (cdr bs))))))
+  (if (or (null as) (null bs))
+    0
+    (+ (* (car as) (car bs)) (dot-product (cdr as) (cdr bs)))))
+
+(defun dot-product-2 (as bs) (reduce #'+ (mapcar #'* as bs)))
 
 ; b)
-; deepMax(a1..an) =
+; deep-max(a1..an) =
 ;   { 0, if a = ∅
-;   ; max(a1, deepMax(a2..an)), if a1 is number
-;   ; max(deepMax(a1), deepMax(a2..an)), otherwise
+;   ; max(a1, deep-max(a2..an)), if a1 is number
+;   ; max(deep-max(a1), deep-max(a2..an)), otherwise
 ;   }
 (defun deep-max (as)
   (cond
@@ -20,27 +22,39 @@
     ((numberp (car as)) (max (car as) (deep-max (cdr as))))
     (t (max (deep-max (car as)) (deep-max (cdr as))))))
 
+(defun max-helper (a) (if (listp a) (deep-max-2 a) a))
+(defun deep-max-2 (as) (reduce #'max (mapcar #'max-helper as)))
+
 ; c)
-; arithOp?(op) = op ϵ { +, -, *, / }
-(defun arith-op? (op) (member op '(+ - * /)))
+; op?(op) = op ϵ { +, -, *, / }
+(defun op? (op) (member op '(+ - * /)))
 
-; arithOp(op) = ???
-(defun arith-op (op) (nth (position op '(+ - * /)) (list #'+ #'- #'* #'/)))
+; op(op) =
+;   { (+), if op is +
+;   ; (-), if op is -
+;   ; (*), if op is *
+;   ; (/), if op is /
+;   }
+(defun op (op) (nth (position op '(+ - * /)) (list #'+ #'- #'* #'/)))
 
-;
+; eval-arith-mvb(a1..an) =
+;   { 0, if n = 0
+;   ; (a1, a2..an), if a1 is a number
+;   ; (op(a1)(a, b), rest2), if op?(a1), (a, rest) = eval-arith-mvb(a2..an), (b, rest2) = eval-arith-mvb(rest2)
 (defun eval-arith-mvb (as)
   (cond
     ((null as) 0)
     ((numberp (car as)) (values (car as) (cdr as)))
-    ((arith-op? (car as))
+    ((op? (car as))
       (multiple-value-bind (a rest) (eval-arith-mvb (cdr as))
         (multiple-value-bind (b rest2) (eval-arith-mvb rest)
-          (values (apply (arith-op (car as)) (list a b)) rest2))))))
+          (values (funcall (op (car as)) a b) rest2))))))
 
+; eval-arith(a1..an) = a, where (a, rest) = eval-arith-mvb(a1..an)
 (defun eval-arith (as) (multiple-value-bind (a rest) (eval-arith-mvb as) a))
 
 ; d)
-; evenCount(a1..an) = n = ∅ or (n >= 2 and evenCount(a3..an))
+; even-count(a1..an) = n = ∅ or (n >= 2 and even-count(a3..an))
 (defun even-count (as)
   (or
     (null as)
