@@ -333,64 +333,73 @@ go
 if exists
 ( select name
   from sys.tables
-  where name = 'FirstTable'
+  where name = 'Maintainers'
 )
 begin
-  drop table ThirdTable
-  drop table SecondTable
-  drop table FirstTable
+  drop table PkgVersions
+  drop table Pkgs
+  drop table Maintainers
 end
 
 go
 
-create table FirstTable
-  ( f1 int primary key identity
-  ,	f2 varchar(30)
-  ,	f3 date
+create table Maintainers
+  ( maintainerID int primary key identity
+  ,	maintainerName varchar(30)
+  ,	signupDate date
   )
 
-create table SecondTable
-  ( s1 int primary key identity
-	, s2 int
-	, s3 date
-	, constraint FK_s2 foreign key (s2) references FirstTable(f1)
+create table Pkgs
+  ( pkgID int primary key identity
+	, pkgName varchar(30)
+  , maintainer int foreign key references Maintainers(maintainerID)
+	, lastVersionUploadDate date
   )
 
-create table ThirdTable
-  ( t1 int identity
-	, t2 nchar(30)
-	, t3 date
-	, primary key (t1, t2)
+create table PkgVersions
+  ( versionID int identity
+	, downloadCount int
+	, uploadDate date
+	, primary key (versionID, downloadCount)
   )
 
 go
 
-create or alter view FirstView as
-  select * from FirstTable
+create or alter view AllMaintainersView as
+  select * from Maintainers
 go
 
-create or alter view SecondView as
-  select f1, s3
-  from FirstTable
-  inner join SecondTable on f1 = s2
+create or alter view PkgMaintainersView as
+  select maintainerName, pkgName
+  from Maintainers
+  inner join Pkgs
+  on maintainerID = maintainer
 go
 
-create or alter view ThirdView as
-  select F.[Date], count(*) as 'Count'
+create or alter view PkgVersionsView as
+  select dateCol, count(*) as 'Count'
   from (
-    select t1 as [Number], t3 as [Date]
-    from ThirdTable as TT
+    select versionID as idCol, uploadDate as dateCol
+    from PkgVersions as PV
     union
-    select s2 as [Number], s3 as [Date]
-    from SecondTable as ST
-  ) as F
-  group by F.Date
+    select pkgID as idCol, lastVersionUploadDate as dateCol
+    from Pkgs as P
+  ) as PVV
+  group by dateCol
 go
 
 exec runTest
-  @tableInfo = 'FirstTable 10 SecondTable 10 ThirdTable 10',
-  @viewInfo = 'FirstView SecondView ThirdView',
+  @tableInfo = 'Maintainers 10 Pkgs 10 PkgVersions 10',
+  @viewInfo = 'AllMaintainersView PkgMaintainersView PkgVersionsView',
   @testName = 'The Test'
+
+select * from Maintainers
+select * from Pkgs
+select * from PkgVersions
+
+select * from AllMaintainersView
+select * from PkgMaintainersView
+select * from PkgVersionsView
 
 select * from TestRuns
 select * from TestRunTables

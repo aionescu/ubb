@@ -35,7 +35,7 @@ create or alter procedure populateTable @table varchar(30) as
   declare @counter int
   set @counter = 1
 
-  while @counter <= 200  begin
+  while @counter <= 2000 begin
     set @query =
       'insert into ' + @table
       + ' values (' + convert(varchar, @counter)
@@ -74,7 +74,7 @@ from Ta
 where a2 = 80
 
 -- Key lookup
--- Nonclustered index seek 
+-- Nonclustered index seek
 select *
 from Ta
 where a2 = 120
@@ -87,7 +87,6 @@ if exists
   where name = 'Ix_Tb_b2'
 ) drop index Ix_Tb_b2 on Tb
 
--- Clustered scan
 select bid
 from Tb
 where b2 = 97
@@ -100,7 +99,6 @@ if exists
 
 create nonclustered index Ix_Tb_b2 on Tb(b2)
 
--- Nonclustered scan
 select bid
 from Tb
 where b2 = 98
@@ -109,17 +107,16 @@ go
 
 -- c)
 
-create or alter view TestView as 
-	select C.cid
-	from Tc C
-  left join Ta A
-  on C.aid = A.aid
-	where C.aid between 18 and 420
+create or alter view TestView as
+	select Tc.cid
+	from Tc
+  left join Ta
+  on Tc.aid = Ta.aid
+	where Tc.aid between 10 and 500
 go
 
--- Clustered seek
 select *
-from TestView 
+from TestView
 
 if exists
 ( select * from
@@ -129,6 +126,5 @@ if exists
 
 create nonclustered index Ix_Tc_aid on Tc(aid)
 
--- Nonclustered seek 
 select *
-from TestView 
+from TestView
