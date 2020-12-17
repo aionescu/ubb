@@ -316,7 +316,7 @@ as
 
 	while @@FETCH_STATUS = 0 begin
     set @start = sysDateTime()
-    -- exec ('select * from ' + @name)
+    exec ('select * from ' + @name)
 
     set @end = sysDateTime()
     insert into TestRunViews(TestRunID, ViewID, StartAt, EndAt) values (@testRunID, @viewID, @start, @end)
@@ -391,24 +391,23 @@ go
 exec runTest
   @tableInfo = 'Maintainers 100 Pkgs 100 PkgVersions 100',
   @viewInfo = 'AllMaintainersView PkgMaintainersView PkgVersionsView',
-  @testName = 'The Test'
+  @testName = 'Some Test'
 
-select * from Maintainers
-select * from Pkgs
-select * from PkgVersions
+-- select * from Maintainers
+-- select * from Pkgs
+-- select * from PkgVersions
 
-select * from AllMaintainersView
-select * from PkgMaintainersView
-select * from PkgVersionsView
+-- select * from AllMaintainersView
+-- select * from PkgMaintainersView
+-- select * from PkgVersionsView
 
-select * from Tables
-select * from Views
+-- select * from Tables
+-- select * from Views
 
-select * from Tests
+-- select * from Tests
+-- select * from TestTables
+-- select * from TestViews
+
 select * from TestRuns
-
-select * from TestTables
-select * from TestViews
-
 select * from TestRunTables
 select * from TestRunViews
