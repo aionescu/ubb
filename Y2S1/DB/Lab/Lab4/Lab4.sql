@@ -272,7 +272,7 @@ as
     fetch next from d into @name
 
     while @@FETCH_STATUS = 0 begin
-      exec ('DELETE from ' + @name)
+      exec ('delete from ' + @name)
       fetch next from d into @name
     end
 
@@ -389,7 +389,7 @@ create or alter view PkgVersionsView as
 go
 
 exec runTest
-  @tableInfo = 'Maintainers 10 Pkgs 10 PkgVersions 10',
+  @tableInfo = 'Maintainers 100 Pkgs 100 PkgVersions 100',
   @viewInfo = 'AllMaintainersView PkgMaintainersView PkgVersionsView',
   @testName = 'The Test'
 
@@ -401,6 +401,14 @@ select * from AllMaintainersView
 select * from PkgMaintainersView
 select * from PkgVersionsView
 
+select * from Tables
+select * from Views
+
+select * from Tests
 select * from TestRuns
+
+select * from TestTables
+select * from TestViews
+
 select * from TestRunTables
 select * from TestRunViews
