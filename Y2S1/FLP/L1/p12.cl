@@ -38,9 +38,10 @@
 (defun op (op) (nth (position op '(+ - * /)) (list #'+ #'- #'* #'/)))
 
 ; eval-arith-mvb(a1..an) =
-;   { 0, if n = 0
+;   { (0, ∅), if n = 0
 ;   ; (a1, a2..an), if a1 is a number
 ;   ; (op(a1)(a, b), rest2), if op?(a1), (a, rest) = eval-arith-mvb(a2..an), (b, rest2) = eval-arith-mvb(rest2)
+;   }
 (defun eval-arith-mvb (as)
   (cond
     ((null as) (values 0 nil))
@@ -54,7 +55,7 @@
 (defun eval-arith (as) (multiple-value-bind (a rest) (eval-arith-mvb as) a))
 
 ; d)
-; even-count(a1..an) = n = ∅ or (n >= 2 and even-count(a3..an))
+; even-count(a1..an) = n = 0 or (n >= 2 and even-count(a3..an))
 (defun even-count (as)
   (or
     (null as)
