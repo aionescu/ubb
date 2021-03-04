@@ -249,7 +249,7 @@ def main():
       timeLastFrame = currentTime
       timeSinceStep += deltaTime
 
-      if timeSinceStep < 1000:
+      if timeSinceStep < 100:
         continue
 
       timeSinceStep = 0
