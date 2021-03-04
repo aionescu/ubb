@@ -164,60 +164,41 @@ class DMap():
 
 
 class Drone():
-    def __init__(self, x, y):
-        self.pos = (x, y)
-        self.seen = []
-        self.stack = []
+  def __init__(self, x, y):
+    self.pos = (x, y)
+    self.seen = []
+    self.crumbs = []
 
-    # def move(self, detectedMap):
-    #     pressed_keys = pygame.key.get_pressed()
-    #     if self.x > 0:
-    #         if pressed_keys[K_UP] and detectedMap.surface[self.x-1][self.y]==0:
-    #             self.x = self.x - 1
-    #     if self.x < 19:
-    #         if pressed_keys[K_DOWN] and detectedMap.surface[self.x+1][self.y]==0:
-    #             self.x = self.x + 1
+  def x(self):
+    return self.pos[0]
 
-    #     if self.y > 0:
-    #           if pressed_keys[K_LEFT]and detectedMap.surface[self.x][self.y-1]==0:
-    #               self.y = self.y - 1
-    #     if self.y < 19:
-    #           if pressed_keys[K_RIGHT] and detectedMap.surface[self.x][self.y+1]==0:
-    #               self.y = self.y + 1
+  def y(self):
+    return self.pos[1]
 
-    def x(self):
-      return self.pos[0]
+  def inBounds(self, pos, shape):
+    x, y = pos
+    xMax, yMax = shape
+    return x >= 0 and x < xMax and y >= 0 and y < yMax
 
-    def y(self):
-      return self.pos[1]
+  def canMoveTo(self, pos, m):
+    x, y = pos
+    return self.inBounds(pos, m.shape) and m[x][y] == 0 and pos not in self.seen
 
-    def nearby(self, m):
-      x, y = self.pos
-      (xMax, yMax) = m.shape
+  def nearby(self, m):
+    x, y = self.pos
+    ps = [(x - 1, y), (x, y - 1), (x + 1, y), (x, y + 1)]
 
-      l = []
-      ps = [(x - 1, y), (x, y - 1), (x + 1, y), (x, y + 1)]
+    return list(filter(lambda p: self.canMoveTo(p, m), ps))
 
-      for (x, y) in ps:
-        if x >= 0 and x < xMax and y >= 0 and y < yMax and m[x][y] == 0 and (x, y) not in self.seen and (x, y) not in self.stack:
-          l.append((x, y))
+  def moveDFS(self, map):
+    self.seen.append(self.pos)
+    nearby = self.nearby(map.surface)
 
-      return l
-
-    def backtrack(self):
-      if not self.crumbs:
-        return
-
+    if nearby:
+      self.crumbs.append(self.pos)
+      self.pos = nearby.pop()
+    elif self.crumbs:
       self.pos = self.crumbs.pop()
-
-    def moveDFS(self, map):
-      self.seen.append(self.pos)
-
-      nearby = self.nearby(map.surface)
-      self.stack.extend(nearby)
-
-      if self.stack:
-        self.pos = self.stack.pop()
 
 # define a main function
 def main():
@@ -255,9 +236,8 @@ def main():
     # define a variable to control the main loop
     running = True
 
-    # main loop
     timeLastFrame = 0
-    timeSinceDFS = 0
+    timeSinceStep = 0
 
     while running:
       for event in pygame.event.get():
@@ -267,19 +247,18 @@ def main():
       currentTime = pygame.time.get_ticks()
       deltaTime = currentTime - timeLastFrame
       timeLastFrame = currentTime
-      timeSinceDFS += deltaTime
+      timeSinceStep += deltaTime
 
-      if timeSinceDFS < 100:
+      if timeSinceStep < 1000:
         continue
 
-      timeSinceDFS = 0
+      timeSinceStep = 0
       d.moveDFS(m)
       m.markDetectedWalls(e, d.x(), d.y())
       screen.blit(m.image(d.x(),d.y()),(400,0))
       pygame.display.flip()
 
     pygame.quit()
-
 
 # run the main function only if this module is executed as the main script
 # (if you import this as a module then nothing is executed)
