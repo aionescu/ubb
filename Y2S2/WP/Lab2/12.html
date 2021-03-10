@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <style>
+      .line-top {
+        width: 200px;
+        height: 10px;
+
+        position: absolute;
+        top: 0px;
+        left: 0px;
+
+        background: linear-gradient(to right, rgba(0, 0, 0, 0) 0% 5%, black 5% 95%, rgba(0, 0, 0, 0) 5% 100%);
+      }
+
+      .line-left {
+        width: 10px;
+        height: 200px;
+
+        position: absolute;
+        top: 0px;
+        left: 0px;
+
+        background-color: red;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0% 5%, red 5% 95%, rgba(0, 0, 0, 0) 5% 100%);
+      }
+
+      .line-right {
+        width: 10px;
+        height: 200px;
+
+        position: absolute;
+        top: 0px;
+        left: 190px;
+
+        background-color: yellow;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0) 0% 5%, yellow 5% 95%, rgba(0, 0, 0, 0) 5% 100%);
+      }
+
+      .line-bottom {
+        width: 200px;
+        height: 10px;
+
+        position: absolute;
+        top: 190px;
+        left: 0px;
+
+        background-color: blue;
+        background: linear-gradient(to left, rgba(0, 0, 0, 0) 0% 5%, blue 5% 95%, rgba(0, 0, 0, 0) 5% 100%);
+      }
+    </style>
+  </head>
+  <body>
+    <div class ="line-top"></div>
+    <div class ="line-left"></div>
+    <div class ="line-right"></div>
+    <div class ="line-bottom"></div>
+  </body>
+</html>

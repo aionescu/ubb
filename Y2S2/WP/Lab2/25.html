@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <style>
+      .dot {
+        background-color: teal;
+        border-radius: 50%;
+
+        position: fixed;
+        left: 0%;
+        top: 0%;
+
+        height: 30%;
+        width: 15%;
+
+        display: inline-block;
+      }
+
+      .dot:hover {
+        animation: jump 2s ease-in infinite alternate;
+      }
+
+      @keyframes jump {
+        from { top: 0; }
+        to { top: 70%; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dot"></div>
+  </body>
+</html>
