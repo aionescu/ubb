@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Squared Box v2</title>
+
+    <style>
+      body {
+        background-image: url(https://cdn.wallpapersafari.com/31/48/iCIzLa.jpg);
+      }
+
+      .line-top {
+        width: 600px;
+        height: 570px;
+
+        position: absolute;
+        top: 0px;
+        left: 0px;
+
+        border-top: 30px solid;
+        border-image: linear-gradient(to right, rgba(0, 0, 0, 0) 5%, black, rgba(0, 0, 0, 0) 95%);
+        border-image-slice: 1;
+      }
+
+      .line-left {
+        width: 570px;
+        height: 600px;
+
+        position: absolute;
+        top: 0px;
+        left: 0px;
+
+        border-left: 30px solid;
+        border-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 5%, red, rgba(0, 0, 0, 0) 95%);
+        border-image-slice: 1;
+      }
+
+      .line-right {
+        width: 570px;
+        height: 600px;
+
+        position: absolute;
+        top: 0px;
+        left: 0px;
+
+        border-right: 30px solid;
+        border-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 5%, yellow, rgba(0, 0, 0, 0) 95%);
+        border-image-slice: 1;
+      }
+
+      .line-bottom {
+        width: 600px;
+        height: 570px;
+
+        position: absolute;
+        top: 0px;
+        left: 0px;
+
+        border-bottom: 30px solid;
+        border-image: linear-gradient(to right, rgba(0, 0, 0, 0) 5%, blue, rgba(0, 0, 0, 0) 95%);
+        border-image-slice: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div class ="line-top"></div>
+    <div class ="line-left"></div>
+    <div class ="line-right"></div>
+    <div class ="line-bottom"></div>
+  </body>
+</html>
