@@ -17,10 +17,16 @@
     SqlCommandBuilder _cmdBuilder;
     BindingSource _pkgBindingSource, _pkgVerBindingSourcew;
 
-    public Form1() => InitializeComponent();
+    public Form1() {
+      InitializeComponent();
 
-    void Form1_Load(object sender, EventArgs e) {
       _conn = new SqlConnection(@"Data Source = localhost\SQLEXPRESS; Initial Catalog = PackageManager; Integrated Security = SSPI;");
+
+      _initialize();
+      _conn.Open();
+    }
+
+    void _initialize() {
       _dataSet = new DataSet();
 
       _pkgAdapter = new SqlDataAdapter("select * from Packages", _conn);
@@ -52,6 +58,10 @@
       pkgVerGridView.DataSource = _pkgVerBindingSourcew;
     }
 
+
+    void Form1_Load(object sender, EventArgs e) => _initialize();
+
     void updateBtn_Click(object sender, EventArgs e) => _pkgVerAdapter.Update(_dataSet, "PackageVersions");
+    void refreshBtn_Click(object sender, EventArgs e) => _initialize();
   }
 }

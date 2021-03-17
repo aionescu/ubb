@@ -29,6 +29,7 @@
       this.label2 = new System.Windows.Forms.Label();
       this.pkgVerGridView = new System.Windows.Forms.DataGridView();
       this.updateBtn = new System.Windows.Forms.Button();
+      this.refreshBtn = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.pkgGridView)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.pkgVerGridView)).BeginInit();
       this.SuspendLayout();
@@ -80,11 +81,23 @@
       this.updateBtn.UseVisualStyleBackColor = true;
       this.updateBtn.Click += new System.EventHandler(this.updateBtn_Click);
       // 
+      // refreshBtn
+      // 
+      this.refreshBtn.Font = new System.Drawing.Font("Fira Code", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.refreshBtn.Location = new System.Drawing.Point(156, 488);
+      this.refreshBtn.Name = "refreshBtn";
+      this.refreshBtn.Size = new System.Drawing.Size(133, 31);
+      this.refreshBtn.TabIndex = 5;
+      this.refreshBtn.Text = "Refresh";
+      this.refreshBtn.UseVisualStyleBackColor = true;
+      this.refreshBtn.Click += new System.EventHandler(this.refreshBtn_Click);
+      // 
       // Form1
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(853, 580);
+      this.Controls.Add(this.refreshBtn);
       this.Controls.Add(this.updateBtn);
       this.Controls.Add(this.pkgVerGridView);
       this.Controls.Add(this.label2);
@@ -107,6 +120,7 @@
     private System.Windows.Forms.Label label2;
     private System.Windows.Forms.DataGridView pkgVerGridView;
     private System.Windows.Forms.Button updateBtn;
+    private System.Windows.Forms.Button refreshBtn;
   }
 }
 
