@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>NYT Lookalike</title>
+  <style>
+    body {
+      color: #333;
+      background-color: white;
+    }
+
+    div {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      font-size: 100%;
+      text-size-adjust: 100%;
+      font: inherit;
+      vertical-align: baseline;
+    }
+
+    button {
+      -webkit-appearance: button;
+    }
+
+    .line-list li {
+      display: inline;
+      padding-right: 15px;
+    }
+
+    a {
+      text-decoration: none;
+      color: black;
+    }
+
+    .top-left-button:hover {
+      background-color: #f7f7f7;
+    }
+
+    .top-left-div {
+      float: left;
+    }
+
+    .top-left-button {
+      display: inline-block;
+      height: 16px;
+      vertical-align: sub;
+      width: 16px;
+
+      border: 0;
+      margin-right: 8px;
+
+      border-radius: 3px;
+      cursor: pointer;
+      font-family: helvetica, arial, sans-serif;
+      transition: ease 0.6s;
+      white-space: nowrap;
+      vertical-align: middle;
+      background-color: #fff;
+      color: #333;
+      font-size: 11px;
+      line-height: 11px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      padding: 11px 12px 8px;
+      text-transform: uppercase;
+      padding: 8px 9px 9px;
+    }
+
+    .top-right-div {
+      float: right;
+      justify-content: space-around;
+      position: relative;
+    }
+
+    .top-right-button {
+      padding: 11px 12px 8px;
+      border-radius: 3px;
+      cursor: pointer;
+      font-family: helvetica, arial, sans-serif;
+      transition: ease 0.6s;
+      white-space: nowrap;
+      vertical-align: middle;
+      background-color: #567b95;
+      border: 1px solid #326891;
+      color: #fff;
+      font-size: 11px;
+      line-height: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .top-right-button:hover {
+      border: 1px solid #326891;
+      background-color: #326891;
+    }
+
+    .title-header {
+      text-align: center;
+      display: block;
+      width: 430px;
+      height: 58px;
+      margin: 6px auto;
+    }
+
+    .header-news-item {
+      padding-left: 0px;
+      display: flex;
+      -webkit-box-align: center;
+      align-items: center;
+      border-right: 1px solid #e2e2e2;
+      padding: 0 15px;
+    }
+
+    .header-news-item-article {
+      width: 100%;
+      display: block;
+    }
+
+    .header-news-item-inner-div {
+      width: 100%;
+      display: flex;
+      -webkit-box-align: center;
+      align-items: center;
+      -webkit-box-pack: start;
+      justify-content: flex-start;
+    }
+  </style>
+</head>
+
+<body style="padding-left: 250px; padding-right: 250px;">
+  <div class="lang-header">
+    <div class="top-left-div">
+      <button>
+        <svg class="top-left-button" viewBox="0 0 16 16">
+          <rect x="1" y="3" fill="#333" width="14" height="2"></rect>
+          <rect x="1" y="7" fill="#333" width="14" height="2"></rect>
+          <rect x="1" y="11" fill="#333" width="14" height="2"></rect>
+        </svg>
+      </button>
+
+      <button>
+        <svg class="top-left-button" viewBox="0 0 16 16">
+          <path fill="#333"
+            d="M11.3,9.2C11.7,8.4,12,7.5,12,6.5C12,3.5,9.5,1,6.5,1S1,3.5,1,6.5S3.5,12,6.5,12c1,0,1.9-0.3,2.7-0.7l3.3,3.3c0.3,0.3,0.7,0.4,1.1,0.4s0.8-0.1,1.1-0.4c0.6-0.6,0.6-1.5,0-2.1L11.3,9.2zM6.5,10.3c-2.1,0-3.8-1.7-3.8-3.8c0-2.1,1.7-3.8,3.8-3.8c2.1,0,3.8,1.7,3.8,3.8C10.3,8.6,8.6,10.3,6.5,10.3z">
+          </path>
+        </svg>
+      </button>
+    </div>
+
+    <div class="top-right-div">
+      <button class="top-right-button">Subscribe Now</button>
+      <button class="top-right-button">Log in</button>
+    </div>
+
+    <ul style="text-align: center" class="line-list">
+      <li>U.S.</li>
+      <li>INTERNATIONAL</li>
+      <li>CANADA</li>
+      <li>ESPAÑOL</li>
+      <li>中文</li>
+    </ul>
+  </div>
+
+  <br/>
+  <div style="float: left;">
+    <b>Wednesday, March 17, 2021</b><br />
+    Today’s Paper
+  </div>
+
+  <div style="float: right;">
+    <svg width="18" height="18" viewBox="0 0 34 34">
+      <title>Today's weather: 3°C and Cloudy</title>
+      <g fill="none" fill-rule="evenodd">
+        <path
+          d="M20.083 3.225c2.672 0 4.972 1.881 5.47 4.471l.402 2.094 2.13-.066.062-.006.048-.002c1.717 0 3.112 1.375 3.112 3.064s-1.396 3.064-3.112 3.064c-4.378 0-10.331-.002-13.615-.004l-.002-.074-2.524.072-.084.006c-1.714 0-3.11-1.375-3.11-3.064a3.083 3.083 0 0 1 3.057-3.066l.1.006.03.002 2.158.094.405-2.119c.496-2.591 2.797-4.472 5.473-4.472m0-2.5c-3.944 0-7.218 2.797-7.928 6.498-.062-.002-.122-.008-.187-.008-3.1 0-5.61 2.49-5.61 5.564s2.511 5.564 5.61 5.564c.052 0 .104-.006.156-.008-.156.008 16.016.008 16.069.008 3.101 0 5.612-2.49 5.612-5.564s-2.512-5.564-5.612-5.564c-.063 0-.123.006-.188.008C27.296 3.522 24.02.725 20.083.725"
+          fill="#ccc"></path>
+        <path
+          d="M6.69 32.027c-2.892 0-5.248-2.33-5.248-5.193 0-2.865 2.356-5.195 5.248-5.195h1.032l.408-1.002c.722-3.771 4.067-6.51 7.951-6.51 3.883 0 7.227 2.738 7.948 6.51l.2 1.043 1.084-.027c3.066 0 5.41 2.324 5.41 5.182 0 2.863-2.356 5.193-5.25 5.193H6.69v-.001z"
+          fill="#fff"></path>
+        <path
+          d="M16.083 15.377c3.284 0 6.109 2.312 6.722 5.496l.402 2.098 2.134-.072.088-.008.044-.002c2.206 0 4.002 1.77 4.002 3.947 0 2.174-1.796 3.941-4.002 3.941H6.69c-2.206 0-3.998-1.768-3.998-3.941 0-2.178 1.792-3.947 3.96-3.947l.11.008h.03l2.158.096.405-2.119c.611-3.186 3.441-5.497 6.728-5.497m0-2.498c-4.566 0-8.358 3.238-9.178 7.523-.072-.004-.143-.012-.215-.012-3.59 0-6.496 2.885-6.496 6.445 0 3.557 2.906 6.439 6.496 6.439h18.782c3.59 0 6.498-2.883 6.498-6.439 0-3.561-2.908-6.445-6.498-6.445-.072 0-.144.008-.216.012-.822-4.285-4.616-7.523-9.173-7.523"
+          fill="#fff"></path>
+        <path
+          d="M16.083 15.377c3.284 0 6.109 2.311 6.722 5.496l.402 2.094 2.13-.068.09-.008.046-.002c2.206 0 4.002 1.771 4.002 3.945 0 2.176-1.796 3.943-4.002 3.943H6.69c-2.206 0-3.998-1.768-3.998-3.943 0-2.174 1.792-3.945 3.958-3.945l.114.006.032.002 2.154.092.405-2.115c.611-3.186 3.441-5.497 6.728-5.497m0-2.498c-4.566 0-8.358 3.238-9.178 7.523-.072-.004-.143-.012-.215-.012-3.59 0-6.496 2.885-6.496 6.443 0 3.559 2.906 6.441 6.496 6.441h18.782c3.59 0 6.498-2.883 6.498-6.441 0-3.559-2.908-6.443-6.498-6.443-.072 0-.144.008-.216.012-.822-4.285-4.616-7.523-9.173-7.523"
+          fill="#fff"></path>
+        <path
+          d="M25.473 22.889l-.047.004-.09.006-2.132.068-.399-2.094c-.612-3.184-3.439-5.496-6.723-5.496-3.288 0-6.116 2.312-6.726 5.496l-.406 2.168L6.796 23h-.031l-.114-.059c-2.166 0-3.96 1.855-3.96 4.029s1.794 4.029 3.998 4.029h18.784c2.205 0 4-1.881 4-4.055 0-2.173-1.795-4.055-4-4.055"
+          fill="#ccc"></path>
+      </g>
+    </svg>
+    3°C 4° 1°<br />
+    Nasdaq -0.78%
+    <svg style="transform: rotate(180deg);" width="5px" height="9px" viewBox="0 0 5 9">
+      <title>Group</title>
+      <defs></defs>
+      <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard">
+          <g id="Group">
+            <path d="M2.5,9 L2.5,3.373" id="Shape" stroke="#a61b1e"></path>
+            <polyline id="Shape" fill="#a61b1e" fill-rule="nonzero"
+              points="4.86293961 4.09179688 2.5 0 0.13706039 4.09179688"></polyline>
+          </g>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <div class="title-header">
+    <svg viewBox="0 0 184 25" fill="#000">
+      <path
+        d="M13.8 2.9c0-2-1.9-2.5-3.4-2.5v.3c.9 0 1.6.3 1.6 1 0 .4-.3 1-1.2 1-.7 0-2.2-.4-3.3-.8C6.2 1.4 5 1 4 1 2 1 .6 2.5.6 4.2c0 1.5 1.1 2 1.5 2.2l.1-.2c-.2-.2-.5-.4-.5-1 0-.4.4-1.1 1.4-1.1.9 0 2.1.4 3.7.9 1.4.4 2.9.7 3.7.8v3.1L9 10.2v.1l1.5 1.3v4.3c-.8.5-1.7.6-2.5.6-1.5 0-2.8-.4-3.9-1.6l4.1-2V6l-5 2.2C3.6 6.9 4.7 6 5.8 5.4l-.1-.3c-3 .8-5.7 3.6-5.7 7 0 4 3.3 7 7 7 4 0 6.6-3.2 6.6-6.5h-.2c-.6 1.3-1.5 2.5-2.6 3.1v-4.1l1.6-1.3v-.1l-1.6-1.3V5.8c1.5 0 3-1 3-2.9zm-8.7 11l-1.2.6c-.7-.9-1.1-2.1-1.1-3.8 0-.7 0-1.5.2-2.1l2.1-.9v6.2zm10.6 2.3l-1.3 1 .2.2.6-.5 2.2 2 3-2-.1-.2-.8.5-1-1V9.4l.8-.6 1.7 1.4v6.1c0 3.8-.8 4.4-2.5 5v.3c2.8.1 5.4-.8 5.4-5.7V9.3l.9-.7-.2-.2-.8.6-2.5-2.1L18.5 9V.8h-.2l-3.5 2.4v.2c.4.2 1 .4 1 1.5l-.1 11.3zM34 15.1L31.5 17 29 15v-1.2l4.7-3.2v-.1l-2.4-3.6-5.2 2.8v6.6l-1 .8.2.2.9-.7 3.4 2.5 4.5-3.6-.1-.4zm-5-1.7V8.5l.2-.1 2.2 3.5-2.4 1.5zM53.1 2c0-.3-.1-.6-.2-.9h-.2c-.3.8-.7 1.2-1.7 1.2-.9 0-1.5-.5-1.9-.9l-2.9 3.3.2.2 1-.9c.6.5 1.1.9 2.5 1v8.3L44 3.2c-.5-.8-1.2-1.9-2.6-1.9-1.6 0-3 1.4-2.8 3.6h.3c.1-.6.4-1.3 1.1-1.3.5 0 1 .5 1.3 1v3.3c-1.8 0-3 .8-3 2.3 0 .8.4 2 1.6 2.3v-.2c-.2-.2-.3-.4-.3-.7 0-.5.4-.9 1.1-.9h.5v4.2c-2.1 0-3.8 1.2-3.8 3.2 0 1.9 1.6 2.8 3.4 2.7v-.2c-1.1-.1-1.6-.6-1.6-1.3 0-.9.6-1.3 1.4-1.3.8 0 1.5.5 2 1.1l2.9-3.2-.2-.2-.7.8c-1.1-1-1.7-1.3-3-1.5V5l8 14h.6V5c1.5-.1 2.9-1.3 2.9-3zm7.3 13.1L57.9 17l-2.5-2v-1.2l4.7-3.2v-.1l-2.4-3.6-5.2 2.8v6.6l-1 .8.2.2.9-.7 3.4 2.5 4.5-3.6-.1-.4zm-5-1.7V8.5l.2-.1 2.2 3.5-2.4 1.5zM76.7 8l-.7.5-1.9-1.6-2.2 2 .9.9v7.5l-2.4-1.5V9.6l.8-.5-2.3-2.2-2.2 2 .9.9V17l-.3.2-2.1-1.5v-6c0-1.4-.7-1.8-1.5-2.3-.7-.5-1.1-.8-1.1-1.5 0-.6.6-.9.9-1.1v-.2c-.8 0-2.9.8-2.9 2.7 0 1 .5 1.4 1 1.9s1 .9 1 1.8v5.8l-1.1.8.2.2 1-.8 2.3 2 2.5-1.7 2.8 1.7 5.3-3.1V9.2l1.3-1-.2-.2zm18.6-5.5l-1 .9-2.2-2-3.3 2.4V1.6h-.3l.1 16.2c-.3 0-1.2-.2-1.9-.4l-.2-13.5c0-1-.7-2.4-2.5-2.4s-3 1.4-3 2.8h.3c.1-.6.4-1.1 1-1.1s1.1.4 1.1 1.7v3.9c-1.8.1-2.9 1.1-2.9 2.4 0 .8.4 2 1.6 2V13c-.4-.2-.5-.5-.5-.7 0-.6.5-.8 1.3-.8h.4v6.2c-1.5.5-2.1 1.6-2.1 2.8 0 1.7 1.3 2.9 3.3 2.9 1.4 0 2.6-.2 3.8-.5 1-.2 2.3-.5 2.9-.5.8 0 1.1.4 1.1.9 0 .7-.3 1-.7 1.1v.2c1.6-.3 2.6-1.3 2.6-2.8s-1.5-2.4-3.1-2.4c-.8 0-2.5.3-3.7.5-1.4.3-2.8.5-3.2.5-.7 0-1.5-.3-1.5-1.3 0-.8.7-1.5 2.4-1.5.9 0 2 .1 3.1.4 1.2.3 2.3.6 3.3.6 1.5 0 2.8-.5 2.8-2.6V3.7l1.2-1-.2-.2zm-4.1 6.1c-.3.3-.7.6-1.2.6s-1-.3-1.2-.6V4.2l1-.7 1.4 1.3v3.8zm0 3c-.2-.2-.7-.5-1.2-.5s-1 .3-1.2.5V9c.2.2.7.5 1.2.5s1-.3 1.2-.5v2.6zm0 4.7c0 .8-.5 1.6-1.6 1.6h-.8V12c.2-.2.7-.5 1.2-.5s.9.3 1.2.5v4.3zm13.7-7.1l-3.2-2.3-4.9 2.8v6.5l-1 .8.1.2.8-.6 3.2 2.4 5-3V9.2zm-5.4 6.3V8.3l2.5 1.8v7.1l-2.5-1.7zm14.9-8.4h-.2c-.3.2-.6.4-.9.4-.4 0-.9-.2-1.1-.5h-.2l-1.7 1.9-1.7-1.9-3 2 .1.2.8-.5 1 1.1v6.3l-1.3 1 .2.2.6-.5 2.4 2 3.1-2.1-.1-.2-.9.5-1.2-1V9c.5.5 1.1 1 1.8 1 1.4.1 2.2-1.3 2.3-2.9zm12 9.6L123 19l-4.6-7 3.3-5.1h.2c.4.4 1 .8 1.7.8s1.2-.4 1.5-.8h.2c-.1 2-1.5 3.2-2.5 3.2s-1.5-.5-2.1-.8l-.3.5 5 7.4 1-.6v.1zm-11-.5l-1.3 1 .2.2.6-.5 2.2 2 3-2-.2-.2-.8.5-1-1V.8h-.1l-3.6 2.4v.2c.4.2 1 .3 1 1.5v11.3zM143 2.9c0-2-1.9-2.5-3.4-2.5v.3c.9 0 1.6.3 1.6 1 0 .4-.3 1-1.2 1-.7 0-2.2-.4-3.3-.8-1.3-.4-2.5-.8-3.5-.8-2 0-3.4 1.5-3.4 3.2 0 1.5 1.1 2 1.5 2.2l.1-.2c-.3-.2-.6-.4-.6-1 0-.4.4-1.1 1.4-1.1.9 0 2.1.4 3.7.9 1.4.4 2.9.7 3.7.8V9l-1.5 1.3v.1l1.5 1.3V16c-.8.5-1.7.6-2.5.6-1.5 0-2.8-.4-3.9-1.6l4.1-2V6l-5 2.2c.5-1.3 1.6-2.2 2.6-2.9l-.1-.2c-3 .8-5.7 3.5-5.7 6.9 0 4 3.3 7 7 7 4 0 6.6-3.2 6.6-6.5h-.2c-.6 1.3-1.5 2.5-2.6 3.1v-4.1l1.6-1.3v-.1L140 8.8v-3c1.5 0 3-1 3-2.9zm-8.7 11l-1.2.6c-.7-.9-1.1-2.1-1.1-3.8 0-.7.1-1.5.3-2.1l2.1-.9-.1 6.2zm12.2-12h-.1l-2 1.7v.1l1.7 1.9h.2l2-1.7v-.1l-1.8-1.9zm3 14.8l-.8.5-1-1V9.3l1-.7-.2-.2-.7.6-1.8-2.1-2.9 2 .2.3.7-.5.9 1.1v6.5l-1.3 1 .1.2.7-.5 2.2 2 3-2-.1-.3zm16.7-.1l-.7.5-1.1-1V9.3l1-.8-.2-.2-.8.7-2.3-2.1-3 2.1-2.3-2.1L154 9l-1.8-2.1-2.9 2 .1.3.7-.5 1 1.1v6.5l-.8.8 2.3 1.9 2.2-2-.9-.9V9.3l.9-.6 1.5 1.4v6l-.8.8 2.3 1.9 2.2-2-.9-.9V9.3l.8-.5 1.6 1.4v6l-.7.7 2.3 2.1 3.1-2.1v-.3zm8.7-1.5l-2.5 1.9-2.5-2v-1.2l4.7-3.2v-.1l-2.4-3.6-5.2 2.8v6.8l3.5 2.5 4.5-3.6-.1-.3zm-5-1.7V8.5l.2-.1 2.2 3.5-2.4 1.5zm14.1-.9l-1.9-1.5c1.3-1.1 1.8-2.6 1.8-3.6v-.6h-.2c-.2.5-.6 1-1.4 1-.8 0-1.3-.4-1.8-1L176 9.3v3.6l1.7 1.3c-1.7 1.5-2 2.5-2 3.3 0 1 .5 1.7 1.3 2l.1-.2c-.2-.2-.4-.3-.4-.8 0-.3.4-.8 1.2-.8 1 0 1.6.7 1.9 1l4.3-2.6v-3.6h-.1zm-1.1-3c-.7 1.2-2.2 2.4-3.1 3l-1.1-.9V8.1c.4 1 1.5 1.8 2.6 1.8.7 0 1.1-.1 1.6-.4zm-1.7 8c-.5-1.1-1.7-1.9-2.9-1.9-.3 0-1.1 0-1.9.5.5-.8 1.8-2.2 3.5-3.2l1.2 1 .1 3.6z">
+      </path>
+    </svg>
+  </div>
+
+  <hr />
+
+  <ul style="text-align: center;" class="line-list">
+    <li>World</li>
+    <li>U.S.</li>
+    <li>Politics</li>
+    <li>N.Y.</li>
+    <li>Business</li>
+    <li>Opinion</li>
+    <li>Tech</li>
+    <li>Science</li>
+    <li>Health</li>
+    <li>Sports</li>
+    <li>Arts</li>
+    <li>Books</li>
+    <li>Style</li>
+    <li>Food</li>
+    <li>Travel</li>
+    <li>Magazine</li>
+    <li>T Magazine</li>
+    <li>Real Estate</li>
+    <li>Video</li>
+  </ul>
+  <hr />
+
+  <div style="border-bottom: 1px double #121212; padding-bottom: 2px; display: block;">
+    <div style="align-items: stretch; display: flex; padding: 8px 0; width: 100%;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
+        <div class="header-news-item">
+          <article class="header-news-item-article">
+            <div style="display: flex; align-items: flex-start;">
+              <div class="header-news-item-inner-div">
+                <div style="display: block; float: left; margin-right: 10px; flex-shrink: 0;"><a
+                    href="https://www.nytimes.com/2021/03/17/podcasts/the-daily/minimum-wage-stimulus-package.html?action=click&amp;module=Briefings&amp;pgtype=Homepage">
+                    <div style="width: 100%;">
+                      <figure style="width: 45px; height: 45px; margin: 0; display: block; margin-bottom: 0;"><img
+                          alt=""
+                          src="https://static01.nyt.com/images/2017/01/29/podcasts/the-daily-album-art/the-daily-album-art-square320-v4.png"
+                          decoding="async" style="width: 45px; height: 45px;"></figure>
+                    </div>
+                  </a></div><a
+                  href="https://www.nytimes.com/2021/03/17/podcasts/the-daily/minimum-wage-stimulus-package.html?action=click&amp;module=Briefings&amp;pgtype=Homepage">
+                  <div type="1" style="display: block;">
+                    <div style="line-height: 0.3125rem; position: relative;">
+                      <h2>Listen to ‘The Daily’</h2>
+                    </div>
+                  </div>
+                  <div style="display: block;">
+                    <p>The movements for and against a $15 minimum wage.</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </article>
+        </div>
+        <div class="header-news-item">
+          <article class="header-news-item-article">
+            <div style="display: flex; align-items: flex-start;">
+              <div class="header-news-item-inner-div">
+                <div style="display: block; float: left; margin-right: 10px; flex-shrink: 0;"><a
+                    href="https://www.nytimes.com/tips">
+                    <div style="width: 100%;">
+                      <figure style="width: 45px; height: 45px; margin: 0; display: block; margin-bottom: 0;"><img
+                          alt=""
+                          src="https://static01.nyt.com/images/2020/12/10/multimedia/tips-bb-promo-image/tips-bb-promo-image-square640-v2.jpg?quality=75&amp;auto=webp&amp;disable=upscale&amp;width=350"
+                          decoding="async" style="width: 45px; height: 45px;"></figure>
+                    </div>
+                  </a></div><a href="https://www.nytimes.com/tips">
+                  <div type="1" style="display: block;">
+                    <div style="line-height: 0.3125rem; position: relative;">
+                      <h2>Got a Confidential News Tip?</h2>
+                    </div>
+                  </div>
+                  <div style="display: block;">
+                    <p>The Times would like to hear from readers who want to share
+                      messages and materials with our journalists.</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </article>
+        </div>
+        <div class="header-news-item">
+          <article class="header-news-item-article">
+            <div style="display: flex; align-items: flex-start;">
+              <div class="header-news-item-inner-div">
+                <div style="display: block; float: left; margin-right: 10px; flex-shrink: 0;"><a
+                    href="https://www.nytimes.com/spotlight/at-home?action=click&amp;module=Briefings&amp;pgtype=Homepage">
+                    <div style="width: 100%;">
+                      <figure style="width: 45px; height: 45px; margin: 0; display: block; margin-bottom: 0;"><img
+                          alt=""
+                          src="https://static01.nyt.com/images/2020/12/09/multimedia/At-Home-Logo/At-Home-Logo-square640.png?quality=75&amp;auto=webp&amp;disable=upscale&amp;width=350"
+                          decoding="async" style="width: 45px; height: 45px;"></figure>
+                    </div>
+                  </a></div><a
+                  href="https://www.nytimes.com/spotlight/at-home?action=click&amp;module=Briefings&amp;pgtype=Homepage">
+                  <div type="1" style="display: block;">
+                    <div style="line-height: 0.3125rem; position: relative;">
+                      <h2>Visit ‘At Home’</h2>
+                    </div>
+                  </div>
+                  <div style="display: block;">
+                    <p>Get our best ideas for leading a full and cultured life every day.
+                    </p>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr />
+
+  <div>
+    <div class="">
+      <section data-block-tracking-id="Spotlight" class="gtm-tagged">
+        <div style="height: max-content; display: block; padding-bottom: 24px;">
+          <div>
+            <section>
+              <div style="position: relative; height: max-content;">
+                <div style="display: flex;">
+                  <div style="flex: 20 20; min-height: 0; min-width: 0; width: 100%; flex-basis: 0; border-left: 0;"
+                    span="20">
+                    <div style="margin-bottom: 0; padding-bottom: 0; padding: 0; height: max-content;">
+                      <div
+                        style="height: max-content; margin: 0; padding: 0; border: 0; font-size: 100%; text-size-adjust: 100%; font: inherit; vertical-align: baseline;">
+                        <div style="position: relative; height: max-content;">
+                          <div style="display: flex;">
+                            <div
+                              style="flex-basis: 170.5px; border-left: 0; flex: 6 6; min-height: 0; min-width: 0; width: 100%;"
+                              span="6">
+                              <div style="display: grid;">
+                                <section style="margin-bottom: 0; padding-bottom: 0; padding: 0 15px 0 0;">
+                                  <div
+                                    style="letter-spacing: 1.1px; font-weight: 800; font-style: normal; font-size: 0.6875rem; line-height: 0.875rem; text-transform: uppercase; color: #d0021b;">
+                                    Live</div>
+                                  <div aria-hidden="true" color="red"
+                                    style="padding-top: 4px; background-color: transparent;"></div><a
+                                    style="text-decoration: none; color: black;"
+                                    href="https://www.nytimes.com/live/2021/03/17/us/shooting-atlanta-acworth/?action=click&amp;module=Spotlight&amp;pgtype=Homepage"
+                                    data-uri="nyt://promo/a60a12a7-afec-55ae-aa49-e5c12fc87c71"
+                                    data-story="nyt://promo/a60a12a7-afec-55ae-aa49-e5c12fc87c71" data-visited="">
+                                    <h3
+                                      style="position: relative; font-style: normal; margin: 0; color: #121212; text-align: left; -webkit-font-smoothing: antialiased; font-size: 1.25rem; line-height: 1.4375rem; font-weight: 700; letter-spacing: 0.2px; transition: color 0.6s ease;"
+                                      size="400"><span style="display: inline-block; max-width: 297.787px;">Eight Killed
+                                        in Atlanta
+                                        Area, Raising Fear of Anti-Asian Violence</span><span class="ghost"
+                                        aria-hidden="true"
+                                        style="position: absolute; left: 0px; visibility: hidden;">Eight Killed in
+                                        Atlanta Area, Raising Fear of Anti-Asian Violence</span></h3>
+                                  </a>
+                                  <div aria-hidden="true" color="red"
+                                    style="padding-top: 4px; background-color: transparent;"></div><a
+                                    style="text-decoration: none; color: black;"
+                                    href="https://www.nytimes.com/live/2021/03/17/us/shooting-atlanta-acworth/?action=click&amp;module=Spotlight&amp;pgtype=Homepage"
+                                    data-uri="nyt://promo/a60a12a7-afec-55ae-aa49-e5c12fc87c71"
+                                    data-story="nyt://promo/a60a12a7-afec-55ae-aa49-e5c12fc87c71" data-visited="">
+                                    <ul
+                                      style="color: #555; font-size: 0.875rem; letter-spacing: 0.1px; line-height: 1.1875rem; margin: 0; position: relative; transition: color 0.6s ease;">
+                                      <li>The attacks at three massage parlors raised fears that the crimes may have
+                                        targeted people of Asian descent. Seven of the dead were women.</li>
+                                      <li>A suspect, 21, was captured 150 miles south of Atlanta after a manhunt, the
+                                        authorities said. The motive was unclear. Here’s the latest on the killings.
+                                      </li>
+                                    </ul>
+                                  </a>
+                                </section>
+                              </div>
+                            </div>
+                            <div
+                              style="flex: 8 8; min-height: 0; min-width: 0; flex-basis: 248px; text-align: center;"
+                              span="8">
+                              <div style="margin-bottom: 0; padding-bottom: 0; padding: 0; height: max-content;">
+                                <a style="text-decoration: none; color: black;"
+                                  href="https://www.nytimes.com/live/2021/03/17/us/shooting-atlanta-acworth/?action=click&amp;module=Spotlight&amp;pgtype=Homepage"
+                                  data-uri="nyt://promo/a60a12a7-afec-55ae-aa49-e5c12fc87c71" data-visited="">
+                                  <picture>
+                                    <source media="screen and (max-width: 600px)"
+                                      srcset="https://static01.nyt.com/images/2021/04/16/multimedia/16xp-atlanta-HP2/merlin_185154720_7d9e812d-1509-4c4a-beed-47c32819b88d-threeByTwoMediumAt2X.jpg?format=pjpg&quality=75&auto=webp&disable=upscale">
+                                    <source media="screen and (min-width: 601px)"
+                                      srcset="https://static01.nyt.com/images/2021/04/16/multimedia/16xp-atlanta-HP2/merlin_185154720_7d9e812d-1509-4c4a-beed-47c32819b88d-threeByTwoMediumAt2X.jpg?format=pjpg&quality=75&auto=webp&disable=upscale">
+                                    <img style="vertical-align: bottom; border: none; height: auto; max-width: 85%;"
+                                      src="https://static01.nyt.com/images/2021/04/16/multimedia/16xp-atlanta-HP2/merlin_185154720_7d9e812d-1509-4c4a-beed-47c32819b88d-threeByTwoMediumAt2X.jpg?format=pjpg&quality=75&auto=webp&disable=upscale"
+                                      role="presentation" loading="lazy">
+                                  </picture>
+                                </a>
+                                <figcaption
+                                  style="color: #999; font-style: normal; font-weight: normal; font-size: 0.6875rem; line-height: 0.875rem; letter-spacing: 0.2px; margin-top: 4px; text-align: center;"
+                                  aria-hidden="true">Youngs Asian Spa, one of the three massage parlors in Atlanta where
+                                  eight people were fatally shot Tuesday.
+                                  <br /> <span
+                                    style="color: #ccc; font-style: normal; font-weight: normal; font-size: 0.625rem; line-height: 0.75rem; letter-spacing: 0.2px;">Nicole
+                                    Craine for The New York Times</span>
+                                </figcaption>
+                              </div>
+                            </div>
+                            <div
+                              style="flex-basis: 170.5px; padding-left: 15px; border-left: 1px solid #e2e2e2; flex: 6 6; min-height: 0; min-width: 0; width: 100%;"
+                              span="6">
+                              <img src="./Assets/Map.png" />
+                              <figcaption style="color: #888; font-size: 0.8125rem; line-height: 1.0625rem;">By Scott
+                                Reinhard</figcaption>
+
+                              <div style="margin-bottom: 0; padding-bottom: 0; padding: 0; height: max-content;">
+                                <section style="margin-bottom: 0; padding-bottom: 0; padding: 0 15px 0 0;"><a
+                                    style="text-decoration: none; color: black;"
+                                    href="https://www.nytimes.com/2021/03/17/us/atlanta-spa-shootings.html?action=click&amp;module=Spotlight&amp;pgtype=Homepage"
+                                    data-uri="nyt://article/2ec86e82-c324-5b1f-abd1-becd834c6432"
+                                    data-story="nyt://article/2ec86e82-c324-5b1f-abd1-becd834c6432" data-visited="">
+                                    <h3
+                                      style="position: relative; font-style: normal; margin: 0; color: #121212; text-align: left; -webkit-font-smoothing: antialiased; font-family: nyt-cheltenham; font-size: 1rem; line-height: 1.1875rem; font-weight: 700; letter-spacing: 0.2px; transition: color 0.6s ease;"
+                                      size="200">Here’s what we know about the Atlanta
+                                      shootings.</h3>
+                                  </a></section>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <hr />
+
+  <div>
+    <div class="">
+      <section data-block-tracking-id="Spotlight" class="gtm-tagged">
+        <div style="height: max-content; display: block; padding-bottom: 24px;">
+          <div>
+            <section>
+              <div style="position: relative; height: max-content;">
+                <div style="display: flex;">
+                  <div style="flex: 20 20; min-height: 0; min-width: 0; width: 100%; flex-basis: 0; border-left: 0;"
+                    span="20">
+                    <div style="margin-bottom: 0; padding-bottom: 0; padding: 0; height: max-content;">
+                      <div
+                        style="height: max-content; margin: 0; padding: 0; border: 0; font-size: 100%; text-size-adjust: 100%; font: inherit; vertical-align: baseline;">
+                        <div style="position: relative; height: max-content;">
+                          <div style="display: flex;">
+                            <div
+                              style="flex-basis: 170.5px; border-left: 0; flex: 6 6; min-height: 0; min-width: 0; width: 100%;"
+                              span="6">
+                              <div style="display: grid;">
+                                <section style="margin-bottom: 0; padding-bottom: 0; padding: 0 15px 0 0;">
+                                  <div>
+                                    <h3
+                                      style="position: relative; font-style: normal; margin: 0; color: #121212; text-align: left; -webkit-font-smoothing: antialiased; font-size: 1.25rem; line-height: 1.4375rem; font-weight: 700; letter-spacing: 0.2px; transition: color 0.6s ease;"
+                                      size="400"><span style="display: inline-block; max-width: 297.787px;">A Close-Up
+                                        Picture of Partisan Segregation, Among 180 Million Voters
+                                      </span><span class="ghost" aria-hidden="true"
+                                        style="position: absolute; left: 0px; visibility: hidden;">WashingtA Close-Up
+                                        Picture of Partisan Segregation, Among 180 Million Voterson Updates
+                                      </span></h3>
+                                  </div>
+                                  <div aria-hidden="true" color="red"
+                                    style="padding-top: 4px; background-color: transparent;"></div><a
+                                    style="text-decoration: nonep; font-size: 0.875rem;; color: #666"
+                                    href="https://www.nytimes.com/live/2021/03/17/us/shooting-atlanta-acworth/?action=click&amp;module=Spotlight&amp;pgtype=Homepage"
+                                    data-uri="nyt://promo/a60a12a7-afec-55ae-aa49-e5c12fc87c71"
+                                    data-story="nyt://promo/a60a12a7-afec-55ae-aa49-e5c12fc87c71" data-visited="">
+                                    Democrats and Republicans increasingly live apart, down to the neighborhood level.
+                                    We zoomed in.
+                                    <br />
+                                  </a>
+                                  <div style="padding-bottom: 10px; border-bottom: 1px solid #e2e2e2;"></div>
+                                  <div
+                                    style="display: inline-block; white-space: pre; line-height: 0.875rem; text-transform: uppercase; letter-spacing: 1.1px; color: #d0021b; font-weight: 700; font-size: 0.6875rem;">Live</div>
+                                  <time
+                                    style="display: inline-block; white-space: pre; line-height: 0.875rem; margin-right: 9px; color: #d0021b; font-weight: 500; font-size: 0.6875rem;">23 minutes ago</time>
+                                  <div aria-hidden="true" color="red"
+                                    style="padding-top: 4px; background-color: transparent;"></div><a
+                                    style="text-decoration: none; color: black;"
+                                    href="https://www.nytimes.com/live/2021/03/17/us/shooting-atlanta-acworth/?action=click&amp;module=Spotlight&amp;pgtype=Homepage"
+                                    data-uri="nyt://promo/a60a12a7-afec-55ae-aa49-e5c12fc87c71"
+                                    data-story="nyt://promo/a60a12a7-afec-55ae-aa49-e5c12fc87c71" data-visited="">
+                                    <h3
+                                      style="position: relative; font-style: normal; margin: 0; color: #121212; text-align: left; -webkit-font-smoothing: antialiased; font-size: 1.25rem; line-height: 1.4375rem; font-weight: 700; letter-spacing: 0.2px; transition: color 0.6s ease;"
+                                      size="400"><span style="display: inline-block; max-width: 297.787px;">Washington
+                                        Updates
+                                      </span><span class="ghost" aria-hidden="true"
+                                        style="position: absolute; left: 0px; visibility: hidden;">Washington Updates
+                                      </span></h3>
+                                  </a>
+                                  <div aria-hidden="true" color="red"
+                                    style="padding-top: 4px; background-color: transparent;"></div><a
+                                    style="text-decoration: none; color: black;"
+                                    href="https://www.nytimes.com/live/2021/03/17/us/shooting-atlanta-acworth/?action=click&amp;module=Spotlight&amp;pgtype=Homepage"
+                                    data-uri="nyt://promo/a60a12a7-afec-55ae-aa49-e5c12fc87c71"
+                                    data-story="nyt://promo/a60a12a7-afec-55ae-aa49-e5c12fc87c71" data-visited="">
+                                    <ul
+                                      style="color: #555; font-size: 0.875rem; letter-spacing: 0.1px; line-height: 1.1875rem; margin: 0; position: relative; transition: color 0.6s ease;">
+                                      <li>Mayorkas is answering lawmakers’ questions about the border, saying the
+                                        ‘situation is undoubtedly difficult.’</li>
+                                      <li>Biden casts doubt on the deadline to remove troops from Afghanistan, and says
+                                        Putin ‘will pay a price.’
+                                      </li>
+                                    </ul>
+                                  </a>
+                                </section>
+                              </div>
+                            </div>
+                            <div
+                              style="flex: 8 8; min-height: 0; min-width: 0; flex-basis: 248px; text-align: center;"
+                              span="8">
+                              <div style="margin-bottom: 0; padding-bottom: 0; padding: 0; height: max-content;">
+                                <a style="text-decoration: none; color: black;"
+                                  href="https://www.nytimes.com/live/2021/03/17/us/shooting-atlanta-acworth/?action=click&amp;module=Spotlight&amp;pgtype=Homepage"
+                                  data-uri="nyt://promo/a60a12a7-afec-55ae-aa49-e5c12fc87c71" data-visited="">
+                                  <picture>
+                                    <source media="screen and (max-width: 600px)"
+                                      srcset="https://static01.nyt.com/images/2021/03/16/sports/upshot-partisan-maps-hp-promo/upshot-partisan-maps-hp-promo-threeByTwoMediumAt2X.png?format=pjpg&quality=75&auto=webp&disable=upscale">
+                                    <source media="screen and (min-width: 601px)"
+                                      srcset="https://static01.nyt.com/images/2021/03/16/sports/upshot-partisan-maps-hp-promo/upshot-partisan-maps-hp-promo-threeByTwoMediumAt2X.png?format=pjpg&quality=75&auto=webp&disable=upscale">
+                                    <img style="vertical-align: bottom; border: none; height: auto; max-width: 80%;"
+                                      src="https://static01.nyt.com/images/2021/03/16/sports/upshot-partisan-maps-hp-promo/upshot-partisan-maps-hp-promo-threeByTwoMediumAt2X.png?format=pjpg&quality=75&auto=webp&disable=upscale"
+                                      role="presentation" loading="lazy">
+                                  </picture>
+                                </a>
+                              </div>
+                            </div>
+                            <div
+                              style="flex-basis: 170.5px; padding-left: 15px; border-left: 1px solid #e2e2e2; flex: 6 6; min-height: 0; min-width: 0; width: 100%;"
+                              span="6">
+                              <header
+                                style="font-size: 0.9375rem; margin: 0 0 8px; padding: 12px 0 8px; line-height: 0.75rem;">
+                                <a href="https://www.nytimes.com/section/opinion?pagetype=Homepage&amp;action=click&amp;module=Opinion"
+                                  style="display: inline-block;">
+                                  <h3 style="font-size: 1.125rem; line-height: 0.75rem; padding-bottom: 5px;">Opinion
+                                  </h3>
+                                </a>
+                              </header>
+                              <div style="display: grid;">
+                                <section style="margin-bottom: 0; padding-bottom: 0; padding: 0 15px 0 0;">
+                                  <div>
+                                    <h4 style="font-size: 1rem; line-height: 0.3125rem; color: #a19d9d;">Thomas B.
+                                      Edsall</h4>
+                                    <div style="margin-top: -50px; vertical-align: baseline; float: right;">
+                                      <img alt="Thomas B. Edsall" style="width: 40px; display: block;"
+                                        src="https://static01.nyt.com/images/2018/04/02/opinion/thomas-b-edsall/thomas-b-edsall-thumbLarge-v2.png?quality=75&amp;auto=webp&amp;disable=upscale"
+                                        decoding="async" loading="lazy" style="opacity: 1;">
+                                    </div>
+                                    <h3
+                                      style="position: relative; font-style: normal; margin: 0; color: #121212; text-align: left; -webkit-font-smoothing: antialiased; font-size: 1.25rem; line-height: 1.4375rem; font-weight: 700; letter-spacing: 0.2px; transition: color 0.6s ease;"
+                                      size="400"><span style="display: inline-block; max-width: 297.787px;">Biden Wants
+                                        No Part of the Culture War the G.O.P. Loves
+                                      </span><span class="ghost" aria-hidden="true"
+                                        style="position: absolute; left: 0px; visibility: hidden;">Biden Wants No Part
+                                        of the Culture War the G.O.P. Loves
+                                      </span></h3>
+                                  </div>
+                                  <div aria-hidden="true" color="red"
+                                    style="padding-top: 4px; background-color: transparent;"></div><a
+                                    style="text-decoration: nonep; font-size: 0.875rem;; color: #666"
+                                    href="https://www.nytimes.com/live/2021/03/17/us/shooting-atlanta-acworth/?action=click&amp;module=Spotlight&amp;pgtype=Homepage"
+                                    data-uri="nyt://promo/a60a12a7-afec-55ae-aa49-e5c12fc87c71"
+                                    data-story="nyt://promo/a60a12a7-afec-55ae-aa49-e5c12fc87c71" data-visited="">
+                                    The generosity of his $1.9 trillion relief bill has the added benefit of shifting
+                                    attention where he wants it.
+                                    <br />
+                                  </a>
+                                  <div style="padding-bottom: 10px; border-bottom: 1px solid #e2e2e2;"></div>
+
+                                  <div>
+                                    <div style="width: 50%; float: left;">
+                                      <div>
+                                        <h4 style="font-size: 0.95rem; line-height: 0.3125rem; color: #a19d9d;">Moya Lothian-McLean</h4>
+                                        <h3
+                                          style="position: relative; font-style: normal; margin: 0; color: #121212; text-align: left; -webkit-font-smoothing: antialiased; font-size: 1.25rem; line-height: 1.4375rem; font-weight: 700; letter-spacing: 0.2px; transition: color 0.6s ease;"
+                                          size="400"><span style="display: inline-block; max-width: 297.787px;">She Was
+                                            Just Walking Home
+                                          </span><span class="ghost" aria-hidden="true"
+                                            style="position: absolute; left: 0px; visibility: hidden;">She Was Just
+                                            Walking Home
+                                          </span></h3>
+                                      </div>
+                                      <div aria-hidden="true" color="red"
+                                        style="padding-top: 4px; background-color: transparent;"></div><a
+                                        style="text-decoration: nonep; font-size: 0.875rem;; color: #666"
+                                        href="https://www.nytimes.com/live/2021/03/17/us/shooting-atlanta-acworth/?action=click&amp;module=Spotlight&amp;pgtype=Homepage"
+                                        data-uri="nyt://promo/a60a12a7-afec-55ae-aa49-e5c12fc87c71"
+                                        data-story="nyt://promo/a60a12a7-afec-55ae-aa49-e5c12fc87c71" data-visited="">
+                                        The killing of Sarah Everard has exposed the deadly truth of violence in
+                                        Britain.
+                                        <br />
+                                      </a>
+                                    </div>
+                                    <div style="vertical-align: middle; float: right;">
+                                      <img style="width: 150px; display: block;"
+                                        alt="Police officers in London detaining a woman at a vigil for Sarah Everard on Saturday. The brutality of the police’s behavior was shocking."
+                                        src="https://static01.nyt.com/images/2021/03/17/opinion/17lothian-mcleanIn1/17lothian-mcleanIn1-square640.jpg?quality=75&amp;auto=webp&amp;disable=upscale&amp;width=350"
+                                        decoding="async" loading="lazy" style="opacity: 1;">
+                                    </div>
+                                  </div>
+
+                                </section>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</body>
+
+</html>
