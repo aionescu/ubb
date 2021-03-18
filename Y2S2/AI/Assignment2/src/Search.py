@@ -1,6 +1,6 @@
 from typing import Callable, Dict, List, Optional, Tuple
 from math import sqrt
-from queue import PriorityQueue
+from queue import PriorityQueue, Queue
 
 from Map import Map, Point
 
@@ -74,7 +74,30 @@ def search_greedy(map: Map, start: Point, end: Point) -> Path:
 
   return None
 
+def search_lee(map: Map, start: Point, end: Point) -> Path:
+  prev: Dict[Point, Point] = {}
+  cost = { start: 0 }
+
+  queue: Queue[Point] = Queue()
+  queue.put(start)
+
+  while not queue.empty():
+    crr = queue.get()
+    new_cost = cost[crr] + 1
+
+    for nb in map.neighbors(crr):
+      if nb not in cost or new_cost < cost[nb]:
+        cost[nb] = new_cost
+        queue.put(nb)
+        prev[nb] = crr
+
+  if end not in prev:
+    return None
+  else:
+    return unroll_path(prev, end)
+
 search_algorithms: Dict[str, Search] = {
   "astar": search_astar,
-  "greedy": search_greedy
+  "greedy": search_greedy,
+  "lee": search_lee
 }
