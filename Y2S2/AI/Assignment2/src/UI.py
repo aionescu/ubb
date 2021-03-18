@@ -26,11 +26,11 @@ class UI():
     pygame.display.set_icon(logo)
     pygame.display.set_caption("Pathfinding in a Simple Environment")
 
-    self.__screen = pygame.display.set_mode((400, 400))
+    self.__screen = pygame.display.set_mode((20 * m.width, 20 * m.height))
     self.__screen.fill(WHITE)
 
   def map_image(self, empty_color: Color = WHITE, wall_color: Color = BLUE) -> Surface:
-    image = Surface((400, 400))
+    image = Surface((20 * self.__ctl.map.width, 20 * self.__ctl.map.height))
     brick = Surface((20, 20))
 
     image.fill(empty_color)
