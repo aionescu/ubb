@@ -7,10 +7,6 @@ from Map import Map, Point
 Path = Optional[List[Point]]
 Search = Callable[['Map', Point, Point], Path]
 
-def neighbors(p: Point) -> List[Point]:
-  (x, y) = p
-  return [(x - 1, y), (x, y - 1), (x + 1, y), (x, y + 1)]
-
 def manhattan(a: Point, b: Point) -> int:
   return abs(b[0] - a[0]) + abs(b[1] - a[1])
 
@@ -42,7 +38,7 @@ def search_astar(map: Map, start: Point, end: Point) -> Path:
     if crr == end:
       return unroll_path(prev, crr)
 
-    for nb in neighbors(crr):
+    for nb in map.neighbors(crr):
       new_g = g[crr] + 1
 
       if nb not in g or new_g < g[nb]:
@@ -67,7 +63,7 @@ def search_greedy(map: Map, start: Point, end: Point) -> Path:
     if crr == end:
       return unroll_path(prev, crr)
 
-    for nb in neighbors(crr):
+    for nb in map.neighbors(crr):
       if nb not in seen:
         prev[nb] = crr
         queue.put((manhattan(nb, end), nb))

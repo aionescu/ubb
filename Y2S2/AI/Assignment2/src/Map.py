@@ -28,6 +28,17 @@ class Map():
   def positions(self) -> List[Point]:
     return [(x, y) for x in range(self.__height) for y in range(self.__width)]
 
+  def neighbors(self, p: Point) -> List[Point]:
+    def valid(x, y):
+      return (
+        x >= 0 and x < self.__height
+        and y >= 0 and y < self.__width
+        and self[(x, y)] == 0
+      )
+
+    (x, y) = p
+    return list(filter(lambda p: valid(*p), [(x - 1, y), (x, y - 1), (x + 1, y), (x, y + 1)]))
+
   def fill_random(self, fill: float = 0.2) -> None:
     shuffle_vec = self.positions()
     shuffle(shuffle_vec)
