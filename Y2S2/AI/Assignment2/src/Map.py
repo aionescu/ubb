@@ -12,7 +12,7 @@ class Map():
     self.__surface = np.zeros((height, width))
 
   def __getitem__(self, pos: Point) -> int:
-    return self.__surface[pos]
+    return self.__surface[pos] # type: ignore
 
   def __setitem__(self, pos: Point, val: int) -> None:
     self.__surface[pos] = val
@@ -29,7 +29,7 @@ class Map():
     return [(x, y) for x in range(self.__height) for y in range(self.__width)]
 
   def neighbors(self, p: Point) -> List[Point]:
-    def valid(x, y):
+    def valid(x: int, y: int) -> bool:
       return (
         x >= 0 and x < self.__height
         and y >= 0 and y < self.__width
@@ -62,4 +62,4 @@ class Map():
   @staticmethod
   def load(path: str) -> 'Map':
     with open(path, "rb") as f:
-      return pickle.load(f)
+      return pickle.load(f) # type: ignore

@@ -1,4 +1,4 @@
-from typing import Callable, Dict, List, Optional, Set
+from typing import Callable, Dict, List, Optional, Tuple
 from math import sqrt
 from queue import PriorityQueue
 
@@ -31,7 +31,7 @@ def search_astar(map: Map, start: Point, end: Point) -> Path:
   prev: Dict[Point, Point] = {}
   g = { start: 0 }
 
-  queue: PriorityQueue = PriorityQueue()
+  queue: PriorityQueue[Tuple[float, Point]] = PriorityQueue()
   queue.put((heuristic(start, end), start))
 
   while not queue.empty():
@@ -52,12 +52,12 @@ def search_astar(map: Map, start: Point, end: Point) -> Path:
   return None
 
 def search_greedy(map: Map, start: Point, end: Point) -> Path:
-  heuristic = euclidean
+  heuristic = manhattan
 
   prev: Dict[Point, Point] = {}
   seen = set()
 
-  queue: PriorityQueue = PriorityQueue()
+  queue: PriorityQueue[Tuple[float, Point]] = PriorityQueue()
   queue.put((heuristic(start, end), start))
 
   while not queue.empty():

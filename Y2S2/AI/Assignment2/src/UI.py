@@ -42,7 +42,7 @@ class UI():
 
     return image
 
-  def draw_path(self, path: List[Point], img: Surface):
+  def draw_path(self, path: List[Point], img: Surface) -> Surface:
     color_step = 255 / len(path)
     color_red = 0.0
     color_green = 255.0
@@ -65,7 +65,7 @@ class UI():
 
     return (end - start, result)
 
-  def run(self):
+  def run(self) -> None:
     map_img = self.map_image()
 
     self.__screen.blit(map_img, (0, 0))
