@@ -26,11 +26,13 @@ def unroll_path(prev: Dict[Point, Point], crr: Point) -> List[Point]:
   return path
 
 def search_astar(map: Map, start: Point, end: Point) -> Path:
+  heuristic = manhattan
+
   prev: Dict[Point, Point] = {}
   g = { start: 0 }
 
   queue: PriorityQueue = PriorityQueue()
-  queue.put((manhattan(start, end), start))
+  queue.put((heuristic(start, end), start))
 
   while not queue.empty():
     (_, crr) = queue.get()
@@ -45,16 +47,18 @@ def search_astar(map: Map, start: Point, end: Point) -> Path:
         g[nb] = new_g
 
         prev[nb] = crr
-        queue.put((new_g + manhattan(nb, end), nb))
+        queue.put((new_g + heuristic(nb, end), nb))
 
   return None
 
 def search_greedy(map: Map, start: Point, end: Point) -> Path:
+  heuristic = euclidean
+
   prev: Dict[Point, Point] = {}
   seen = set()
 
   queue: PriorityQueue = PriorityQueue()
-  queue.put((manhattan(start, end), start))
+  queue.put((heuristic(start, end), start))
 
   while not queue.empty():
     (_, crr) = queue.get()
@@ -66,7 +70,7 @@ def search_greedy(map: Map, start: Point, end: Point) -> Path:
     for nb in map.neighbors(crr):
       if nb not in seen:
         prev[nb] = crr
-        queue.put((manhattan(nb, end), nb))
+        queue.put((heuristic(nb, end), nb))
 
   return None
 
