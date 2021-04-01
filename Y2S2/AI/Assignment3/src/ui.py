@@ -1,10 +1,24 @@
-from typing import Callable, Dict, List
+from time import time
+from typing import Any, Callable, Dict, List, TypeVar
 import matplotlib.pyplot as plt # type: ignore
 
 from map import Map
 from domain import Individual
 from controller import Controller
 import gui
+
+T = TypeVar("T")
+
+def timed(fun: Callable[..., T]) -> Callable[..., T]:
+  def timed_f(*args: List[Any], **kw: Dict[str, Any]) -> T:
+    t0 = time()
+    result = fun(*args, **kw)
+    t1 = time()
+
+    print(f"{fun.__name__} took {t1 - t0}s")
+    return result
+
+  return timed_f
 
 class UI():
   def __init__(self, ctl: Controller) -> None:
@@ -36,9 +50,11 @@ class UI():
   def show_map(self) -> None:
     gui.show_map(self.__ctl.map)
 
+  @timed
   def run_solver(self) -> None:
     self.__ctl.solver()
 
+  @timed
   def run_solver_30(self) -> None:
     for i in range(30):
       print(f"Performing run #{i + 1}")
