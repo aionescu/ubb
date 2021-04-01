@@ -2,13 +2,14 @@ from random import randint, seed
 from typing import List, Tuple
 
 from map import Map, Point
-from domain import Individual, Population
+from domain import FitnessComputeCache, Individual, Population
 
 class Controller():
   def __init__(self, iteration_count: int) -> None:
     self.__m = Map.randomized()
     self.__p = self.__m.random_empty_pos()
     self.__pop = Population([])
+    self.__fcc = FitnessComputeCache(self.__m, self.__p)
 
     self.__iter_count = iteration_count
     self.__avg_fitness: List[float] = []
@@ -26,6 +27,7 @@ class Controller():
   def map(self, m: Map) -> None:
     self.__m = m
     self.__p = m.random_empty_pos()
+    self.__fcc = FitnessComputeCache(self.__m, self.__p)
 
   @property
   def iteration_count(self) -> int:
@@ -53,16 +55,13 @@ class Controller():
 
   def one_iteration(self) -> None:
     pop_size = self.__pop.size
+    fcc = self.__fcc
 
-    self.__pop = self.__pop.crossover_all()
-    self.__pop.evaluate_all(self.__m, self.__p)
-    self.__pop = self.__pop.select_fittest(pop_size)
+    self.__pop = self.__pop.crossover_all(fcc).select_fittest(pop_size)
 
   def run(self) -> Tuple[List[float], Individual]:
     m = self.__m
     p = self.__p
-
-    self.__pop.evaluate_all(m, p)
 
     solution = self.__pop.fittest()
     avgs = [self.__pop.fitness_avg()]
@@ -82,7 +81,7 @@ class Controller():
     crr_seed = randint(1, 1000)
     seed(crr_seed)
 
-    self.__pop = Population.randomized(individual_size, population_size)
+    self.__pop = Population.randomized(individual_size, population_size, self.__fcc)
     avgs, solution = self.run()
 
     self.__avg_fitness = avgs
