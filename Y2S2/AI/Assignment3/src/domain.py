@@ -11,19 +11,20 @@ Chromosome = List[Gene]
 class Individual:
   def __init__(self, chromosome: Chromosome) -> None:
     self.__chromosome = chromosome
-    self.__fitness = 0.0
+    self.__fitness = 0
 
   @staticmethod
   def randomized(size: int) -> 'Individual':
     return Individual([random_dir() for _ in range(size)])
 
   @property
-  def fitness(self) -> float:
+  def fitness(self) -> int:
     return self.__fitness
 
   def compute_fitness(self, m: Map, p: Point) -> None:
-    area: Set[Point] = set.union(*map(m.visible_area, self.compute_path(m, p)))
-    self.__fitness = len(area)
+    if self.__fitness == 0:
+      area: Set[Point] = set.union(*map(m.visible_area, self.compute_path(m, p)))
+      self.__fitness = len(area)
 
   def compute_path(self, m: Map, p: Point) -> List[Point]:
     path = [p]
@@ -97,16 +98,13 @@ class Population():
     parents = self.__individuals.copy()
     shuffle(parents)
 
-    new_pop = []
+    new_pop = list(map(lambda i: i.mutate(), self.__individuals))
 
     for i in range(len(parents) // 2):
       p1, p2 = parents[i], parents[i * 2]
       offspring = p1.crossover(p2)
 
-      if offspring is None:
-        new_pop.append(p1.mutate())
-        new_pop.append(p2.mutate())
-      else:
+      if offspring is not None:
         o1, o2 = offspring
         new_pop.append(o1)
         new_pop.append(o2)

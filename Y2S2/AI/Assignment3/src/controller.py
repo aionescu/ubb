@@ -52,7 +52,11 @@ class Controller():
     return Population(self.__solutions).fitness_stddev()
 
   def one_iteration(self) -> None:
-    self.__pop = self.__pop.crossover_all().select_fittest(self.__pop.size)
+    pop_size = self.__pop.size
+
+    self.__pop = self.__pop.crossover_all()
+    self.__pop.evaluate_all(self.__m, self.__p)
+    self.__pop = self.__pop.select_fittest(pop_size)
 
   def run(self) -> Tuple[List[float], Individual]:
     m = self.__m
@@ -65,8 +69,6 @@ class Controller():
 
     for _ in range(self.__iter_count):
       self.one_iteration()
-
-      self.__pop.evaluate_all(m, p)
       candidate = self.__pop.fittest()
 
       if candidate.fitness > solution.fitness:
