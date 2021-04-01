@@ -1,15 +1,10 @@
 from enum import Enum
-from random import shuffle, randint
+from random import choice, shuffle, randint
 from typing import List, Set, Tuple, Type
 import numpy as np
 import pickle
 
 Point = Tuple[int, int]
-
-def manhattan(p1: Point, p2: Point) -> int:
-  x1, y1 = p1
-  x2, y2 = p2
-  return abs(x2 - x1) + abs(y2 - y1)
 
 class Dir(Enum):
   UP = 0
@@ -17,8 +12,7 @@ class Dir(Enum):
   LEFT = 2
   RIGHT = 3
 
-def random_dir() -> Dir:
-  return Dir(randint(0, 3))
+dirs = list(Dir)
 
 def move_point(p: Point, d: Dir) -> Point:
   x, y = p

@@ -1,8 +1,8 @@
-from random import randint, random, shuffle
+from random import choice, randint, random, shuffle
 from typing import Dict, List, Optional, Set, Tuple, Type
 import numpy as np
 
-from map import Dir, Map, Point, manhattan, move_point, random_dir
+from map import Dir, Map, Point, dirs, move_point
 
 Gene = Dir
 Chromosome = List[Gene]
@@ -48,7 +48,7 @@ class Individual:
 
   @staticmethod
   def randomized(size: int, fcc: FitnessComputeCache) -> 'Individual':
-    return Individual([random_dir() for _ in range(size)], fcc)
+    return Individual([choice(dirs) for _ in range(size)], fcc)
 
   @property
   def fitness(self) -> int:
@@ -59,7 +59,7 @@ class Individual:
     p = fcc.initial_pos
 
     area = fcc.visible_area(p)
-    dirs = { Dir.UP: 0, Dir.DOWN: 0, Dir.LEFT: 0, Dir.RIGHT: 0 }
+    dir_count = dict.fromkeys(dirs, 0)
 
     for gene in self.__chromosome:
       p = move_point(p, gene)
@@ -67,14 +67,15 @@ class Individual:
       if not m.is_empty(p):
         break
 
-      dirs[gene] += 1
+      dir_count[gene] += 1
 
       if gene is Dir.UP or gene is Dir.DOWN:
         area.update(fcc.horizontal_area(p))
       else:
         area.update(fcc.vertical_area(p))
 
-    return len(area) // (abs(dirs[Dir.UP] - dirs[Dir.DOWN]) + abs(dirs[Dir.LEFT] - dirs[Dir.RIGHT]) + 1)
+    penalty = abs(dir_count[Dir.UP] - dir_count[Dir.DOWN]) + abs(dir_count[Dir.LEFT] - dir_count[Dir.RIGHT])
+    return len(area) // (penalty + 1)
 
   def compute_path(self, m: Map, p: Point) -> List[Point]:
     path = [p]
