@@ -11,8 +11,8 @@ class FitnessComputeCache:
   def __init__(self, m: Map, p: Point) -> None:
     self.__m = m
     self.__p = p
-    self.__horizontal: Dict[Point, int] = {}
-    self.__vertical: Dict[Point, int] = {}
+    self.__horizontal: Dict[Point, Set[Point]] = {}
+    self.__vertical: Dict[Point, Set[Point]] = {}
 
   @property
   def map(self) -> Map:
@@ -22,32 +22,24 @@ class FitnessComputeCache:
   def initial_pos(self) -> Point:
     return self.__p
 
-  @property
-  def horizontal_cache(self) -> Dict[Point, int]:
-    return self.__horizontal
-
-  @property
-  def vertical_cache(self) -> Dict[Point, int]:
-    return self.__vertical
-
-  def horizontal_area(self, p: Point) -> int:
+  def horizontal_area(self, p: Point) -> Set[Point]:
     if p in self.__horizontal:
       return self.__horizontal[p]
     else:
-      length = self.__m.visible_area_horizontal(p)
-      self.__horizontal[p] = length
-      return length
+      area = self.__m.visible_area_horizontal(p)
+      self.__horizontal[p] = area
+      return area
 
-  def vertical_area(self, p: Point) -> int:
+  def vertical_area(self, p: Point) -> Set[Point]:
     if p in self.__vertical:
       return self.__vertical[p]
     else:
-      length = self.__m.visible_area_vertical(p)
-      self.__vertical[p] = length
-      return length
+      area = self.__m.visible_area_vertical(p)
+      self.__vertical[p] = area
+      return area
 
-  def visible_area(self, p: Point) -> int:
-    return self.horizontal_area(p) + self.vertical_area(p)
+  def visible_area(self, p: Point) -> Set[Point]:
+    return self.horizontal_area(p).union(self.vertical_area(p))
 
 class Individual:
   def __init__(self, chromosome: Chromosome, fcc: FitnessComputeCache) -> None:
@@ -66,26 +58,20 @@ class Individual:
     m = fcc.map
     p = fcc.initial_pos
 
-    fitness = fcc.visible_area(p)
-    seen = { p }
+    area = fcc.visible_area(p)
 
     for gene in self.__chromosome:
       p = move_point(p, gene)
 
-      if p in seen:
-        continue
-
       if not m.is_empty(p):
         break
 
-      seen.add(p)
-
       if gene is Dir.UP or gene is Dir.DOWN:
-        fitness += fcc.horizontal_area(p)
+        area.update(fcc.horizontal_area(p))
       else:
-        fitness += fcc.vertical_area(p)
+        area.update(fcc.vertical_area(p))
 
-    return fitness
+    return len(area)
 
   def compute_path(self, m: Map, p: Point) -> List[Point]:
     path = [p]

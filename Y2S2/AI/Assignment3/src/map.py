@@ -88,21 +88,11 @@ class Map():
 
     return line
 
-  def __scan_line_length(self, p: Point, d: Dir) -> int:
-    length = 0
-    p = move_point(p, d)
+  def visible_area_horizontal(self, p: Point) -> Set[Point]:
+    return self.__scan_line(p, Dir.LEFT).union(self.__scan_line(p, Dir.RIGHT))
 
-    while self.is_empty(p):
-      length += 1
-      p = move_point(p, d)
-
-    return length
-
-  def visible_area_horizontal(self, p: Point) -> int:
-    return self.__scan_line_length(p, Dir.LEFT) + self.__scan_line_length(p, Dir.RIGHT)
-
-  def visible_area_vertical(self, p: Point) -> int:
-    return self.__scan_line_length(p, Dir.UP) + self.__scan_line_length(p, Dir.DOWN)
+  def visible_area_vertical(self, p: Point) -> Set[Point]:
+    return self.__scan_line(p, Dir.UP).union(self.__scan_line(p, Dir.DOWN))
 
   def visible_area(self, p: Point) -> Set[Point]:
     return { p }.union(
