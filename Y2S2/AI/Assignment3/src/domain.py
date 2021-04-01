@@ -2,7 +2,7 @@ from random import randint, random, shuffle
 from typing import Dict, List, Optional, Set, Tuple, Type
 import numpy as np
 
-from map import Dir, Map, Point, move_point, random_dir
+from map import Dir, Map, Point, manhattan, move_point, random_dir
 
 Gene = Dir
 Chromosome = List[Gene]
@@ -71,7 +71,7 @@ class Individual:
       else:
         area.update(fcc.vertical_area(p))
 
-    return len(area)
+    return len(area) // (manhattan(fcc.initial_pos, p) + 1)
 
   def compute_path(self, m: Map, p: Point) -> List[Point]:
     path = [p]

@@ -6,6 +6,11 @@ import pickle
 
 Point = Tuple[int, int]
 
+def manhattan(p1: Point, p2: Point) -> int:
+  x1, y1 = p1
+  x2, y2 = p2
+  return abs(x2 - x1) + abs(y2 - y1)
+
 class Dir(Enum):
   UP = 0
   DOWN = 1
