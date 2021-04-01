@@ -53,6 +53,7 @@ def draw_path(m: Map, path: List[Point], speed: float = 1, markSeen: bool = True
 
   screen.blit(map_image(m), (0, 0))
   pygame.display.flip()
+  sleep(0.5 * speed)
 
   for p in path:
     x, y = p
