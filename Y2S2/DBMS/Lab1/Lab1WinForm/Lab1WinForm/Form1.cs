@@ -15,18 +15,14 @@
     DataSet _dataSet;
     SqlDataAdapter _pkgAdapter, _pkgVerAdapter;
     SqlCommandBuilder _cmdBuilder;
-    BindingSource _pkgBindingSource, _pkgVerBindingSourcew;
+    BindingSource _pkgBindingSource, _pkgVerBindingSource;
 
-    public Form1() {
-      InitializeComponent();
-
-      _conn = new SqlConnection(@"Data Source = localhost\SQLEXPRESS; Initial Catalog = PackageManager; Integrated Security = SSPI;");
-
-      _initialize();
-      _conn.Open();
-    }
+    public Form1() => InitializeComponent();
 
     void _initialize() {
+      _conn = new SqlConnection(@"Data Source = localhost\SQLEXPRESS; Initial Catalog = PackageManager; Integrated Security = SSPI;");
+      _conn.Open();
+
       _dataSet = new DataSet();
 
       _pkgAdapter = new SqlDataAdapter("select * from Packages", _conn);
@@ -49,19 +45,23 @@
         DataMember = "Packages"
       };
 
-      _pkgVerBindingSourcew = new BindingSource {
+      _pkgVerBindingSource = new BindingSource {
         DataSource = _pkgBindingSource,
         DataMember = "fk_PackageVersions_Packages"
       };
 
       pkgGridView.DataSource = _pkgBindingSource;
-      pkgVerGridView.DataSource = _pkgVerBindingSourcew;
+      pkgVerGridView.DataSource = _pkgVerBindingSource;
     }
-
 
     void Form1_Load(object sender, EventArgs e) => _initialize();
 
     void updateBtn_Click(object sender, EventArgs e) => _pkgVerAdapter.Update(_dataSet, "PackageVersions");
-    void refreshBtn_Click(object sender, EventArgs e) => _initialize();
+
+    void refreshBtn_Click(object sender, EventArgs e) {
+      _dataSet.Clear();
+      _pkgAdapter.Fill(_dataSet, "Packages");
+      _pkgVerAdapter.Fill(_dataSet, "PackageVersions");
+    }
   }
 }
