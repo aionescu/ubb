@@ -25,11 +25,12 @@ def roulette_wheel(options: List[Tuple[T, float]]) -> T:
 Move = Tuple[int, int]
 
 class Ant:
-  def __init__(self, g: Graph) -> None:
+  def __init__(self, g: Graph, battery: int) -> None:
     sensor = randint(0, g.sensor_count - 1)
     energy = randint(0, len(g.area_per_energy(sensor)) - 1)
     self.__path = [(sensor, energy)]
     self.__fitness = g.quality(-1, sensor, energy)
+    self.__battery = battery - g.cost(-1, sensor, energy)
 
   @property
   def path(self) -> List[Move]:
@@ -39,6 +40,10 @@ class Ant:
   def fitness(self) -> float:
     return self.__fitness
 
+  @property
+  def battery(self) -> int:
+    return self.__battery
+
   def __seen_sensor(self, sensor: int) -> bool:
     for s, _ in self.__path:
       if sensor == s:
@@ -46,9 +51,12 @@ class Ant:
 
     return False
 
+  def __valid_move(self, g: Graph, crr_sensor: int, target_sensor: int, energy: int) -> bool:
+    return not self.__seen_sensor(target_sensor) and g.cost(crr_sensor, target_sensor, energy) <= self.__battery
+
   def next_moves(self, g: Graph) -> List[Move]:
     crr_sensor, _ = self.__path[-1]
-    return list(filter(lambda m: not self.__seen_sensor(m[0]), g.next_moves(crr_sensor)))
+    return list(filter(lambda m: self.__valid_move(g, crr_sensor, *m), g.next_moves(crr_sensor)))
 
   def next_move(self, g: Graph, alpha: float, beta: float) -> Move:
     crr_sensor, _ = self.__path[-1]
@@ -75,12 +83,13 @@ class Ant:
     crr_sensor, _ = self.__path[-1]
     target_sensor, energy = move
 
+    self.__battery -= g.cost(crr_sensor, target_sensor, energy)
     self.__fitness += g.quality(crr_sensor, target_sensor, energy)
     self.__path.append(move)
 
   @staticmethod
-  def epoch(g: Graph, ant_count: int, alpha: float, beta: float, evaporation_rate: float) -> 'Ant':
-    ants = [Ant(g) for _ in range(ant_count)]
+  def epoch(g: Graph, battery: int, ant_count: int, alpha: float, beta: float, evaporation_rate: float) -> 'Ant':
+    ants = [Ant(g, battery) for _ in range(ant_count)]
 
     for _ in range(g.sensor_count):
       for ant in ants:

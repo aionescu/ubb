@@ -55,11 +55,14 @@ class Graph:
 
     return moves
 
+  def cost(self, crr_sensor: int, target_sensor: int, energy: int) -> int:
+    return self.__dist[(crr_sensor, target_sensor)] + energy
+
   def quality(self, crr_sensor: int, target_sensor: int, energy: int) -> float:
-    dist = self.__dist[(crr_sensor, target_sensor)]
+    cost = self.cost(crr_sensor, target_sensor, energy)
     area = self.__area_per_energy[target_sensor][energy]
 
-    return (1 + area) / (dist + energy)
+    return (1 + area) / cost
 
   def trace(self, crr_sensor: int, target_sensor: int, energy: int) -> float:
     return self.__trace.get((crr_sensor, target_sensor, energy)) or 1
