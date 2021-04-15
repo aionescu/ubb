@@ -43,6 +43,9 @@ class Graph:
   def dist(self, crr_sensor: int, target_sensor: int) -> int:
     return self.__dist[(crr_sensor, target_sensor)]
 
+  def path(self, crr_sensor: int, target_sensor: int) -> List[Point]:
+    return self.__path[(crr_sensor, target_sensor)]
+
   def next_moves(self, crr_sensor: int) -> List[Tuple[int, int]]:
     moves = []
 

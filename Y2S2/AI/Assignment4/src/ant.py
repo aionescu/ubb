@@ -1,5 +1,5 @@
 from random import randint, random
-from typing import List, Tuple, TypeVar
+from typing import List, Optional, Tuple, TypeVar
 
 from graph import Graph
 
@@ -58,9 +58,12 @@ class Ant:
     crr_sensor, _ = self.__path[-1]
     return list(filter(lambda m: self.__valid_move(g, crr_sensor, *m), g.next_moves(crr_sensor)))
 
-  def next_move(self, g: Graph, alpha: float, beta: float) -> Move:
+  def next_move(self, g: Graph, alpha: float, beta: float) -> Optional[Move]:
     crr_sensor, _ = self.__path[-1]
     next_moves = self.next_moves(g)
+
+    if not next_moves:
+      return None
 
     def compute_quality(move: Move) -> float:
       target_sensor, energy = move
@@ -73,7 +76,6 @@ class Ant:
 
     def compute_probability(i_move: Tuple[int, Move]) -> Tuple[Move, float]:
       i, move = i_move
-
       return (move, next_move_qualities[i] / qualities_sum)
 
     probabilites = list(map(compute_probability, enumerate(next_moves)))
@@ -91,9 +93,11 @@ class Ant:
   def epoch(g: Graph, battery: int, ant_count: int, alpha: float, beta: float, evaporation_rate: float) -> 'Ant':
     ants = [Ant(g, battery) for _ in range(ant_count)]
 
-    for _ in range(g.sensor_count):
+    for _ in range(g.sensor_count - 1):
       for ant in ants:
-        ant.make_move(g, ant.next_move(g, alpha, beta))
+        next_move = ant.next_move(g, alpha, beta)
+        if next_move is not None:
+          ant.make_move(g, next_move)
 
     pheromone = [ant.fitness for ant in ants]
 
@@ -106,3 +110,7 @@ class Ant:
         g.add_pheromone(x, y, e, pheromone[ant_i])
 
     return max(ants, key = lambda ant: ant.fitness)
+
+  @staticmethod
+  def run_epochs(g: Graph, battery: int, epoch_count: int, ant_count: int, alpha: float, beta: float, evaporation_rate: float) -> List['Ant']:
+    return list(map(lambda _: Ant.epoch(g, battery, ant_count, alpha, beta, evaporation_rate), range(epoch_count)))
