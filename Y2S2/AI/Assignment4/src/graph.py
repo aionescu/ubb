@@ -65,7 +65,7 @@ class Graph:
     cost = self.cost(crr_sensor, target_sensor, energy)
     area = self.__area_per_energy[target_sensor][energy]
 
-    return (1 + area * 5) / cost
+    return (1 + 5 * area) / cost
 
   def trace(self, crr_sensor: int, target_sensor: int, energy: int) -> float:
     return self.__trace.get((crr_sensor, target_sensor, energy)) or 1
