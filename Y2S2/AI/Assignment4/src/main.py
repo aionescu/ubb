@@ -12,6 +12,7 @@ def main() -> None:
   best_ants = Ant.run_epochs(g, 100, 100, 5, 1, 1, 0.5)
   best = max(best_ants, key = lambda a: a.fitness)
 
+  print()
   print(f"Path: {best.path}")
   print(f"Fitness: {best.fitness}")
   print(f"Battery left: {best.battery}")

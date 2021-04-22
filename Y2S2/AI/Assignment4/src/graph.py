@@ -1,8 +1,10 @@
 from typing import Dict, List, Tuple
 
+from timing import timed
 from map import Map, Point
 
 class Graph:
+  @timed("Graph construction")
   def __init__(self, m: Map) -> None:
     self.__pos = m.sensors
     self.__area_per_energy = { sensor: m.visible_area_per_energy(p) for sensor, p in enumerate(self.__pos) }

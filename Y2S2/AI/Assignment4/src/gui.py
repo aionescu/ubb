@@ -1,6 +1,10 @@
 from ant import Node
 from graph import Graph
 from typing import List, Tuple
+
+from os import environ
+environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
+
 from pygame.surface import Surface
 import pygame
 

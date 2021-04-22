@@ -1,6 +1,7 @@
 from random import randint, random
 from typing import List, Optional, Tuple, TypeVar
 
+from timing import timed
 from graph import Graph
 
 T = TypeVar("T")
@@ -112,5 +113,6 @@ class Ant:
     return max(ants, key = lambda ant: ant.fitness)
 
   @staticmethod
+  @timed("ACO")
   def run_epochs(g: Graph, battery: int, epoch_count: int, ant_count: int, α: float, β: float, evaporation_rate: float) -> List['Ant']:
     return list(map(lambda _: Ant.epoch(g, battery, ant_count, α, β, evaporation_rate), range(epoch_count)))
