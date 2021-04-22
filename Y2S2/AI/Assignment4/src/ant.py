@@ -22,7 +22,7 @@ def roulette_wheel(options: List[Tuple[T, float]]) -> T:
   raise ValueError("roulette_wheel: Unreachable.")
   # return options[-1][0]
 
-Move = Tuple[int, int]
+Node = Tuple[int, int]
 
 class Ant:
   def __init__(self, g: Graph, battery: int) -> None:
@@ -33,7 +33,7 @@ class Ant:
     self.__battery = battery - g.cost(-1, sensor, energy)
 
   @property
-  def path(self) -> List[Move]:
+  def path(self) -> List[Node]:
     return self.__path
 
   @property
@@ -54,19 +54,19 @@ class Ant:
   def __valid_move(self, g: Graph, crr_sensor: int, target_sensor: int, energy: int) -> bool:
     return not self.__seen_sensor(target_sensor) and g.cost(crr_sensor, target_sensor, energy) <= self.__battery
 
-  def next_moves(self, g: Graph) -> List[Move]:
+  def next_moves(self, g: Graph) -> List[Node]:
     crr_sensor, _ = self.__path[-1]
     return list(filter(lambda m: self.__valid_move(g, crr_sensor, *m), g.next_moves(crr_sensor)))
 
-  def next_move(self, g: Graph, alpha: float, beta: float) -> Optional[Move]:
+  def next_move(self, g: Graph, alpha: float, beta: float) -> Optional[Node]:
     crr_sensor, _ = self.__path[-1]
     next_moves = self.next_moves(g)
 
     if not next_moves:
       return None
 
-    def compute_quality(move: Move) -> float:
-      target_sensor, energy = move
+    def compute_quality(node: Node) -> float:
+      target_sensor, energy = node
       t = g.trace(crr_sensor, target_sensor, energy)
       q = g.quality(crr_sensor, target_sensor, energy)
       return (t ** alpha) * (q ** beta)
@@ -74,20 +74,20 @@ class Ant:
     next_move_qualities = list(map(compute_quality, next_moves))
     qualities_sum = sum(next_move_qualities)
 
-    def compute_probability(i_move: Tuple[int, Move]) -> Tuple[Move, float]:
-      i, move = i_move
-      return (move, next_move_qualities[i] / qualities_sum)
+    def compute_probability(i_node: Tuple[int, Node]) -> Tuple[Node, float]:
+      i, node = i_node
+      return (node, next_move_qualities[i] / qualities_sum)
 
     probabilites = list(map(compute_probability, enumerate(next_moves)))
     return roulette_wheel(probabilites)
 
-  def make_move(self, g: Graph, move: Move) -> None:
+  def make_move(self, g: Graph, node: Node) -> None:
     crr_sensor, _ = self.__path[-1]
-    target_sensor, energy = move
+    target_sensor, energy = node
 
     self.__battery -= g.cost(crr_sensor, target_sensor, energy)
     self.__fitness += g.quality(crr_sensor, target_sensor, energy)
-    self.__path.append(move)
+    self.__path.append(node)
 
   @staticmethod
   def epoch(g: Graph, battery: int, ant_count: int, alpha: float, beta: float, evaporation_rate: float) -> 'Ant':

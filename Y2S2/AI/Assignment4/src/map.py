@@ -102,6 +102,16 @@ class Map:
 
     return length
 
+  def __scan_line_tiles(self, p: Point, dir: Point, energy: int) -> List[Point]:
+    points: List[Point] = []
+    p = offset_point(p, dir)
+
+    while self.is_empty(p) and len(points) < energy:
+      points.append(p)
+      p = offset_point(p, dir)
+
+    return points
+
   def __visible_area(self, p: Point, energy: int) -> int:
     return sum([self.__scan_line(p, dir, energy) for dir in dirs])
 
@@ -121,6 +131,9 @@ class Map:
       energy += 1
 
     return area
+
+  def visible_tiles(self, p: Point, energy: int) -> List[Point]:
+    return [point for dir in dirs for point in self.__scan_line_tiles(p, dir, energy)]
 
   def neighbors(self, p: Point) -> List[Point]:
     return list(filter(self.is_empty, [offset_point(p, dir) for dir in dirs]))
