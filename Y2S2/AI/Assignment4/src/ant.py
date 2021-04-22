@@ -58,7 +58,7 @@ class Ant:
     crr_sensor, _ = self.__path[-1]
     return list(filter(lambda m: self.__valid_move(g, crr_sensor, *m), g.next_moves(crr_sensor)))
 
-  def next_move(self, g: Graph, alpha: float, beta: float) -> Optional[Node]:
+  def next_move(self, g: Graph, α: float, β: float) -> Optional[Node]:
     crr_sensor, _ = self.__path[-1]
     next_moves = self.next_moves(g)
 
@@ -69,7 +69,7 @@ class Ant:
       target_sensor, energy = node
       t = g.trace(crr_sensor, target_sensor, energy)
       q = g.quality(crr_sensor, target_sensor, energy)
-      return (t ** alpha) * (q ** beta)
+      return (t ** α) * (q ** β)
 
     next_move_qualities = list(map(compute_quality, next_moves))
     qualities_sum = sum(next_move_qualities)
@@ -90,12 +90,12 @@ class Ant:
     self.__path.append(node)
 
   @staticmethod
-  def epoch(g: Graph, battery: int, ant_count: int, alpha: float, beta: float, evaporation_rate: float) -> 'Ant':
+  def epoch(g: Graph, battery: int, ant_count: int, α: float, β: float, evaporation_rate: float) -> 'Ant':
     ants = [Ant(g, battery) for _ in range(ant_count)]
 
     for _ in range(g.sensor_count - 1):
       for ant in ants:
-        next_move = ant.next_move(g, alpha, beta)
+        next_move = ant.next_move(g, α, β)
         if next_move is not None:
           ant.make_move(g, next_move)
 
@@ -112,5 +112,5 @@ class Ant:
     return max(ants, key = lambda ant: ant.fitness)
 
   @staticmethod
-  def run_epochs(g: Graph, battery: int, epoch_count: int, ant_count: int, alpha: float, beta: float, evaporation_rate: float) -> List['Ant']:
-    return list(map(lambda _: Ant.epoch(g, battery, ant_count, alpha, beta, evaporation_rate), range(epoch_count)))
+  def run_epochs(g: Graph, battery: int, epoch_count: int, ant_count: int, α: float, β: float, evaporation_rate: float) -> List['Ant']:
+    return list(map(lambda _: Ant.epoch(g, battery, ant_count, α, β, evaporation_rate), range(epoch_count)))
