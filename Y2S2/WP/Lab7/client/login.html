@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+
+<head>
+  <title>Login</title>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+
+  <script type="text/javascript">
+    $(() => {
+      $("#login-btn").click(() => {
+        const username = $("#username").val()
+        const password = $("#password").val()
+
+        if (username !== "" && password !== "")
+          $.ajax({
+            url: "../server/login.php",
+            type: "POST",
+            data: { username, password },
+            success: result => {
+              if (result === "true") {
+                window.alert("You are now logged in.")
+                window.location = "../index.html"
+              } else
+                window.alert("Invalid login.")
+            }
+          })
+      });
+    });
+  </script>
+</head>
+
+<body>
+  <h1>Login</h1>
+  <div class="container">
+    <div class="form">
+      <label>Username</label>
+      <input type="text" id="username" name="username">
+
+      <label>Password</label>
+      <input type="password" id="password" name="password">
+    </div>
+
+    <input type="submit" class="submit" value="Login" id="login-btn">
+  </div>
+</body>
+
+</html>

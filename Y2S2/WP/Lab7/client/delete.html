@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<head>
+  <title>Delete</title>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+
+  <script type="text/javascript">
+    $(() => {
+      $("#delete-btn").click(() => {
+        const id = $("#id").val()
+
+        $.ajax({
+          url: "../server/delete.php",
+          type: "POST",
+          data: { id },
+          success: result => {
+            if (result === "true") {
+              window.alert("URI deleted successfully.")
+              window.location = "../index.html"
+            } else
+              window.alert(result)
+          }
+        })
+      });
+    });
+  </script>
+
+</head>
+
+<body>
+  <h1>Delete</h1>
+  <div class="container">
+    <div class="form">
+      <label>ID</label>
+      <input type="number" id="id" name="id">
+    </div>
+
+    <input type="submit" class="submit" value="Delete" id="delete-btn">
+  </div>
+</body>
+
+</html>

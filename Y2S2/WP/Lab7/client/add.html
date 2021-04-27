@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<head>
+  <title>Add</title>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+
+  <script type="text/javascript">
+    $(() => {
+      $("#add-btn").click(() => {
+        const uri = $("#uri").val()
+        const description = $("#description").val()
+        const category = $("#category").val()
+
+        $.ajax({
+          url: "../server/add.php",
+          type: "POST",
+          data: { uri, description, category },
+          success: result => {
+            if (result === "true") {
+              window.alert("URI added successfully.")
+              window.location = "../index.html"
+            } else
+              window.alert(result)
+          }
+        })
+      });
+    });
+  </script>
+</head>
+
+<body>
+  <h1>Add</h1>
+  <div class="container">
+    <div class="form">
+      <label>URI</label>
+      <input type="url" id="uri" name="uri">
+
+      <label>Description</label>
+      <input type="text" id="description" name="description">
+
+      <label>Category</label>
+      <input type="text" id="category" name="category">
+    </div>
+
+    <input type="submit" class="submit" value="Add" id="add-btn">
+  </div>
+</body>
+
+</html>

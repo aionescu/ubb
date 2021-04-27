@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+
+<head>
+  <title>Update</title>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+
+  <script type="text/javascript">
+    $(() => {
+      $("#update-btn").click(() => {
+        const id = $("#id").val()
+        const uri = $("#uri").val()
+        const description = $("#description").val()
+        const category = $("#category").val()
+
+        $.ajax({
+          url: "../server/update.php",
+          type: "POST",
+          data: { id, uri, description, category },
+          success: result => {
+            if (result === "true") {
+              window.alert("URI updated successfully.")
+              window.location = "../index.html"
+            } else
+              window.alert(result)
+          }
+        })
+      });
+    });
+  </script>
+</head>
+
+<body>
+  <h1>Update</h1>
+  <div class="container">
+    <div class="form">
+      <label>ID</label>
+      <input type="number" id="id" name="id">
+
+      <label>URI</label>
+      <input type="url" id="uri" name="uri">
+
+      <label>Description</label>
+      <input type="text" id="description" name="description">
+
+      <label>Category</label>
+      <input type="text" id="category" name="category">
+    </div>
+
+    <input type="submit" class="submit" value="Update" id="update-btn">
+  </div>
+</body>
+
+</html>
