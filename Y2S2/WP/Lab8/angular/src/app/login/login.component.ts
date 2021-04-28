@@ -1,23 +1,23 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { URIService } from "../shared/uri.service";
+import { emptyUser, User } from "../shared/user.model";
+import { UserService } from "../shared/user.service";
 
 @Component({
 	selector: "app-login",
 	templateUrl: "./login.component.html",
 	styleUrls: ["./login.component.css"],
-	providers: [URIService]
+	providers: [UserService]
 })
 export class LoginComponent implements OnInit {
-	username = "";
-  password = "";
+	user: User = emptyUser;
 
-	constructor(private router: Router, private service: URIService) { }
+	constructor(private router: Router, private service: UserService) { }
 
 	ngOnInit(): void { }
 
 	async onLogin() {
-		this.service.login(this.username, this.password).then(result => {
+		this.service.login(this.user).then(result => {
       if (!result)
         window.alert("Invalid login.")
       else {

@@ -5,7 +5,7 @@ import { URI } from "./uri.model";
 
 @Injectable()
 export class URIService {
-  private apiURL = `http://localhost:80/uri-collection/server`;
+  private apiURL = `http://localhost:80/uri-collection/api`;
 
   constructor(private httpClient: HttpClient) { }
 

@@ -4,11 +4,11 @@
 		<div>
 			<div class="input-group">
 				<span>Username</span>
-				<input class="username" placeholder="Username" [(ngModel)]="username">
+				<input class="username" placeholder="Username" [(ngModel)]="user.username">
 			</div>
       <div class="input-group">
 				<span>Password</span>
-				<input type="password" class="password" placeholder="Password" [(ngModel)]="password">
+				<input type="password" class="password" placeholder="Password" [(ngModel)]="user.password">
 			</div>
 			<div class="actions">
 				<button class="login" (click)="onLogin()">Login</button>
