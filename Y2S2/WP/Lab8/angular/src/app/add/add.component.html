@@ -1,0 +1,22 @@
+<div class="content-container">
+	<div class="form-container">
+		<h1>Add URI</h1>
+		<div>
+			<div class="input-group">
+				<span>URI</span>
+				<input class="uri" placeholder="URI" [(ngModel)]="uri.uri">
+			</div>
+      <div class="input-group">
+				<span>Description</span>
+				<input class="description" placeholder="Description" [(ngModel)]="uri.description">
+			</div>
+      <div class="input-group">
+				<span>Category</span>
+				<input class="category" placeholder="Category" [(ngModel)]="uri.category">
+			</div>
+			<div class="actions">
+				<button class="add-uri" (click)="onAdd()">Add URI</button>
+			</div>
+		</div>
+	</div>
+</div>

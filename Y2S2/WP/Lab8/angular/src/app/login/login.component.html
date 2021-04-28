@@ -1,0 +1,18 @@
+<div class="content-container">
+	<div class="form-container">
+		<h1>Login</h1>
+		<div>
+			<div class="input-group">
+				<span>Username</span>
+				<input class="username" placeholder="Username" [(ngModel)]="username">
+			</div>
+      <div class="input-group">
+				<span>Password</span>
+				<input type="password" class="password" placeholder="Password" [(ngModel)]="password">
+			</div>
+			<div class="actions">
+				<button class="login" (click)="onLogin()">Login</button>
+			</div>
+		</div>
+	</div>
+</div>
