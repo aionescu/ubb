@@ -21,21 +21,6 @@ export class URIService {
     return parseInt(localStorage.getItem("userID"))
   }
 
-  async login(username: string, password: string): Promise<boolean> {
-    return this
-      .httpClient
-      .post<number>(this.action("login"), { username, password })
-      .toPromise()
-      .then(id => {
-        if (id == -1)
-          return false
-        else {
-          localStorage.setItem("userID", id.toString())
-          return true
-        }
-      })
-  }
-
   uris(): Observable<URI[]> {
     return this.httpClient.get<URI[]>(`${this.action("uris")}/?owner=${this.userID()}`)
   }
