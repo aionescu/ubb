@@ -18,8 +18,8 @@ class Label(Enum):
 colors: Dict[Label, str] = {
   Label.A: "green",
   Label.B: "blue",
-  Label.C: "yellow",
-  Label.D: "red"
+  Label.C: "gray",
+  Label.D: "yellow"
 }
 
 class Record(NamedTuple):
