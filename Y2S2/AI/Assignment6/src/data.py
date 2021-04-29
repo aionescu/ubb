@@ -1,6 +1,16 @@
 from csv import reader
 from enum import Enum
-from typing import Dict, Iterable, List, NamedTuple, Tuple
+from typing import Dict, Iterable, List, NamedTuple, Tuple, TypeVar
+
+T = TypeVar("T")
+
+def length(it: Iterable[T]) -> int:
+  length = 0
+
+  for _ in it:
+    length += 1
+
+  return length
 
 class Label(Enum):
   A = 0

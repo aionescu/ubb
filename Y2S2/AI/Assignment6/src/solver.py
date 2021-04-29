@@ -3,8 +3,8 @@ from math import sqrt
 from random import uniform
 from typing import Dict, List, Set, Tuple
 
-from data import CentroidInputs, CentroidLabels, Label, Record, unzip_records
-from plot import plot_all
+from data import CentroidInputs, CentroidLabels, Label, Record, length, unzip_records
+from plot import draw_plot
 
 def gen_centroid_labels(cent_inputs: CentroidInputs) -> CentroidLabels:
   centroids = list(cent_inputs.keys())
@@ -38,22 +38,26 @@ def euclidean(a: Record, b: Record) -> float:
 Stat = Dict[Label, float]
 Stats = Tuple[float, Stat, Stat, Stat]
 
-def eval_classification(inputs: List[Record], actual: List[Label], computed: List[Label]) -> Stats:
-  accuracy = len(list(filter(lambda p: p[0] == p[1], zip(actual, computed)))) / len(inputs)
+def eval_classification(actual: List[Label], computed: List[Label]) -> Stats:
+  accuracy = length(filter(lambda p: p[0] == p[1], zip(actual, computed))) / len(actual)
 
-  precision: Stat = {}
-  rappel: Stat = {}
+  precision: Stat = { }
+  rappel: Stat = { }
+  score: Stat = { }
 
   for lbl in Label:
-    correct = len(list(filter(lambda p: p[0] == p[1] == lbl, zip(actual, computed))))
+    correct = length(filter(lambda p: p[0] == p[1] == lbl, zip(actual, computed)))
 
-    total_computed = len(list(filter(lambda l: l == lbl, computed)))
-    precision[lbl] = correct / total_computed
+    total_computed = length(filter(lambda l: l == lbl, computed))
+    p = correct / total_computed
+    precision[lbl] = p
 
-    total_actual = len(list(filter(lambda l: l == lbl, actual)))
-    rappel[lbl] = correct / total_actual
+    total_actual = length(filter(lambda l: l == lbl, actual))
+    r = correct / total_actual
+    rappel[lbl] = r
 
-  score = { lbl: 2 * p * r / (p + r) for (lbl, p), r in zip(precision.items(), rappel.values()) }
+    score[lbl] = 2 * p * r / (p + r)
+
   return accuracy, precision, rappel, score
 
 def show_stats(inputs: List[Record], outputs: List[Label], cent_inputs: CentroidInputs) -> None:
@@ -61,7 +65,7 @@ def show_stats(inputs: List[Record], outputs: List[Label], cent_inputs: Centroid
   input_computed_lbls = { input: cent_lbls[cent] for cent, set_ in cent_inputs.items() for input in set_ }
   computed_lbls = [input_computed_lbls[input] for input in inputs]
 
-  accuracy, precision, rappel, score = eval_classification(inputs, outputs, computed_lbls)
+  accuracy, precision, rappel, score = eval_classification(outputs, computed_lbls)
   print(f"Accuracy: {accuracy}")
   print(f"Precision: {precision}")
   print(f"Rappel: {rappel}")
@@ -99,10 +103,10 @@ def solver(centroid_set: Set[Record], inputs: List[Record], outputs: List[Label]
     else:
       show_stats(inputs, outputs, cent_inputs)
 
-    points = plot_all(inputs, outputs, cent_inputs, gen_centroid_labels(cent_inputs))
+    cent_points = draw_plot(cent_inputs, gen_centroid_labels(cent_inputs))
     plt.pause(0.5)
 
     if changed:
-      points.remove()
+      cent_points.remove()
 
   return cent_inputs
