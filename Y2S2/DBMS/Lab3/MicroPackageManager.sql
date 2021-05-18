@@ -10,8 +10,7 @@ go
 
 create table Logs
   ( id int not null primary key identity
-  , operation nvarchar(10) not null
-  , tableName nvarchar(50) not null
+  , action nvarchar(100) not null
   , timestamp datetime2 not null
   , successful bit not null
   , errorMessage nvarchar(200)
