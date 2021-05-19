@@ -1,5 +1,5 @@
 begin tran
-waitfor delay '00:00:07'
+waitfor delay '00:00:10'
 
 update Maintainers
 set username = 'ionescu'

@@ -4,11 +4,11 @@ begin tran
 
 update Packages
 set name = 'dynasty2'
-where id = 5
+where id = 2
 
 update Packages
 set name = 'ghc2'
-where id = 4
+where id = 1
 
 commit tran
 
