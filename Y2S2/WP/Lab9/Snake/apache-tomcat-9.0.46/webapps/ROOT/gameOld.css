@@ -1,0 +1,83 @@
+@import url(https://fonts.googleapis.com/css?family=Lato:300);
+
+.table {
+    border: 20px solid #462921;
+    width: 350px;
+    height: 350px;
+    margin: 0 auto;
+    display: grid;
+    grid-gap: 0;
+    grid-template-columns: repeat(10, 35px);
+    grid-template-rows: 35px repeat(10, 35px) 35px;
+    grid-auto-flow: row;
+}
+
+.empty {
+    background-color: #d9d9d9;
+    border: 2px solid black;
+}
+
+.obstacle {
+    background-color: black;
+    border: 2px solid black;
+}
+
+.snake {
+    background-color: lawngreen;
+    border: 2px solid red;
+}
+
+.keys {
+    font-family: "Lato", sans-serif;
+    text-align: center;
+    width: 500px;
+    height: 200px;
+    margin: auto;
+}
+
+.arr {
+    cursor: pointer;
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    line-height: 100px;
+    background: grey;
+    color: white;
+    font-size: 50px;
+    border-right: 10px solid #4d4d4d;
+    border-bottom: 10px solid #4d4d4d;
+    border-left: 10px solid #5a5a5a;
+    border-top: 10px solid #676767;
+    display: inline-block;
+    margin: 5px;
+    transition: all 0.05s linear;
+    user-select: none;
+}
+
+.up {
+    position: relative;
+    top: -4px;
+}
+
+.fa {
+    display: inline-block;
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.fa-arrow-up:before {
+    content: "\f062";
+}
+
+
+.scoreboard {
+
+}
+
+.game-over {
+
+}
