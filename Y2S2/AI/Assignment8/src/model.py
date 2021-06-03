@@ -150,7 +150,6 @@ def main() -> None:
   test_loader = load_data("../data/test")
 
   use_cuda = cuda.is_available()
-
   model = SimpleNet(num_classes = 10)
 
   if use_cuda:

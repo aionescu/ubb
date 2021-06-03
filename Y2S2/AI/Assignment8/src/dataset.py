@@ -1,13 +1,11 @@
 from typing import List, Tuple
-from torch import device, cuda # type: ignore
 from torch.tensor import Tensor
 from torch.utils.data import Dataset
 from torchvision import transforms # type: ignore
 from PIL.Image import Image # type: ignore
 
-device = device("cuda:0" if cuda.is_available() else "cpu")
-
 Datum = Tuple[Tensor, int]
+
 class ImageClassifierDataset(Dataset[Datum]):
   def __init__(self, imgs: List[Image], img_classes: List[str]) -> None:
     self.classes = list(set(img_classes))
