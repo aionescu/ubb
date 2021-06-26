@@ -1,0 +1,38 @@
+@{
+  ViewData["Title"] = "Show Filtered Books";
+  var books = ViewData["books"] as Book[];
+}
+
+<style>
+  table, th, td {
+    border: 2px solid black;
+    padding: 5px;
+    text-align: center;
+  }
+
+  th {
+    background-color: lightgreen;
+  }
+
+  table {
+    border-collapse: collapse;
+  }
+</style>
+
+<table>
+  <tr>
+    <th>ID</th>
+    <th>ID Publishing House</th>
+    <th>Name</th>
+    <th>Topics</th>
+  </tr>
+
+  @foreach (var book in books) {
+    <tr>
+      <td>@book.ID</td>
+      <td>@book.IDPublishingHouse</td>
+      <td>@book.Name</td>
+      <td>@book.Topic1; @book.Topic2; @book.Topic3; @book.Topic4; @book.Topic5</td>
+    </tr>
+  }
+</table>

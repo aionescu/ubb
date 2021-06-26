@@ -1,0 +1,38 @@
+@{
+  ViewData["Title"] = "Show Publishing Houses";
+  var houses = ViewData["houses"] as List<PublishingHouse>;
+}
+
+<style>
+  table, th, td {
+    border: 2px solid black;
+    padding: 5px;
+    text-align: center;
+  }
+
+  th {
+    background-color: lightgreen;
+  }
+
+  table {
+    border-collapse: collapse;
+  }
+</style>
+
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>URL</th>
+    <th>Book Count</th>
+  </tr>
+
+  @foreach (var house in houses) {
+    <tr>
+      <td>@house.ID</td>
+      <td>@house.Name</td>
+      <td>@house.URL</td>
+      <td>@house.BookCount</td>
+    </tr>
+  }
+</table>
