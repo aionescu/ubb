@@ -1,0 +1,34 @@
+﻿@{
+    ViewData["Title"] = "Get Docs";
+    var rows = ViewData["rows"] as List<(int, string, string, string, string)>;
+}
+
+<style>
+  table, th, td {
+    border: 1px solid black;
+  }
+
+  table {
+    border-collapse: collapse;
+  }
+</style>
+
+<table>
+  <tr>
+    <th>Id</th>
+    <th>Name</th>
+    <th>Contents</th>
+    <th>Title</th>
+    <th>Duration</th>
+  </tr>
+
+  @foreach (var (id, name, contents, title, duration) in rows) {
+    <tr style='background-color: @(title == "" ? "lightgreen" : "pink")'>
+      <td>@id</td>
+      <td>@name</td>
+      <td>@contents</td>
+      <td>@title</td>
+      <td>@duration</td>
+    </tr>
+  }
+</table>
