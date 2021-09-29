@@ -19,12 +19,19 @@
 let primary = [
   "a", 2;
   "b", 3;
+  "c", 4;
+  "d", 5;
+  "e", 6
 ]
 
 let secondary = [
-  "c", ["a"; "b"];
-  "d", ["a"];
-  "e", ["c"; "d"];
+  "f", ["a"];
+  "g", ["a"; "d"; "e"];
+  "h", ["a"; "b"; "c"; "d"; "e"];
+  "i", ["c"; "d"];
+  "j", ["c"; "f"];
+  "k", ["i"; "j"];
+  "l", ["j"]
 ]
 
 (* Implementation *)
@@ -89,31 +96,34 @@ let check_consistency g =
   |> List.of_seq
   |> List.for_all (fun n -> Option.is_some @@ check_val n)
 
-let rand_val a b = Random.int (b + 1 - a) + a
-let rand_delay () = Random.float 0.9 +. 0.1
+let rand_int a b = Random.int (b + 1 - a) + a
+let rand_float a b = Random.float (b -. a) +. a
 
-let rec run_thread time node =
-  if time >= 0. then
-    let v = rand_val (-5) 5 in
-    let delay = rand_delay() in
-
-    Printf.printf "Updating: \"%s\", %d, %fs\n" node.id v delay;
-    flush stdout;
+let run_thread count node =
+  for i = 1 to count do
+    let v = rand_int (-5) 5 in
+    let delay = rand_float 0.5 1. in
 
     update_rec v node;
-
     Thread.delay delay;
-    run_thread (time -. delay) node
+
+    Printf.printf "Updated \"%s\" (%d/%d) with %d after %fs\n" node.id i count v delay;
+    flush stdout
+  done
 
 let () =
   Random.self_init ();
 
+  (* Build graph and propagate values *)
   let g = build_graph () in
   primary |> List.iter (fun (i, v) -> update_rec v @@ Hashtbl.find g i);
 
-  let threads = primary |> List.map (fun (i, _) -> Thread.create (run_thread 10.) (Hashtbl.find g i)) in
-  threads |> List.iter Thread.join;
+  (* Run threads *)
+  primary
+  |> List.map (fun (i, _) -> Thread.create (run_thread @@ rand_int 5 10) (Hashtbl.find g i))
+  |> List.iter Thread.join;
 
+  (* Print stats *)
   Printf.printf "\nFinal graph:\n";
   print_graph g;
 
