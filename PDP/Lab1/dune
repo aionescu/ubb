@@ -1,0 +1,3 @@
+(executable
+  (name p3)
+  (libraries threads))
