@@ -98,16 +98,18 @@ let check_consistency g =
 
 let rand_int a b = Random.int (b + 1 - a) + a
 let rand_float a b = Random.float (b -. a) +. a
+let rand_item l = List.nth l @@ Random.int @@ List.length l
 
-let run_thread count node =
-  for i = 1 to count do
-    let v = rand_int (-5) 5 in
+let run_thread g count ix =
+  for iter = 1 to count do
+    let v = rand_int (-5) 10 in
     let delay = rand_float 0.5 1. in
+    let node = Hashtbl.find g (fst @@ rand_item primary) in
 
     update_rec v node;
     Thread.delay delay;
 
-    Printf.printf "Updated \"%s\" (%d/%d) with %d after %fs\n" node.id i count v delay;
+    Printf.printf "Thread #%d updated \"%s\" (%d/%d) with %d after %fs\n" ix node.id iter count v delay;
     flush stdout
   done
 
@@ -119,8 +121,8 @@ let () =
   primary |> List.iter (fun (i, v) -> update_rec v @@ Hashtbl.find g i);
 
   (* Run threads *)
-  primary
-  |> List.map (fun (i, _) -> Thread.create (run_thread @@ rand_int 5 10) (Hashtbl.find g i))
+
+  List.init (rand_int 10 15) (fun i -> Thread.create (run_thread g @@ rand_int 5 10) i)
   |> List.iter Thread.join;
 
   (* Print stats *)
