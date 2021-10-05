@@ -14,28 +14,6 @@
   variables are indeed the sums of their inputs, as specified.
 *)
 
-(* Input data *)
-
-let primary = [
-  "a", 2;
-  "b", 3;
-  "c", 4;
-  "d", 5;
-  "e", 6
-]
-
-let secondary = [
-  "f", ["a"];
-  "g", ["a"; "d"; "e"];
-  "h", ["a"; "b"; "c"; "d"; "e"];
-  "i", ["a"; "c"; "d"];
-  "j", ["c"; "f"];
-  "k", ["i"; "j"];
-  "l", ["j"]
-]
-
-(* Implementation *)
-
 type node = {
   id: string;
   mutex: Mutex.t;
@@ -47,7 +25,7 @@ type node = {
 let new_node id = { id; mutex = Mutex.create (); value = 0; deps = []; revdeps = [] }
 
 (* Creates a new graph with all deps/revdeps set up, but no values initialized. *)
-let build_graph () =
+let build_graph primary secondary =
   let g = Hashtbl.create (List.length primary + List.length secondary) in
 
   (* Add all nodes to graph *)
@@ -100,7 +78,7 @@ let rand_int a b = Random.int (b + 1 - a) + a
 let rand_float a b = Random.float (b -. a) +. a
 let rand_item l = List.nth l @@ Random.int @@ List.length l
 
-let run_thread g count ix =
+let run_thread primary g count ix =
   for iter = 1 to count do
     let v = rand_int (-5) 10 in
     let delay = rand_float 0.5 1. in
@@ -113,16 +91,23 @@ let run_thread g count ix =
     flush stdout
   done
 
+let read_file path =
+  let ch = open_in path in
+  let s = really_input_string ch (in_channel_length ch) in
+  close_in ch;
+  s
+
 let () =
   Random.self_init ();
 
+  let primary, secondary = Parser.read_graph "Graph.txt" in
+
   (* Build graph and propagate values *)
-  let g = build_graph () in
+  let g = build_graph primary secondary in
   primary |> List.iter (fun (i, v) -> update_rec v @@ Hashtbl.find g i);
 
   (* Run threads *)
-
-  List.init (rand_int 10 15) (fun i -> Thread.create (run_thread g @@ rand_int 5 10) i)
+  List.init (rand_int 10 15) (fun i -> Thread.create (run_thread primary g @@ rand_int 5 10) i)
   |> List.iter Thread.join;
 
   (* Print stats *)
