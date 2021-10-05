@@ -1,0 +1,22 @@
+primType = "Int" | "Char" | "Bool"
+array = "[" type "]"
+type = primType | array
+
+factor = id | numLit | charLit | stringLit | ("(" expr ")")
+term = factor [("*" | "/" | "%") factor]
+cmpTerm = term [("+" | "-") term]
+logicTerm = cmpTerm [("==" | "!=" | "<" | ">" | "<=" | ">=") cmpTerm]
+arrayTerm = logicTerm [("&&" | "||") logicTerm]
+expr = arrayTerm | ("[" [arrayTerm {"," arrayTerm} [","]] "]")
+
+readStmt = "read" "(" expr ")"
+printStmt = "print" "(" expr ")"
+declStmt = "let" id [":" type] "=" expr
+assignStmt = id "=" expr
+ifStmt = "if" expr compStmt ["else" compStmt]
+whileStmt = "while" expr compStmt
+stmt = readStmt | printStmt | declStmt | assignStmt | ifStmt | whileStmt | compStmt
+stmtList = stmt ";" {stmt ";"}
+comptStmt = "{" stmtList "}"
+
+program = stmtList

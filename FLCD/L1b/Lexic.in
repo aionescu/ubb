@@ -1,0 +1,15 @@
+operator = "+" | "-" | "*" | "/" | "%" | "=" | "==" | "!=" | "<" | ">" | "<=" | ">=" | "&&" | "||"
+separator = "{" | "}" | "[" | "]" | "(" | ")" | "," | ";" | "."
+reserved = "let" | "if" | "else" | "while"
+
+zero = "0"
+nonzero = "1" | "2" | ... | "9"
+digit = zero | nonzero
+numLit = zero | (["+"|"-"] nonzero {digit})
+
+letter = "A" | "B" | ... | "Z"
+char = letter | digit
+charLit = "'" char "'"
+stringLit = "\"" char {char} "\""
+
+id = ("_" | letter) {"_" | letter | digit}
