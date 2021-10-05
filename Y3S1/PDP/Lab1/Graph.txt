@@ -1,0 +1,13 @@
+a = 2
+b = 3
+c = 4
+d = 5
+e = 6
+
+f = a
+g = a + d + e
+h = a + b + c + d + e
+i = a + c + d
+j = c + f
+k = i + j
+l = j
