@@ -20,7 +20,10 @@
 )
 ,
 ;
+:
 .
+'
+"
 --
 let
 if
@@ -30,3 +33,9 @@ for
 in
 read
 print
+length
+Bool
+Int
+Float
+Char
+String
