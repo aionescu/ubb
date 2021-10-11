@@ -34,6 +34,8 @@ in
 read
 print
 length
+false
+true
 Bool
 Int
 Float

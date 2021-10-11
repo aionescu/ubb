@@ -3,7 +3,8 @@ array = "[" type "]"
 type = primType | array
 
 readExpr = "read" primType
-atomExpr = id | floatLit | intLit | charLit | stringLit | readExpr | "(" expr ")"
+boolLit = "false" | "true"
+atomExpr = id | boolLit | floatLit | intLit | charLit | stringLit | readExpr | "(" expr ")"
 factor = atomExpr ["." "length"]
 term = factor [("*" | "/" | "%") factor]
 cmpTerm = term [("+" | "-") term]
