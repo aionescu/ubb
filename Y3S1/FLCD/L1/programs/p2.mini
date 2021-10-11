@@ -7,6 +7,6 @@ while b != 0 {
   let c = b;
   b = a % b;
   a = c;
-};
+}
 
 print a;
