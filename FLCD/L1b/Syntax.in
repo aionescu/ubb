@@ -1,22 +1,24 @@
-primType = "Int" | "Char" | "Bool"
+primType = "Bool" | "Int" | "Float" | "Char" | "String"
 array = "[" type "]"
 type = primType | array
 
-factor = id | numLit | charLit | stringLit | ("(" expr ")")
+readExpr = "read" primType
+atomExpr = id | floatLit | intLit | charLit | stringLit | readExpr | "(" expr ")"
+factor = atomExpr ["." "length"]
 term = factor [("*" | "/" | "%") factor]
 cmpTerm = term [("+" | "-") term]
 logicTerm = cmpTerm [("==" | "!=" | "<" | ">" | "<=" | ">=") cmpTerm]
 arrayTerm = logicTerm [("&&" | "||") logicTerm]
-expr = arrayTerm | ("[" [arrayTerm {"," arrayTerm} [","]] "]")
+expr = arrayTerm | "[" [arrayTerm {"," arrayTerm} [","]] "]"
 
-readStmt = "read" "(" expr ")"
-printStmt = "print" "(" expr ")"
+printStmt = "print" expr
 declStmt = "let" id [":" type] "=" expr
 assignStmt = id "=" expr
 ifStmt = "if" expr compStmt ["else" compStmt]
 whileStmt = "while" expr compStmt
-stmt = readStmt | printStmt | declStmt | assignStmt | ifStmt | whileStmt | compStmt
-stmtList = stmt ";" {stmt ";"}
+forStmt = "for" id "in" expr compStmt
+stmt = printStmt | declStmt | assignStmt | ifStmt | whileStmt | forStmt | compStmt
+stmtList = {stmt ";"}
 comptStmt = "{" stmtList "}"
 
 program = stmtList

@@ -21,7 +21,12 @@
 ,
 ;
 .
+--
 let
 if
 else
 while
+for
+in
+read
+print

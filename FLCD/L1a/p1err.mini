@@ -1,0 +1,15 @@
+-- Compute the maximum of 3 numbers
+
+let 1a: Int = read Int; -- Invalid identifier
+let b: Int = a $ 3; -- Invalid operator
+let c: Int = read Int;
+
+if a < b {
+  a = b;
+};
+
+if a < c {
+  a = c;
+};
+
+print(a);
