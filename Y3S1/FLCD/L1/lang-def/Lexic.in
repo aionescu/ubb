@@ -1,6 +1,6 @@
 operator = "+" | "-" | "*" | "/" | "%" | "=" | "==" | "!=" | "<" | ">" | "<=" | ">=" | "&&" | "||"
 separator = "{" | "}" | "[" | "]" | "(" | ")" | "," | ";" | ":" | "." | "'" | "\"" | "--"
-reserved = "let" | "if" | "else" | "while" | "for" | "in" | "read" | "print" | "length" | "Bool" | "Int" | "Float" | "Char" | "String"
+reserved = "let" | "if" | "else" | "while" | "for" | "in" | "read" | "print" | "length" | "false" | "true" | "Bool" | "Int" | "Float" | "Char" | "String"
 
 zero = "0"
 nonZero = "1" | "2" | ... | "9"
