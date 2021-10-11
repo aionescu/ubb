@@ -15,11 +15,11 @@ expr = arrayTerm | "[" [arrayTerm {"," arrayTerm} [","]] "]"
 printStmt = "print" expr
 declStmt = "let" id [":" type] "=" expr
 assignStmt = id "=" expr
+simpleStmt = (printStmt | declStmt | assignStmt) ";"
 ifStmt = "if" expr compStmt ["else" compStmt]
 whileStmt = "while" expr compStmt
 forStmt = "for" id "in" expr compStmt
-stmt = printStmt | declStmt | assignStmt | ifStmt | whileStmt | forStmt | compStmt
-stmtList = {stmt ";"}
-comptStmt = "{" stmtList "}"
+compStmt = "{" {stmt} "}"
+stmt = simpleStmt | ifStmt | whileStmt | forStmt | compStmt
 
-program = stmtList
+program = {stmt}
