@@ -1,0 +1,12 @@
+-- Compute the GCD of 2 numbers
+
+let a = read Int;
+let b = read Int;
+
+while b != 0 {
+  let c = b;
+  b = a % b;
+  a = c;
+};
+
+print a;

@@ -1,0 +1,10 @@
+-- Compute the average of n numbers
+
+let arr: [Int] = [read Int, read Int, read Int, read Int];
+let sum = 0.;
+
+for i in arr {
+  sum += i;
+};
+
+print sum / arr.length;

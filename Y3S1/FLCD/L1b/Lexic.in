@@ -1,15 +1,16 @@
 operator = "+" | "-" | "*" | "/" | "%" | "=" | "==" | "!=" | "<" | ">" | "<=" | ">=" | "&&" | "||"
-separator = "{" | "}" | "[" | "]" | "(" | ")" | "," | ";" | "."
-reserved = "let" | "if" | "else" | "while"
+separator = "{" | "}" | "[" | "]" | "(" | ")" | "," | ";" | "." | "--"
+reserved = "let" | "if" | "else" | "while" | "for" | "in" | "read" | "print" | "length"
 
 zero = "0"
-nonzero = "1" | "2" | ... | "9"
-digit = zero | nonzero
-numLit = zero | (["+"|"-"] nonzero {digit})
+nonZero = "1" | "2" | ... | "9"
+digit = zero | nonZero
+intLit = zero | ["+"|"-"] nonZero {digit}
+floatLit = ["+"|"-"] digit {digit} "." {digit}
 
-letter = "A" | "B" | ... | "Z"
+letter = "A" | "B" | ... | "Z" | "a" | "b" | ... | "z"
 char = letter | digit
 charLit = "'" char "'"
-stringLit = "\"" char {char} "\""
+stringLit = "\"" {char} "\""
 
 id = ("_" | letter) {"_" | letter | digit}
