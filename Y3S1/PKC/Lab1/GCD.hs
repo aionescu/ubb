@@ -26,6 +26,7 @@ factors x = go [2 .. x `quot` 2] x
 -- Assuming sorted input
 gcd' :: [Integer] -> Integer
 gcd' [] = 1
+gcd' [n] = n
 gcd' (n : ns) = r
   where
     (fs, ps) = unzip $ factors n
@@ -40,3 +41,4 @@ main = do
   print $ gcd [10, 20, 30]
   print $ gcd [10, 15, 30]
   print $ gcd [22, 10, 30]
+  print $ gcd [22, 10, product $ (^ (100 :: Integer)) <$> [2 .. 20]]
