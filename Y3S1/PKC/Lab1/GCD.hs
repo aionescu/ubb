@@ -4,7 +4,7 @@
 
 module GCD(main) where
 
-import Data.List(sort, transpose)
+import Data.List(nub, sort, transpose)
 import Prelude hiding (gcd)
 
 -- powerOf n f = (m, p) such that p ^ f * m = n
@@ -34,11 +34,11 @@ gcd' (n : ns) = r
     r = product $ zipWith (^) fs $ minimum <$> transpose fs'
 
 gcd :: [Integer] -> Integer
-gcd = gcd' . sort
+gcd = gcd' . nub . sort
 
 main :: IO ()
 main = do
   print $ gcd [10, 20, 30]
   print $ gcd [10, 15, 30]
-  print $ gcd [22, 10, 30]
+  print $ gcd [22, 10, 30, 30]
   print $ gcd [22, 10, product $ (^ (100 :: Integer)) <$> [2 .. 20]]
