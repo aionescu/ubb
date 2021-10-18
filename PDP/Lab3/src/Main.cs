@@ -88,7 +88,6 @@ void multiplyKth(int[,] a, int[,] b, int from, int k, int[,] c) {
 
   for (var i = from; i < c.Length; i += k) {
     computeElement(a, b, i / w, i % w, c);
-
   }
 }
 
