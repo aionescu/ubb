@@ -83,12 +83,9 @@ void multiplyCols(int[,] a, int[,] b, int colFrom, int colTo, int leftoverFrom, 
 
 void multiplyKth(int[,] a, int[,] b, int from, int k, int[,] c) {
   var w = width(c);
-  var row = from / w;
-  var col = from % w;
 
-  for (var i = from; i < c.Length; i += k) {
+  for (var i = from; i < c.Length; i += k)
     computeElement(a, b, i / w, i % w, c);
-  }
 }
 
 var m = readMatrix("Data/A.txt");
