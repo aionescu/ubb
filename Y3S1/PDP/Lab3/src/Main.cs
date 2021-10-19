@@ -98,7 +98,7 @@ void multiplyRows(int[,] a, int[,] b, int id, int rowCount, int leftover, int[,]
 }
 
 void multiplyCols(int[,] a, int[,] b, int id, int colCount, int leftover, int[,] c) {
-  var from = id * (colCount + Math.Min(id, leftover));
+  var from = id * colCount + Math.Min(id, leftover);
   var to = from + colCount + (id < leftover ? 1 : 0);
 
   for (var j = from; j < to; ++j)
@@ -165,10 +165,10 @@ void main() {
   var b = randomMatrix(500, 500, 10, 20);
   var c = allocMultiply(a, b);
 
-  runByRows(runThreads, a, b, c, 16);
-  runByRows(runThreads, a, b, c, 8);
-  runByRows(runThreads, a, b, c, 4);
-  runByRows(runThreads, a, b, c, 2);
+  runByCols(runThreads, a, b, c, 16);
+  runByCols(runThreads, a, b, c, 8);
+  runByCols(runThreads, a, b, c, 4);
+  runByCols(runThreads, a, b, c, 2);
 }
 
 main();
