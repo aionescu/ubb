@@ -6,4 +6,8 @@
     <Configuration>Release</Configuration>
     <Optimize>true</Optimize>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Toolkit.HighPerformance" Version="7.1.0"/>
+  </ItemGroup>
 </Project>
