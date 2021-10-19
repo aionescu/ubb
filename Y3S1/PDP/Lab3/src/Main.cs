@@ -88,21 +88,29 @@ Incorrect:
   Console.WriteLine("Incorrect result 👎");
 }
 
+void multiplySerial(int[,] a, int[,] b, int[,] c) {
+  for (var i = 0; i < height(c); ++i)
+    for (var j = 0; j < width(c); ++j)
+      c[i, j] = computeElement(a, b, i, j);
+}
+
 void multiplyRows(int[,] a, int[,] b, int id, int rowCount, int leftover, int[,] c) {
   var from = id * rowCount + Math.Min(id, leftover);
   var to = from + rowCount + (id < leftover ? 1 : 0);
+  var w = width(c);
 
   for (var i = from; i < to; ++i)
-    for (var j = 0; j < width(c); ++j)
+    for (var j = 0; j < w; ++j)
       c[i, j] = computeElement(a, b, i, j);
 }
 
 void multiplyCols(int[,] a, int[,] b, int id, int colCount, int leftover, int[,] c) {
   var from = id * colCount + Math.Min(id, leftover);
   var to = from + colCount + (id < leftover ? 1 : 0);
+  var h = height(c);
 
   for (var j = from; j < to; ++j)
-    for (var i = 0; i < height(c); ++i)
+    for (var i = 0; i < h; ++i)
       c[i, j] = computeElement(a, b, i, j);
 }
 
@@ -154,21 +162,23 @@ void runByKth(Action<int, Action<int>> f, int[,] a, int[,] b, int[,] c, int jobC
 }
 
 void timed(Action f) {
-  Console.WriteLine("Starting stopwatch");
   var sw = Stopwatch.StartNew();
   f();
   Console.WriteLine(sw.Elapsed);
 }
 
 void main() {
-  var a = randomMatrix(500, 500, 10, 20);
-  var b = randomMatrix(500, 500, 10, 20);
+  var a = randomMatrix(1000, 1000, 10, 20);
+  var b = randomMatrix(1000, 1000, 10, 20);
   var c = allocMultiply(a, b);
 
-  runByCols(runThreads, a, b, c, 16);
-  runByCols(runThreads, a, b, c, 8);
-  runByCols(runThreads, a, b, c, 4);
-  runByCols(runThreads, a, b, c, 2);
+  foreach (var jobCount in new[] { 2, 4, 8, 16 }) {
+    runByRows(runThreads, a, b, c, jobCount);
+    runByCols(runThreads, a, b, c, jobCount);
+    runByKth(runThreads, a, b, c, jobCount);
+    timed(() => multiplySerial(a, b, c));
+    Console.WriteLine();
+  }
 }
 
 main();
