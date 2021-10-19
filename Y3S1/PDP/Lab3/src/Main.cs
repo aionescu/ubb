@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using Microsoft.Toolkit.HighPerformance;
 
 #pragma warning disable 8321
 
@@ -61,6 +62,10 @@ int[,] allocMultiply(int[,] a, int[,] b) {
   return new int[height(a), width(b)];
 }
 
+void clear(int[,] m) {
+  m.AsSpan2D().Fill(0);
+}
+
 int computeElement(int[,] a, int[,] b, int row, int col) {
   var e = 0;
 
@@ -84,7 +89,7 @@ Incorrect:
 }
 
 void multiplyRows(int[,] a, int[,] b, int id, int rowCount, int leftover, int[,] c) {
-  var from = id * (rowCount + Math.Min(id, leftover));
+  var from = id * rowCount + Math.Min(id, leftover);
   var to = from + rowCount + (id < leftover ? 1 : 0);
 
   for (var i = from; i < to; ++i)
@@ -130,6 +135,24 @@ void runThreadPool(int jobCount, Action<int> f) {
   countdown.Wait();
 }
 
+void runByRows(Action<int, Action<int>> f, int[,] a, int[,] b, int[,] c, int jobCount) {
+  var rowsPerJob = height(c) / jobCount;
+  var leftover = height(c) % jobCount;
+
+  timed(() => f(jobCount, i => multiplyRows(a, b, i, rowsPerJob, leftover, c)));
+}
+
+void runByCols(Action<int, Action<int>> f, int[,] a, int[,] b, int[,] c, int jobCount) {
+  var colsPerJob = width(c) / jobCount;
+  var leftover = width(c) % jobCount;
+
+  timed(() => f(jobCount, i => multiplyCols(a, b, i, colsPerJob, leftover, c)));
+}
+
+void runByKth(Action<int, Action<int>> f, int[,] a, int[,] b, int[,] c, int jobCount) {
+  timed(() => f(jobCount, i => multiplyKth(a, b, i, jobCount, c)));
+}
+
 void timed(Action f) {
   Console.WriteLine("Starting stopwatch");
   var sw = Stopwatch.StartNew();
@@ -138,17 +161,14 @@ void timed(Action f) {
 }
 
 void main() {
-  var a = randomMatrix(100, 500, 10, 20);
-  var b = randomMatrix(500, 100, 10, 20);
+  var a = randomMatrix(500, 500, 10, 20);
+  var b = randomMatrix(500, 500, 10, 20);
   var c = allocMultiply(a, b);
 
-  var jobCount = 10;
-  var rowsPerJob = height(c) / jobCount;
-  var leftover = height(c) % jobCount;
-
-  timed(() => runThreads(jobCount, i => multiplyRows(a, b, i, rowsPerJob, leftover, c)));
-
-  checkConsistency(a, b, c);
+  runByRows(runThreads, a, b, c, 16);
+  runByRows(runThreads, a, b, c, 8);
+  runByRows(runThreads, a, b, c, 4);
+  runByRows(runThreads, a, b, c, 2);
 }
 
 main();
