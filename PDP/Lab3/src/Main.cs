@@ -1,7 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
+
+#pragma warning disable 8321
 
 int height(int[,] m) {
   return m.GetLength(0);
@@ -20,6 +24,8 @@ void printMatrix(int[,] m) {
 
     Console.Write("]\n");
   }
+
+  Console.WriteLine();
 }
 
 int[,] readMatrix(string path) {
@@ -38,55 +44,111 @@ int[,] readMatrix(string path) {
   return m;
 }
 
-void computeElement(int[,] a, int[,] b, int row, int col, int[,] c) {
+var random = new Random();
+
+int[,] randomMatrix(int height, int width, int min, int max) {
+  var m = new int[height, width];
+
+  for (var i = 0; i < height; ++i)
+    for (var j = 0; j < width; ++j)
+      m[i, j] = random.Next(min, max);
+
+  return m;
+}
+
+int[,] allocMultiply(int[,] a, int[,] b) {
+  Debug.Assert(width(a) == width(b), "Incompatible matrix sizes.");
+  return new int[height(a), width(b)];
+}
+
+int computeElement(int[,] a, int[,] b, int row, int col) {
   var e = 0;
 
   for (var i = 0; i < width(a); ++i)
     e += a[row, i] * b[i, col];
 
-  c[row, col] = e;
+  return e;
 }
 
-int[,] multiplySingleThreaded(int[,] a, int[,] b) {
-  Debug.Assert(width(a) == width(b), "Incompatible matrix sizes.");
-
-  var c = new int[height(a), width(b)];
-
-  for (var i = 0; i < height(a); ++i)
-    for (var j = 0; j < width(b); ++j)
-      computeElement(a, b, i, j, c);
-
-  return c;
-}
-
-void multiplyRows(int[,] a, int[,] b, int rowFrom, int rowTo, int leftoverFrom, int leftoverTo, int[,] c) {
-  var i = rowFrom;
-
-  for (; i < rowTo; ++i)
+void checkConsistency(int[,] a, int[,] b, int[,] c) {
+  for (var i = 0; i < height(c); ++i)
     for (var j = 0; j < width(c); ++j)
-      computeElement(a, b, i, j, c);
+      if (c[i, j] != computeElement(a, b, i, j))
+        goto Incorrect;
 
-  for (var j = leftoverFrom; j < leftoverTo; ++j)
-    computeElement(a, b, i, j, c);
+  Console.WriteLine("👍");
+  return;
+
+Incorrect:
+  Console.WriteLine("Incorrect result 👎");
 }
 
-void multiplyCols(int[,] a, int[,] b, int colFrom, int colTo, int leftoverFrom, int leftoverTo, int[,] c) {
-  var j = colFrom;
+void multiplyRows(int[,] a, int[,] b, int id, int rowCount, int leftover, int[,] c) {
+  var from = id * (rowCount + Math.Min(id, leftover));
+  var to = from + rowCount + (id < leftover ? 1 : 0);
 
-  for (; j < colTo; ++j)
+  for (var i = from; i < to; ++i)
+    for (var j = 0; j < width(c); ++j)
+      c[i, j] = computeElement(a, b, i, j);
+}
+
+void multiplyCols(int[,] a, int[,] b, int id, int colCount, int leftover, int[,] c) {
+  var from = id * (colCount + Math.Min(id, leftover));
+  var to = from + colCount + (id < leftover ? 1 : 0);
+
+  for (var j = from; j < to; ++j)
     for (var i = 0; i < height(c); ++i)
-      computeElement(a, b, i, j, c);
-
-  for (var i = leftoverFrom; i < leftoverTo; ++i)
-    computeElement(a, b, i, j, c);
+      c[i, j] = computeElement(a, b, i, j);
 }
 
 void multiplyKth(int[,] a, int[,] b, int from, int k, int[,] c) {
   var w = width(c);
 
-  for (var i = from; i < c.Length; i += k)
-    computeElement(a, b, i / w, i % w, c);
+  for (var i = from; i < c.Length; i += k) {
+    var row = i / w;
+    var col = i % w;
+    c[row, col] = computeElement(a, b, row, col);
+  }
 }
 
-var m = readMatrix("Data/A.txt");
-printMatrix(m);
+void runThreads(int threadCount, Action<int> f) {
+  List<Thread> threads = new();
+
+  foreach (var i in Enumerable.Range(0, threadCount))
+    threads.Add(new Thread(() => f(i)));
+
+  threads.ForEach(t => t.Start());
+  threads.ForEach(t => t.Join());
+}
+
+void runThreadPool(int jobCount, Action<int> f) {
+  using var countdown = new CountdownEvent(jobCount);
+
+  foreach (var i in Enumerable.Range(0, jobCount))
+    ThreadPool.QueueUserWorkItem(o => { f(i); countdown.Signal(); });
+
+  countdown.Wait();
+}
+
+void timed(Action f) {
+  Console.WriteLine("Starting stopwatch");
+  var sw = Stopwatch.StartNew();
+  f();
+  Console.WriteLine(sw.Elapsed);
+}
+
+void main() {
+  var a = randomMatrix(100, 500, 10, 20);
+  var b = randomMatrix(500, 100, 10, 20);
+  var c = allocMultiply(a, b);
+
+  var jobCount = 10;
+  var rowsPerJob = height(c) / jobCount;
+  var leftover = height(c) % jobCount;
+
+  timed(() => runThreads(jobCount, i => multiplyRows(a, b, i, rowsPerJob, leftover, c)));
+
+  checkConsistency(a, b, c);
+}
+
+main();
