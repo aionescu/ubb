@@ -41,4 +41,4 @@ main = do
   print $ gcd [10, 20, 30]
   print $ gcd [10, 15, 30]
   print $ gcd [22, 10, 30, 30]
-  print $ gcd [22, 10, product $ (^ (100 :: Integer)) <$> [2 .. 20]]
+  print $ gcd [22, 10, product [n ^ (100 :: Integer) | n <- [2 .. 20]]]
