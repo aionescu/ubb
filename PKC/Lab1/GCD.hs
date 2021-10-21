@@ -1,6 +1,5 @@
 #!/usr/bin/env runhaskell
-{-# OPTIONS_GHC -Wall -Wextra #-}
-{-# LANGUAGE TypeApplications #-}
+{-# OPTIONS_GHC -Wall -Wextra -Wincomplete-patterns -Wincomplete-uni-patterns #-}
 
 module GCD(main) where
 
