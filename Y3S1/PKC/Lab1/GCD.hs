@@ -14,12 +14,13 @@ powerOf n f
 
 -- factors n = [(f1, p1), ..., (fi, pi)] such that f1 ^ p1 * ... * fi ^ pi = n
 factors :: Integer -> [(Integer, Integer)]
-factors x = go [2 .. x `quot` 2] x
+factors x = go [] [2 .. x `quot` 2] x
   where
-    go [] _ = []
-    go (f : fs) n
-      | p > 0 = (f, p) : go fs n'
-      | otherwise = go fs n
+    go [] [] _ = [(x, 1)]
+    go acc [] _ = reverse acc
+    go acc (f : fs) n
+      | p > 0 = go ((f, p) : acc) fs n'
+      | otherwise = go acc fs n
       where (n', p) = powerOf n f
 
 -- Assuming sorted input
