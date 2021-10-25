@@ -40,11 +40,14 @@ class Item {
 }
 
 const items = [];
-for (let i = 0; i < 3; i++) {
-  items.push(new Item({ id: `${i}`, text: `item ${i}`, date: new Date(Date.now() + i), version: 1 }));
-}
-let lastUpdated = items[items.length - 1].date;
-let lastId = items[items.length - 1].id;
+// for (let i = 0; i < 3; i++) {
+//   items.push(new Item({ id: `${i}`, text: `item ${i}`, date: new Date(Date.now() + i), version: 1 }));
+// }
+// let lastUpdated = items[items.length - 1].date;
+// let lastId = items[items.length - 1].id;
+
+let lastUpdated = new Date(Date.now());
+let lastId = -1;
 const pageSize = 10;
 
 const broadcast = data =>
@@ -57,7 +60,7 @@ const broadcast = data =>
 const router = new Router();
 
 router.get('/item', ctx => {
-  const ifModifiedSince = ctx.request.get('If-Modif ied-Since');
+  const ifModifiedSince = ctx.request.get('If-Modified-Since');
   if (ifModifiedSince && new Date(ifModifiedSince).getTime() >= lastUpdated.getTime() - lastUpdated.getMilliseconds()) {
     ctx.response.status = 304; // NOT MODIFIED
     return;
@@ -156,16 +159,6 @@ router.del('/item/:id', ctx => {
   }
   ctx.response.status = 204; // no content
 });
-
-setInterval(() => {
-  lastUpdated = new Date();
-  lastId = `${parseInt(lastId) + 1}`;
-  const item = new Item({ id: lastId, text: `item ${lastId}`, date: lastUpdated, version: 1 });
-  items.push(item);
-  console.log(`
-   ${item.text}`);
-  broadcast({ event: 'created', payload: { item } });
-}, 150000);
 
 app.use(router.routes());
 app.use(router.allowedMethods());

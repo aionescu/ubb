@@ -1,4 +1,4 @@
 export interface ItemProps {
   id?: string;
-  text: string;
+  text: { num: number; str: string; date: Date; bool: boolean };
 }
