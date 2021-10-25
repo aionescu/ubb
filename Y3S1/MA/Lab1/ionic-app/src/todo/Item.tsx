@@ -1,5 +1,5 @@
 import React from 'react';
-import { IonItem, IonLabel } from '@ionic/react';
+import { IonCheckbox, IonItem, IonLabel } from '@ionic/react';
 import { ItemProps } from './ItemProps';
 
 interface ItemPropsExt extends ItemProps {
@@ -9,7 +9,11 @@ interface ItemPropsExt extends ItemProps {
 const Item: React.FC<ItemPropsExt> = ({ id, text, onEdit }) => {
   return (
     <IonItem onClick={() => onEdit(id)}>
-      <IonLabel>{text}</IonLabel>
+      <IonLabel>Item #{id}:</IonLabel>
+      <IonLabel>{text.num}</IonLabel>
+      <IonLabel>{text.str}</IonLabel>
+      <IonLabel>{text.date}</IonLabel>
+      <IonCheckbox checked={text.bool}/>
     </IonItem>
   );
 };

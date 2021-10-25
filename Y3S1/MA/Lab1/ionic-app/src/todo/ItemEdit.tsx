@@ -2,9 +2,12 @@ import React, { useContext, useEffect, useState } from 'react';
 import {
   IonButton,
   IonButtons,
+  IonCheckbox,
   IonContent,
+  IonDatetime,
   IonHeader,
   IonInput,
+  IonLabel,
   IonLoading,
   IonPage,
   IonTitle,
@@ -21,9 +24,14 @@ interface ItemEditProps extends RouteComponentProps<{
   id?: string;
 }> {}
 
+const parseNum = (str: string, num: number) => {
+  const number = Number(str)
+  return Number.isNaN(number) ? num : number
+}
+
 const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
   const { items, saving, savingError, saveItem } = useContext(ItemContext);
-  const [text, setText] = useState('');
+  const [text, setText] = useState({ num: 0, str: "", date: new Date(Date.now()), bool: false });
   const [item, setItem] = useState<ItemProps>();
   useEffect(() => {
     log('useEffect');
@@ -52,7 +60,15 @@ const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <IonInput value={text} onIonChange={e => setText(e.detail.value || '')} />
+        <IonLabel>Num:</IonLabel>
+        <IonInput value={Number.isNaN(text.num) ? "" : text.num} onIonChange={e => setText({ ...text, num: parseNum(e.detail.value || '', text.num) })} />
+        <IonLabel>Str:</IonLabel>
+        <IonInput value={text.str} onIonChange={e => setText({ ...text, str: e.detail.value || '' })} />
+        <IonLabel>Date:</IonLabel>
+        <IonDatetime displayFormat="YYYY-MM-DD" placeholder="Edit Date" value={text.date.toString()} onIonChange={e => setText({ ...text, date: new Date(e.detail.value || '') })}></IonDatetime>
+        <IonLabel>Bool:</IonLabel>
+        <br/>
+        <IonCheckbox checked={text.bool} onIonChange={e => setText({ ...text, bool: e.detail.checked })} />
         <IonLoading isOpen={saving} />
         {savingError && (
           <div>{savingError.message || 'Failed to save item'}</div>
