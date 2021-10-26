@@ -1,6 +1,6 @@
 import React from 'react';
 import { IonCheckbox, IonItem, IonLabel } from '@ionic/react';
-import { ItemProps } from './ItemProps';
+import { formatDate, ItemProps } from './ItemProps';
 
 interface ItemPropsExt extends ItemProps {
   onEdit: (id?: string) => void;
@@ -12,7 +12,7 @@ const Item: React.FC<ItemPropsExt> = ({ id, data: { num, str, date, bool }, onEd
       <IonLabel>Item #{id}:</IonLabel>
       <IonLabel>{num}</IonLabel>
       <IonLabel>{str}</IonLabel>
-      <IonLabel>{date}</IonLabel>
+      <IonLabel>{formatDate(date)}</IonLabel>
       <IonCheckbox checked={bool}/>
     </IonItem>
   );

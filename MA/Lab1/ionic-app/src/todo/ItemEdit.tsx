@@ -16,7 +16,7 @@ import {
 import { getLogger } from '../core';
 import { ItemContext } from './ItemProvider';
 import { RouteComponentProps } from 'react-router';
-import { ItemProps } from './ItemProps';
+import { ItemData, ItemProps } from './ItemProps';
 
 const log = getLogger('ItemEdit');
 
@@ -29,9 +29,11 @@ const parseNum = (str: string, num: number) => {
   return Number.isNaN(number) ? num : number
 }
 
+const defaultItemData: ItemData = { num: 0, str: "", date: new Date(Date.now()), bool: false };
+
 const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
   const { items, saving, savingError, saveItem } = useContext(ItemContext);
-  const [data, setData] = useState({ num: 0, str: "", date: new Date(Date.now()), bool: false });
+  const [data, setData] = useState(defaultItemData);
   const [item, setItem] = useState<ItemProps>();
   useEffect(() => {
     log('useEffect');
@@ -61,17 +63,31 @@ const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
       </IonHeader>
       <IonContent>
         <IonLabel>Num:</IonLabel>
-        <IonInput value={Number.isNaN(data.num) ? "" : data.num} onIonChange={e => setData({ ...data, num: parseNum(e.detail.value || '', data.num) })} />
+        <IonInput
+          value={Number.isNaN(data.num) ? "" : data.num}
+          onIonChange={e => setData({ ...data, num: parseNum(e.detail.value!, data.num) })}
+        />
 
         <IonLabel>Str:</IonLabel>
-        <IonInput value={data.str} onIonChange={e => setData({ ...data, str: e.detail.value || '' })} />
+        <IonInput
+          value={data.str}
+          onIonChange={e => setData({ ...data, str: e.detail.value! })}
+        />
 
         <IonLabel>Date:</IonLabel>
-        <IonDatetime displayFormat="YYYY-MM-DD" placeholder="Edit Date" value={data.date.toString()} onIonChange={e => setData({ ...data, date: new Date(e.detail.value || '') })}></IonDatetime>
+        <IonDatetime
+          displayFormat="YYYY-MM-DD"
+          placeholder="Edit Date"
+          value={data.date.toString()}
+          onIonChange={e => setData({ ...data, date: new Date(e.detail.value!) })}>
+        </IonDatetime>
 
         <IonLabel>Bool:</IonLabel>
         <br/>
-        <IonCheckbox checked={data.bool} onIonChange={e => setData({ ...data, bool: e.detail.checked })} />
+        <IonCheckbox
+          checked={data.bool}
+          onIonChange={e => setData({ ...data, bool: e.detail.checked })}
+        />
 
         <IonLoading isOpen={saving} />
         {savingError && (
