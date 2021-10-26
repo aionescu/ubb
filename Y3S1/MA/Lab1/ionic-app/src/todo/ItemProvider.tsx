@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useReducer } from 'react';
 import PropTypes from 'prop-types';
 import { getLogger } from '../core';
-import { ItemProps } from './ItemProps';
+import { deserializeItem, ItemProps } from './ItemProps';
 import { createItem, getItems, newWebSocket, updateItem } from './ItemApi';
 
 const log = getLogger('ItemProvider');
@@ -47,7 +47,7 @@ const reducer: (state: ItemsState, action: ActionProps) => ItemsState =
         return { ...state, savingError: null, saving: true };
       case SAVE_ITEM_SUCCEEDED:
         const items = [...(state.items || [])];
-        const item = payload.item;
+        const item = deserializeItem(payload.item);
         const index = items.findIndex(it => it.id === item.id);
         if (index === -1) {
           items.splice(0, 0, item);

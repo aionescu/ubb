@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { getLogger } from '../core';
-import { ItemProps } from './ItemProps';
+import { deserializeItem, ItemProps } from './ItemProps';
 
 const log = getLogger('itemApi');
 
@@ -31,7 +31,7 @@ const config = {
 };
 
 export const getItems: () => Promise<ItemProps[]> = () => {
-  return withLogs(axios.get(itemUrl, config), 'getItems');
+  return withLogs<ItemProps[]>(axios.get(itemUrl, config), 'getItems').then(items => items.map(deserializeItem));
 }
 
 export const createItem: (item: ItemProps) => Promise<ItemProps[]> = item => {
