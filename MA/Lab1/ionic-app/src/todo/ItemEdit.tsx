@@ -31,7 +31,7 @@ const parseNum = (str: string, num: number) => {
 
 const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
   const { items, saving, savingError, saveItem } = useContext(ItemContext);
-  const [text, setText] = useState({ num: 0, str: "", date: new Date(Date.now()), bool: false });
+  const [data, setData] = useState({ num: 0, str: "", date: new Date(Date.now()), bool: false });
   const [item, setItem] = useState<ItemProps>();
   useEffect(() => {
     log('useEffect');
@@ -39,14 +39,14 @@ const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
     const item = items?.find(it => it.id === routeId);
     setItem(item);
     if (item) {
-      setText(item.text);
+      setData(item.data);
     }
   }, [match.params.id, items]);
   const handleSave = () => {
-    const editedItem = item ? { ...item, text } : { text };
+    const editedItem = item ? { ...item, data } : { data };
     saveItem && saveItem(editedItem).then(() => history.goBack());
   };
-  log('render');
+  // log('render');
   return (
     <IonPage>
       <IonHeader>
@@ -61,14 +61,18 @@ const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
       </IonHeader>
       <IonContent>
         <IonLabel>Num:</IonLabel>
-        <IonInput value={Number.isNaN(text.num) ? "" : text.num} onIonChange={e => setText({ ...text, num: parseNum(e.detail.value || '', text.num) })} />
+        <IonInput value={Number.isNaN(data.num) ? "" : data.num} onIonChange={e => setData({ ...data, num: parseNum(e.detail.value || '', data.num) })} />
+
         <IonLabel>Str:</IonLabel>
-        <IonInput value={text.str} onIonChange={e => setText({ ...text, str: e.detail.value || '' })} />
+        <IonInput value={data.str} onIonChange={e => setData({ ...data, str: e.detail.value || '' })} />
+
         <IonLabel>Date:</IonLabel>
-        <IonDatetime displayFormat="YYYY-MM-DD" placeholder="Edit Date" value={text.date.toString()} onIonChange={e => setText({ ...text, date: new Date(e.detail.value || '') })}></IonDatetime>
+        <IonDatetime displayFormat="YYYY-MM-DD" placeholder="Edit Date" value={data.date.toString()} onIonChange={e => setData({ ...data, date: new Date(e.detail.value || '') })}></IonDatetime>
+
         <IonLabel>Bool:</IonLabel>
         <br/>
-        <IonCheckbox checked={text.bool} onIonChange={e => setText({ ...text, bool: e.detail.checked })} />
+        <IonCheckbox checked={data.bool} onIonChange={e => setData({ ...data, bool: e.detail.checked })} />
+
         <IonLoading isOpen={saving} />
         {savingError && (
           <div>{savingError.message || 'Failed to save item'}</div>

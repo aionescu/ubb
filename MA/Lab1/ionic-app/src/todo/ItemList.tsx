@@ -20,7 +20,7 @@ const log = getLogger('ItemList');
 
 const ItemList: React.FC<RouteComponentProps> = ({ history }) => {
   const { items, fetching, fetchingError } = useContext(ItemContext);
-  log('render');
+  // log('render');
   return (
     <IonPage>
       <IonHeader>
@@ -32,8 +32,8 @@ const ItemList: React.FC<RouteComponentProps> = ({ history }) => {
         <IonLoading isOpen={fetching} message="Fetching items" />
         {items && (
           <IonList>
-            {items.map(({ id, text}) =>
-              <Item key={id} id={id} text={text} onEdit={id => history.push(`/item/${id}`)} />)}
+            {items.map(({ id, data}) =>
+              <Item key={id} id={id} data={data} onEdit={id => history.push(`/item/${id}`)} />)}
           </IonList>
         )}
         {fetchingError && (

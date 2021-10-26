@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useReducer } from 'react';
 import PropTypes from 'prop-types';
 import { getLogger } from '../core';
 import { ItemProps } from './ItemProps';
-import { createItem, getItems, newWebSocket, updateItem } from './itemApi';
+import { createItem, getItems, newWebSocket, updateItem } from './ItemApi';
 
 const log = getLogger('ItemProvider');
 
