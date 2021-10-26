@@ -6,14 +6,14 @@ interface ItemPropsExt extends ItemProps {
   onEdit: (id?: string) => void;
 }
 
-const Item: React.FC<ItemPropsExt> = ({ id, text, onEdit }) => {
+const Item: React.FC<ItemPropsExt> = ({ id, data: { num, str, date, bool }, onEdit }) => {
   return (
     <IonItem onClick={() => onEdit(id)}>
       <IonLabel>Item #{id}:</IonLabel>
-      <IonLabel>{text.num}</IonLabel>
-      <IonLabel>{text.str}</IonLabel>
-      <IonLabel>{text.date}</IonLabel>
-      <IonCheckbox checked={text.bool}/>
+      <IonLabel>{num}</IonLabel>
+      <IonLabel>{str}</IonLabel>
+      <IonLabel>{date}</IonLabel>
+      <IonCheckbox checked={bool}/>
     </IonItem>
   );
 };

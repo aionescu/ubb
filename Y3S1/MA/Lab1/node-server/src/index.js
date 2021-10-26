@@ -31,9 +31,9 @@ app.use(async (ctx, next) => {
 });
 
 class Item {
-  constructor({ id, text, date, version }) {
+  constructor({ id, data, date, version }) {
     this.id = id;
-    this.text = text;
+    this.data = data;
     this.date = date;
     this.version = version;
   }
@@ -68,10 +68,10 @@ router.get('/item', ctx => {
   const text = ctx.request.query.text;
   const page = parseInt(ctx.request.query.page) || 1;
   ctx.response.set('Last-Modified', lastUpdated.toUTCString());
-  const sortedItems = items
-    .filter(item => text ? item.text.indexOf(text) !== -1 : true)
-    .sort((n1, n2) => -(n1.date.getTime() - n2.date.getTime()));
-  const offset = (page - 1) * pageSize;
+  // const sortedItems = items
+  //   .filter(item => text ? item.text.indexOf(text) !== -1 : true)
+  //   .sort((n1, n2) => -(n1.date.getTime() - n2.date.getTime()));
+  // const offset = (page - 1) * pageSize;
   // ctx.response.body = {
   //   page,
   //   items: sortedItems.slice(offset, offset + pageSize),
@@ -95,8 +95,8 @@ router.get('/item/:id', async (ctx) => {
 
 const createItem = async (ctx) => {
   const item = ctx.request.body;
-  if (!item.text) { // validation
-    ctx.response.body = { issue: [{ error: 'Text is missing' }] };
+  if (!item.data) { // validation
+    ctx.response.body = { issue: [{ error: 'Item data is missing' }] };
     ctx.response.status = 400; //  BAD REQUEST
     return;
   }
