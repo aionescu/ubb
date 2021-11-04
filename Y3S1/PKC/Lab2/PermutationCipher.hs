@@ -1,6 +1,5 @@
 {-# LANGUAGE ImportQualifiedPost, RecordWildCards, ScopedTypeVariables, TypeOperators #-}
 
-import Data.Map.Strict(Map)
 import Data.Map.Strict qualified as M
 import Data.Tuple(swap)
 import System.Environment(getArgs)
@@ -29,7 +28,9 @@ encrypt σ m filler plaintext = concat $ applyCipher <$> chunks plaintext
     chunks :: [a] -> [[a]]
     chunks text
       | length text <= m = [take m $ text <> repeat filler]
-      | otherwise = take m text : chunks (drop m text)
+      | otherwise = first : chunks rest
+      where
+        (first, rest) = splitAt m text
 
     applyCipher :: [a] -> [a]
     applyCipher text = lookup . apply σ <$> indices
@@ -40,15 +41,18 @@ encrypt σ m filler plaintext = concat $ applyCipher <$> chunks plaintext
 decrypt :: Int <-> Int -> Int -> a -> [a] -> [a]
 decrypt σ = encrypt (inv σ)
 
+-- Example usage:
+-- runhaskell PermutationCipher.hs computational 2 4 5 3 1
 main :: IO ()
 main = do
+  plaintext : indices <- getArgs
+
   let
-    perm = zip [1..] [2, 4, 5, 3, 1]
+    perm = zip [1..] $ read <$> indices
 
     m = length perm
     σ = bij perm
 
-    plaintext = "computational"
     encrypted = encrypt σ m '_' plaintext
     decrypted = decrypt σ m '_' encrypted
 
