@@ -1,4 +1,4 @@
-{-# LANGUAGE ImportQualifiedPost, RecordWildCards, ScopedTypeVariables, TypeOperators #-}
+{-# LANGUAGE ImportQualifiedPost, ScopedTypeVariables, TypeOperators #-}
 
 import Data.Map.Strict qualified as M
 import Data.Tuple(swap)
