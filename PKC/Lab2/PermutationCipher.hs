@@ -40,25 +40,18 @@ encrypt σ m filler plaintext = concat $ applyCipher <$> chunks plaintext
 decrypt :: Int <-> Int -> Int -> a -> [a] -> [a]
 decrypt σ = encrypt (inv σ)
 
-m :: Int
-m = 5
-
-σ :: Int <-> Int
-σ =
-  bij
-  [ (1, 2)
-  , (2, 4)
-  , (3, 5)
-  , (4, 3)
-  , (5, 1)
-  ]
-
 main :: IO ()
 main = do
-  [plaintext] <- getArgs
-  let ciphertext = encrypt σ m '_' plaintext
-  let roundtripped = decrypt σ m '_' ciphertext
+  let
+    perm = zip [1..] [2, 4, 5, 3, 1]
 
-  putStrLn plaintext
-  putStrLn ciphertext
-  putStrLn roundtripped
+    m = length perm
+    σ = bij perm
+
+    plaintext = "computational"
+    encrypted = encrypt σ m '_' plaintext
+    decrypted = decrypt σ m '_' encrypted
+
+  putStrLn $ "Plaintext: " <> plaintext
+  putStrLn $ "Encrypted: " <> encrypted
+  putStrLn $ "Decrypted: " <> decrypted
