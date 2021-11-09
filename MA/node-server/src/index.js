@@ -57,49 +57,55 @@ class Item {
 }
 
 const items = [];
-// for (let i = 0; i < 3; i++) {
-//   items.push(new Item({ id: `${i}`, text: `item ${i}`, date: new Date(Date.now() + i), version: 1 }));
-// }
-// let lastUpdated = items[items.length - 1].date;
-// let lastId = items[items.length - 1].id;
 
-let lastUpdated = new Date(Date.now());
-let lastId = -1;
-const pageSize = 10;
+for (let i = 0; i < 20; ++i) {
+  items.push(new Item({
+    id: `${i}`,
+    data: {
+      packageName: "Package " + i,
+      latestVersion: i,
+      uploadDate: new Date(Date.now()),
+      isDeprecated: false,
+    },
+    date: new Date(Date.now()),
+    version: 1,
+  }));
+}
+
+let lastUpdated = items[items.length - 1].date;
+let lastId = items[items.length - 1].id;
+
 
 const broadcast = data =>
-  wss.clients.forEach(client => {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(JSON.stringify(data));
-    }
-  });
+wss.clients.forEach(client => {
+  if (client.readyState === WebSocket.OPEN) {
+    client.send(JSON.stringify(data));
+  }
+});
 
 const router = new Router();
+const pageSize = 10;
 
-router.get('/item', ctx => {
+router.get('/items/:page', ctx => {
+  console.log(ctx.params.page);
+  const page = parseInt(ctx.params.page) || 0;
+  const idx = page * pageSize;
+
   const ifModifiedSince = ctx.request.get('If-Modified-Since');
   if (ifModifiedSince && new Date(ifModifiedSince).getTime() >= lastUpdated.getTime() - lastUpdated.getMilliseconds()) {
     ctx.response.status = 304; // NOT MODIFIED
     return;
   }
-  const text = ctx.request.query.text;
-  const page = parseInt(ctx.request.query.page) || 1;
+
   ctx.response.set('Last-Modified', lastUpdated.toUTCString());
-  // const sortedItems = items
-  //   .filter(item => text ? item.text.indexOf(text) !== -1 : true)
-  //   .sort((n1, n2) => -(n1.date.getTime() - n2.date.getTime()));
-  // const offset = (page - 1) * pageSize;
-  // ctx.response.body = {
-  //   page,
-  //   items: sortedItems.slice(offset, offset + pageSize),
-  //   more: offset + pageSize < sortedItems.length
-  // };
-  ctx.response.body = items;
+
+  items.sort((a, b) => a.id - b.id);
+  ctx.response.body = items.slice(idx, idx + pageSize);
   ctx.response.status = 200;
 });
 
 router.get('/item/:id', async (ctx) => {
-  const itemId = ctx.request.params.id;
+  const itemId = ctx.params.id;
   const item = items.find(item => itemId === item.id);
   if (item) {
     ctx.response.body = item;

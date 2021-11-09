@@ -4,6 +4,8 @@ import { getLogger } from '../core';
 import { deserializeItem, ItemProps } from './ItemProps';
 import { createItem, getItems, newWebSocket, updateItem } from './ItemApi';
 import { useNetwork } from './Network';
+import { Plugins } from '@capacitor/core';
+const { Storage } = Plugins;
 
 const log = getLogger('ItemProvider');
 
@@ -15,8 +17,7 @@ export interface ItemsState {
   fetchingError?: Error | null,
   saving: boolean,
   savingError?: Error | null,
-  saveItem?: SaveItemFn,
-  unsent: [ItemProps, boolean][]
+  saveItem?: SaveItemFn
 }
 
 interface ActionProps {
@@ -26,8 +27,7 @@ interface ActionProps {
 
 const initialState: ItemsState = {
   fetching: false,
-  saving: false,
-  unsent: []
+  saving: false
 };
 
 const FETCH_ITEMS_STARTED = 'FETCH_ITEMS_STARTED';
@@ -36,7 +36,6 @@ const FETCH_ITEMS_OFFLINE = 'FETCH_ITEMS_OFFLINE';
 const FETCH_ITEMS_FAILED = 'FETCH_ITEMS_FAILED';
 const SAVE_ITEM_STARTED = 'SAVE_ITEM_STARTED';
 const SAVE_ITEM_SUCCEEDED = 'SAVE_ITEM_SUCCEEDED';
-const SAVE_ITEM_OFFLINE = 'SAVE_ITEM_OFFLINE';
 const SAVE_ITEM_FAILED = 'SAVE_ITEM_FAILED';
 const BACK_ONLINE = 'BACK_ONLINE';
 
@@ -54,7 +53,6 @@ const reducer: (state: ItemsState, action: ActionProps) => ItemsState =
       case SAVE_ITEM_STARTED:
         return { ...state, savingError: null, saving: true };
       case SAVE_ITEM_SUCCEEDED:
-      case SAVE_ITEM_OFFLINE:
         const items = [...(state.items || [])];
         const item = deserializeItem(payload.item);
         const index = items.findIndex(it => it.id === item.id);
@@ -63,8 +61,7 @@ const reducer: (state: ItemsState, action: ActionProps) => ItemsState =
         } else {
           items[index] = item;
         }
-        const newUnsent: [ItemProps, boolean][] = type === SAVE_ITEM_OFFLINE ? [[item, item.id === undefined]] : [];
-        return { ...state, items, saving: false, unsent: state.unsent.concat(newUnsent) };
+        return { ...state, items, saving: false };
       case SAVE_ITEM_FAILED:
         return { ...state, savingError: payload.error, saving: false };
       case BACK_ONLINE:
@@ -86,26 +83,45 @@ function nextId(items: ItemProps[]) {
   return maxId + 1;
 }
 
+function sendItems(networkStatus: any) {
+  if (!networkStatus.connected)
+    return;
+
+  (async () => {
+    const keys = (await Storage.keys()).keys;
+
+    if (keys.length === 0)
+      return;
+
+    for (const key of keys) {
+      const item = await Storage.get({ key });
+      const itemData = JSON.parse(item.value!);
+      const itemProps: ItemProps = {
+        id: itemData.id,
+        data: itemData.data
+      };
+
+      if (itemData.isNew)
+        await createItem(itemProps);
+      else
+        await updateItem(itemProps);
+
+      await Storage.remove({ key });
+    }
+  })()
+}
+
 export const ItemProvider: React.FC<ItemProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { items, fetching, fetchingError, saving, savingError, unsent } = state;
+  const { items, fetching, fetchingError, saving, savingError } = state;
   const { networkStatus } = useNetwork();
+
+  const saveItem = useCallback<SaveItemFn>(is => saveItemCallback(items!, networkStatus, is), [networkStatus]);
+  const value = { items, fetching, fetchingError, saving, savingError, saveItem };
 
   useEffect(() => getItemsEffect(networkStatus), [networkStatus]);
   useEffect(wsEffect, []);
-  const saveItem = useCallback<SaveItemFn>(is => saveItemCallback(networkStatus, is), [networkStatus]);
-  const value = { items, fetching, fetchingError, saving, savingError, saveItem, unsent };
-
-  if (networkStatus.connected && unsent.length > 0) {
-    for (const [item, isNew] of unsent) {
-      if (isNew)
-        createItem(item);
-      else
-        updateItem(item);
-    }
-
-    dispatch({ type: BACK_ONLINE, payload: {}})
-  }
+  useEffect(() => sendItems(networkStatus), [networkStatus]);
 
   return (
     <ItemContext.Provider value={value}>
@@ -130,7 +146,7 @@ export const ItemProvider: React.FC<ItemProviderProps> = ({ children }) => {
           dispatch({ type: FETCH_ITEMS_OFFLINE, payload: { } });
         }
 
-        const items = await getItems();
+        const items = await getItems(0);
         log('fetchItems succeeded');
         if (!canceled) {
           dispatch({ type: FETCH_ITEMS_SUCCEEDED, payload: { items } });
@@ -142,15 +158,21 @@ export const ItemProvider: React.FC<ItemProviderProps> = ({ children }) => {
     }
   }
 
-  async function saveItemCallback(networkStatus: any, item: ItemProps) {
+  async function saveItemCallback(items: ItemProps[], networkStatus: any, item: ItemProps) {
     try {
       log('saveItem started');
       dispatch({ type: SAVE_ITEM_STARTED });
 
       if (!networkStatus.connected) {
         log("Offline, can't save item.")
+        const itemId = item.id || nextId(items).toString();
 
-        dispatch({ type: SAVE_ITEM_OFFLINE, payload: { item } });
+        await Storage.set({
+          key: itemId,
+          value: JSON.stringify({ ...item, id: itemId, isNew: item.id === undefined })
+        });
+
+        dispatch({ type: SAVE_ITEM_SUCCEEDED, payload: { item } });
       } else {
         const savedItem = await (item.id ? updateItem(item) : createItem(item));
         log('saveItem succeeded');
