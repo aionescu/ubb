@@ -7,13 +7,30 @@ const Router = require('koa-router');
 const cors = require('koa-cors');
 const bodyparser = require('koa-bodyparser');
 
+function pad(n) {
+  return n < 10 ? `0${n}` : n;
+}
+
+function fmtDate(date) {
+  const d = new Date(date);
+
+  const year = d.getFullYear();
+  const month = pad(d.getMonth() + 1);
+  const day = pad(d.getDate());
+  const hour = pad(d.getHours());
+  const minute = pad(d.getMinutes());
+  const second = pad(d.getSeconds());
+
+  return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
+}
+
 app.use(bodyparser());
 app.use(cors());
 app.use(async (ctx, next) => {
   const start = new Date();
   await next();
   const ms = new Date() - start;
-  console.log(`${ctx.method} ${ctx.url} ${ctx.response.status} - ${ms}ms`);
+  console.log(`${ctx.method} ${ctx.url} ${ctx.response.status} - ${ms}ms @ ${fmtDate(Date.now())}`);
 });
 
 app.use(async (ctx, next) => {
