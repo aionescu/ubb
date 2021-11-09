@@ -15,7 +15,7 @@ export const defaultItemData: ItemData = {
 export const formatDate = (date: Date) => date.toLocaleDateString("en-CA")
 
 export interface ItemProps {
-  id?: string
+  _id?: string
   data: ItemData
 }
 

@@ -20,6 +20,7 @@ import { getLogger } from '../core';
 import { ItemContext } from './ItemProvider';
 import { useNetwork } from './Network';
 import { getItems } from './ItemApi';
+import { AuthContext } from '../auth';
 
 const log = getLogger('ItemList');
 
@@ -27,6 +28,8 @@ const showNetwork = (status: any) => status.connected ? "Online 🔵" : "OFFLINE
 
 const ItemList: React.FC<RouteComponentProps> = ({ history }) => {
   const { items, fetching, fetchingError } = useContext(ItemContext);
+  const { token } = useContext(AuthContext);
+
   const { networkStatus } = useNetwork();
   const [searchString, setSearchString] = useState<string>("");
   const [scrollDisabled, setScrollDisabled] = useState<boolean>(false);
@@ -42,7 +45,7 @@ const ItemList: React.FC<RouteComponentProps> = ({ history }) => {
       return;
     }
 
-    getItems(page + 1).then(newItems => {
+    getItems(token, page + 1).then(newItems => {
       items!.push(...newItems);
       setPage(page + 1);
       setScrollDisabled(newItems.length < pageSize);
@@ -68,8 +71,8 @@ const ItemList: React.FC<RouteComponentProps> = ({ history }) => {
           <IonList>
             {items
               .filter(item => item.data.packageName.indexOf(searchString) > -1)
-              .map(({id, data}) =>
-                <Item key={id} id={id} data={data} onEdit={id => history.push(`/item/${id}`)} />)}
+              .map(({_id, data}) =>
+                <Item key={_id} _id={_id} data={data} onEdit={id => history.push(`/item/${id}`)} />)}
           </IonList>
         )}
         <IonInfiniteScroll threshold="100px" disabled={scrollDisabled}

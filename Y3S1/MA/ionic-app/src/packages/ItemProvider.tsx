@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect, useReducer } from 'react';
+import React, { useCallback, useContext, useEffect, useReducer } from 'react';
 import PropTypes from 'prop-types';
 import { getLogger } from '../core';
 import { deserializeItem, ItemProps } from './ItemProps';
 import { createItem, getItems, newWebSocket, updateItem } from './ItemApi';
 import { useNetwork } from './Network';
 import { Plugins } from '@capacitor/core';
+import { AuthContext } from '../auth';
 const { Storage } = Plugins;
 
 const log = getLogger('ItemProvider');
@@ -55,7 +56,7 @@ const reducer: (state: ItemsState, action: ActionProps) => ItemsState =
       case SAVE_ITEM_SUCCEEDED:
         const items = [...(state.items || [])];
         const item = deserializeItem(payload.item);
-        const index = items.findIndex(it => it.id === item.id);
+        const index = items.findIndex(it => it._id === item._id);
         if (index === -1) {
           items.splice(0, 0, item);
         } else {
@@ -78,12 +79,12 @@ interface ItemProviderProps {
 }
 
 function nextId(items: ItemProps[]) {
-  const ids = items.map(item => Number(item.id || "-1"));
+  const ids = items.map(item => Number(item._id || "-1"));
   const maxId = Math.max(...ids);
   return maxId + 1;
 }
 
-function sendItems(networkStatus: any) {
+function sendItems(token: any, networkStatus: any) {
   if (!networkStatus.connected)
     return;
 
@@ -97,14 +98,14 @@ function sendItems(networkStatus: any) {
       const item = await Storage.get({ key });
       const itemData = JSON.parse(item.value!);
       const itemProps: ItemProps = {
-        id: itemData.id,
+        _id: itemData._id,
         data: itemData.data
       };
 
       if (itemData.isNew)
-        await createItem(itemProps);
+        await createItem(token, itemProps);
       else
-        await updateItem(itemProps);
+        await updateItem(token, itemProps);
 
       await Storage.remove({ key });
     }
@@ -112,16 +113,18 @@ function sendItems(networkStatus: any) {
 }
 
 export const ItemProvider: React.FC<ItemProviderProps> = ({ children }) => {
+  const { token } = useContext(AuthContext);
+
   const [state, dispatch] = useReducer(reducer, initialState);
   const { items, fetching, fetchingError, saving, savingError } = state;
   const { networkStatus } = useNetwork();
 
-  const saveItem = useCallback<SaveItemFn>(is => saveItemCallback(items!, networkStatus, is), [networkStatus]);
+  const saveItem = useCallback<SaveItemFn>(is => saveItemCallback(items!, networkStatus, is), [networkStatus, token]);
   const value = { items, fetching, fetchingError, saving, savingError, saveItem };
 
-  useEffect(() => getItemsEffect(networkStatus), [networkStatus]);
-  useEffect(wsEffect, []);
-  useEffect(() => sendItems(networkStatus), [networkStatus]);
+  useEffect(() => getItemsEffect(networkStatus), [networkStatus, token]);
+  useEffect(wsEffect, [token]);
+  useEffect(() => sendItems(token, networkStatus), [networkStatus, token]);
 
   return (
     <ItemContext.Provider value={value}>
@@ -138,6 +141,10 @@ export const ItemProvider: React.FC<ItemProviderProps> = ({ children }) => {
 
     async function fetchItems(networkStatus: any) {
       try {
+        if (!token?.trim()) {
+          return;
+        }
+
         log('fetchItems started');
         dispatch({ type: FETCH_ITEMS_STARTED });
 
@@ -146,7 +153,7 @@ export const ItemProvider: React.FC<ItemProviderProps> = ({ children }) => {
           dispatch({ type: FETCH_ITEMS_OFFLINE, payload: { } });
         }
 
-        const items = await getItems(0);
+        const items = await getItems(token, 0);
         log('fetchItems succeeded');
         if (!canceled) {
           dispatch({ type: FETCH_ITEMS_SUCCEEDED, payload: { items } });
@@ -165,16 +172,16 @@ export const ItemProvider: React.FC<ItemProviderProps> = ({ children }) => {
 
       if (!networkStatus.connected) {
         log("Offline, can't save item.")
-        const itemId = item.id || nextId(items).toString();
+        const itemId = item._id || nextId(items).toString();
 
         await Storage.set({
           key: itemId,
-          value: JSON.stringify({ ...item, id: itemId, isNew: item.id === undefined })
+          value: JSON.stringify({ ...item, _id: itemId, isNew: item._id === undefined })
         });
 
         dispatch({ type: SAVE_ITEM_SUCCEEDED, payload: { item } });
       } else {
-        const savedItem = await (item.id ? updateItem(item) : createItem(item));
+        const savedItem = await (item._id ? updateItem(token, item) : createItem(token, item));
         log('saveItem succeeded');
         dispatch({ type: SAVE_ITEM_SUCCEEDED, payload: { item: savedItem } });
       }
@@ -187,20 +194,23 @@ export const ItemProvider: React.FC<ItemProviderProps> = ({ children }) => {
   function wsEffect() {
     let canceled = false;
     log('wsEffect - connecting');
-    const closeWebSocket = newWebSocket(message => {
-      if (canceled) {
-        return;
-      }
-      const { event, payload: { item }} = message;
-      log(`ws message, item ${event}`);
-      if (event === 'created' || event === 'updated') {
-        dispatch({ type: SAVE_ITEM_SUCCEEDED, payload: { item } });
-      }
-    });
+    let closeWebSocket: () => void;
+    if (token?.trim()) {
+      closeWebSocket = newWebSocket(token, message => {
+        if (canceled) {
+          return;
+        }
+        const { type, payload: item } = message;
+        log(`ws message, item ${type}`);
+        if (type === 'created' || type === 'updated') {
+          dispatch({ type: SAVE_ITEM_SUCCEEDED, payload: { item } });
+        }
+      });
+    }
     return () => {
       log('wsEffect - disconnecting');
       canceled = true;
-      closeWebSocket();
+      closeWebSocket?.();
     }
   }
 };

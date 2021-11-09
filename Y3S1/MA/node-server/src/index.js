@@ -1,190 +1,43 @@
-const Koa = require('koa');
+import Koa from 'koa';
+import WebSocket from 'ws';
+import http from 'http';
+import Router from 'koa-router';
+import bodyParser from "koa-bodyparser";
+import { timingLogger, exceptionHandler, jwtConfig, initWss, verifyClient } from './utils';
+import { router as packageRouter } from './package';
+import { router as authRouter } from './auth';
+import jwt from 'koa-jwt';
+import cors from '@koa/cors';
+
 const app = new Koa();
-const server = require('http').createServer(app.callback());
-const WebSocket = require('ws');
+const server = http.createServer(app.callback());
 const wss = new WebSocket.Server({ server });
-const Router = require('koa-router');
-const cors = require('koa-cors');
-const bodyparser = require('koa-bodyparser');
+initWss(wss);
 
-function pad(n) {
-  return n < 10 ? `0${n}` : n;
-}
-
-function fmtDate(date) {
-  const d = new Date(date);
-
-  const year = d.getFullYear();
-  const month = pad(d.getMonth() + 1);
-  const day = pad(d.getDate());
-  const hour = pad(d.getHours());
-  const minute = pad(d.getMinutes());
-  const second = pad(d.getSeconds());
-
-  return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
-}
-
-app.use(bodyparser());
 app.use(cors());
-app.use(async (ctx, next) => {
-  const start = new Date();
-  await next();
-  const ms = new Date() - start;
-  console.log(`${ctx.method} ${ctx.url} ${ctx.response.status} - ${ms}ms @ ${fmtDate(Date.now())}`);
-});
+app.use(timingLogger);
+app.use(exceptionHandler);
+app.use(bodyParser());
 
-app.use(async (ctx, next) => {
-  await new Promise(resolve => setTimeout(resolve, 2000));
-  await next();
-});
+const prefix = '/api';
 
-app.use(async (ctx, next) => {
-  try {
-    await next();
-  } catch (err) {
-    ctx.response.body = { issue: [{ error: err.message || 'Unexpected error' }] };
-    ctx.response.status = 500;
-  }
-});
+// public
+const publicApiRouter = new Router({ prefix });
+publicApiRouter
+  .use('/auth', authRouter.routes());
+app
+  .use(publicApiRouter.routes())
+  .use(publicApiRouter.allowedMethods());
 
-class Item {
-  constructor({ id, data, date, version }) {
-    this.id = id;
-    this.data = data;
-    this.date = date;
-    this.version = version;
-  }
-}
+app.use(jwt(jwtConfig));
 
-const items = [];
+// protected
+const protectedApiRouter = new Router({ prefix });
+protectedApiRouter
+  .use('/item', packageRouter.routes());
+app
+  .use(protectedApiRouter.routes())
+  .use(protectedApiRouter.allowedMethods());
 
-for (let i = 0; i < 20; ++i) {
-  items.push(new Item({
-    id: `${i}`,
-    data: {
-      packageName: "Package " + i,
-      latestVersion: i,
-      uploadDate: new Date(Date.now()),
-      isDeprecated: false,
-    },
-    date: new Date(Date.now()),
-    version: 1,
-  }));
-}
-
-let lastUpdated = items[items.length - 1].date;
-let lastId = items[items.length - 1].id;
-
-
-const broadcast = data =>
-wss.clients.forEach(client => {
-  if (client.readyState === WebSocket.OPEN) {
-    client.send(JSON.stringify(data));
-  }
-});
-
-const router = new Router();
-const pageSize = 10;
-
-router.get('/items/:page', ctx => {
-  console.log(ctx.params.page);
-  const page = parseInt(ctx.params.page) || 0;
-  const idx = page * pageSize;
-
-  const ifModifiedSince = ctx.request.get('If-Modified-Since');
-  if (ifModifiedSince && new Date(ifModifiedSince).getTime() >= lastUpdated.getTime() - lastUpdated.getMilliseconds()) {
-    ctx.response.status = 304; // NOT MODIFIED
-    return;
-  }
-
-  ctx.response.set('Last-Modified', lastUpdated.toUTCString());
-
-  items.sort((a, b) => a.id - b.id);
-  ctx.response.body = items.slice(idx, idx + pageSize);
-  ctx.response.status = 200;
-});
-
-router.get('/item/:id', async (ctx) => {
-  const itemId = ctx.params.id;
-  const item = items.find(item => itemId === item.id);
-  if (item) {
-    ctx.response.body = item;
-    ctx.response.status = 200; // ok
-  } else {
-    ctx.response.body = { issue: [{ warning: `item with id ${itemId} not found` }] };
-    ctx.response.status = 404; // NOT FOUND (if you know the resource was deleted, then return 410 GONE)
-  }
-});
-
-const createItem = async (ctx) => {
-  const item = ctx.request.body;
-  if (!item.data) { // validation
-    ctx.response.body = { issue: [{ error: 'Item data is missing' }] };
-    ctx.response.status = 400; //  BAD REQUEST
-    return;
-  }
-  item.id = `${parseInt(lastId) + 1}`;
-  lastId = item.id;
-  item.date = new Date();
-  item.version = 1;
-  items.push(item);
-  ctx.response.body = item;
-  ctx.response.status = 201; // CREATED
-  broadcast({ event: 'created', payload: { item } });
-};
-
-router.post('/item', async (ctx) => {
-  await createItem(ctx);
-});
-
-router.put('/item/:id', async (ctx) => {
-  const id = ctx.params.id;
-  const item = ctx.request.body;
-  item.date = new Date();
-  const itemId = item.id;
-  if (itemId && id !== item.id) {
-    ctx.response.body = { issue: [{ error: `Param id and body id should be the same` }] };
-    ctx.response.status = 400; // BAD REQUEST
-    return;
-  }
-  if (!itemId) {
-    await createItem(ctx);
-    return;
-  }
-  const index = items.findIndex(item => item.id === id);
-  if (index === -1) {
-    ctx.response.body = { issue: [{ error: `item with id ${id} not found` }] };
-    ctx.response.status = 400; // BAD REQUEST
-    return;
-  }
-  const itemVersion = parseInt(ctx.request.get('ETag')) || item.version;
-  if (itemVersion < items[index].version) {
-    ctx.response.body = { issue: [{ error: `Version conflict` }] };
-    ctx.response.status = 409; // CONFLICT
-    return;
-  }
-  item.version++;
-  items[index] = item;
-  lastUpdated = new Date();
-  ctx.response.body = item;
-  ctx.response.status = 200; // OK
-  broadcast({ event: 'updated', payload: { item } });
-});
-
-router.del('/item/:id', ctx => {
-  const id = ctx.params.id;
-  const index = items.findIndex(item => id === item.id);
-  if (index !== -1) {
-    const item = items[index];
-    items.splice(index, 1);
-    lastUpdated = new Date();
-    broadcast({ event: 'deleted', payload: { item } });
-  }
-  ctx.response.status = 204; // no content
-});
-
-app.use(router.routes());
-app.use(router.allowedMethods());
-
-console.log("Listening...");
 server.listen(3000);
+console.log('started on port 3000');
