@@ -56,7 +56,7 @@ const reducer: (state: ItemsState, action: ActionProps) => ItemsState =
       case SAVE_ITEM_SUCCEEDED:
         const items = [...(state.items || [])];
         const item = deserializeItem(payload.item);
-        const index = items.findIndex(it => it._id === item._id);
+        const index = items.findIndex(it => it._id === item._id || it._id === undefined);
         if (index === -1) {
           items.splice(0, 0, item);
         } else {
