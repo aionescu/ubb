@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { getLogger } from '../core';
 import { deserializeItem, ItemProps } from './ItemProps';
 import { createItem, getItems, newWebSocket, updateItem } from './ItemApi';
+import { useNetwork } from './Network';
 
 const log = getLogger('ItemProvider');
 
@@ -15,6 +16,7 @@ export interface ItemsState {
   saving: boolean,
   savingError?: Error | null,
   saveItem?: SaveItemFn,
+  unsent: [ItemProps, boolean][]
 }
 
 interface ActionProps {
@@ -25,14 +27,18 @@ interface ActionProps {
 const initialState: ItemsState = {
   fetching: false,
   saving: false,
+  unsent: []
 };
 
 const FETCH_ITEMS_STARTED = 'FETCH_ITEMS_STARTED';
 const FETCH_ITEMS_SUCCEEDED = 'FETCH_ITEMS_SUCCEEDED';
+const FETCH_ITEMS_OFFLINE = 'FETCH_ITEMS_OFFLINE';
 const FETCH_ITEMS_FAILED = 'FETCH_ITEMS_FAILED';
 const SAVE_ITEM_STARTED = 'SAVE_ITEM_STARTED';
 const SAVE_ITEM_SUCCEEDED = 'SAVE_ITEM_SUCCEEDED';
+const SAVE_ITEM_OFFLINE = 'SAVE_ITEM_OFFLINE';
 const SAVE_ITEM_FAILED = 'SAVE_ITEM_FAILED';
+const BACK_ONLINE = 'BACK_ONLINE';
 
 const reducer: (state: ItemsState, action: ActionProps) => ItemsState =
   (state, { type, payload }) => {
@@ -41,11 +47,14 @@ const reducer: (state: ItemsState, action: ActionProps) => ItemsState =
         return { ...state, fetching: true, fetchingError: null };
       case FETCH_ITEMS_SUCCEEDED:
         return { ...state, items: payload.items, fetching: false };
+      case FETCH_ITEMS_OFFLINE:
+        return { ...state, fetching: false };
       case FETCH_ITEMS_FAILED:
         return { ...state, fetchingError: payload.error, fetching: false };
       case SAVE_ITEM_STARTED:
         return { ...state, savingError: null, saving: true };
       case SAVE_ITEM_SUCCEEDED:
+      case SAVE_ITEM_OFFLINE:
         const items = [...(state.items || [])];
         const item = deserializeItem(payload.item);
         const index = items.findIndex(it => it.id === item.id);
@@ -54,9 +63,12 @@ const reducer: (state: ItemsState, action: ActionProps) => ItemsState =
         } else {
           items[index] = item;
         }
-        return { ...state, items, saving: false };
+        const newUnsent: [ItemProps, boolean][] = type === SAVE_ITEM_OFFLINE ? [[item, item.id === undefined]] : [];
+        return { ...state, items, saving: false, unsent: state.unsent.concat(newUnsent) };
       case SAVE_ITEM_FAILED:
         return { ...state, savingError: payload.error, saving: false };
+      case BACK_ONLINE:
+        return { ...state, unsent: [] };
       default:
         return state;
     }
@@ -68,31 +80,56 @@ interface ItemProviderProps {
   children: PropTypes.ReactNodeLike,
 }
 
+function nextId(items: ItemProps[]) {
+  const ids = items.map(item => Number(item.id || "-1"));
+  const maxId = Math.max(...ids);
+  return maxId + 1;
+}
+
 export const ItemProvider: React.FC<ItemProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { items, fetching, fetchingError, saving, savingError } = state;
-  useEffect(getItemsEffect, []);
+  const { items, fetching, fetchingError, saving, savingError, unsent } = state;
+  const { networkStatus } = useNetwork();
+
+  useEffect(() => getItemsEffect(networkStatus), [networkStatus]);
   useEffect(wsEffect, []);
-  const saveItem = useCallback<SaveItemFn>(saveItemCallback, []);
-  const value = { items, fetching, fetchingError, saving, savingError, saveItem };
-  log('returns');
+  const saveItem = useCallback<SaveItemFn>(is => saveItemCallback(networkStatus, is), [networkStatus]);
+  const value = { items, fetching, fetchingError, saving, savingError, saveItem, unsent };
+
+  if (networkStatus.connected && unsent.length > 0) {
+    for (const [item, isNew] of unsent) {
+      if (isNew)
+        createItem(item);
+      else
+        updateItem(item);
+    }
+
+    dispatch({ type: BACK_ONLINE, payload: {}})
+  }
+
   return (
     <ItemContext.Provider value={value}>
       {children}
     </ItemContext.Provider>
   );
 
-  function getItemsEffect() {
+  function getItemsEffect(networkStatus: any) {
     let canceled = false;
-    fetchItems();
+    fetchItems(networkStatus);
     return () => {
       canceled = true;
     }
 
-    async function fetchItems() {
+    async function fetchItems(networkStatus: any) {
       try {
         log('fetchItems started');
         dispatch({ type: FETCH_ITEMS_STARTED });
+
+        if (!networkStatus.connected) {
+          log("Offline, can't fetch items");
+          dispatch({ type: FETCH_ITEMS_OFFLINE, payload: { } });
+        }
+
         const items = await getItems();
         log('fetchItems succeeded');
         if (!canceled) {
@@ -105,13 +142,20 @@ export const ItemProvider: React.FC<ItemProviderProps> = ({ children }) => {
     }
   }
 
-  async function saveItemCallback(item: ItemProps) {
+  async function saveItemCallback(networkStatus: any, item: ItemProps) {
     try {
       log('saveItem started');
       dispatch({ type: SAVE_ITEM_STARTED });
-      const savedItem = await (item.id ? updateItem(item) : createItem(item));
-      log('saveItem succeeded');
-      dispatch({ type: SAVE_ITEM_SUCCEEDED, payload: { item: savedItem } });
+
+      if (!networkStatus.connected) {
+        log("Offline, can't save item.")
+
+        dispatch({ type: SAVE_ITEM_OFFLINE, payload: { item } });
+      } else {
+        const savedItem = await (item.id ? updateItem(item) : createItem(item));
+        log('saveItem succeeded');
+        dispatch({ type: SAVE_ITEM_SUCCEEDED, payload: { item: savedItem } });
+      }
     } catch (error) {
       log('saveItem failed');
       dispatch({ type: SAVE_ITEM_FAILED, payload: { error } });

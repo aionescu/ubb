@@ -15,17 +15,21 @@ import { add } from 'ionicons/icons';
 import Item from './Item';
 import { getLogger } from '../core';
 import { ItemContext } from './ItemProvider';
+import { useNetwork } from './Network';
 
 const log = getLogger('ItemList');
 
+const showNetwork = (status: any) => status.connected ? "Online 🔵" : "OFFLINE 🔴"
+
 const ItemList: React.FC<RouteComponentProps> = ({ history }) => {
   const { items, fetching, fetchingError } = useContext(ItemContext);
-  // log('render');
+  const { networkStatus } = useNetwork();
+
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Package Manager</IonTitle>
+          <IonTitle>Package Manager - {showNetwork(networkStatus)}</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
