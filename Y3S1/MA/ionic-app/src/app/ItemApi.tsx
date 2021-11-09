@@ -6,6 +6,7 @@ const log = getLogger('itemApi');
 
 const baseUrl = 'localhost:3000';
 const itemUrl = `http://${baseUrl}/item`;
+const itemsUrl = `http://${baseUrl}/items`;
 
 interface ResponseProps<T> {
   data: T;
@@ -30,8 +31,8 @@ const config = {
   }
 };
 
-export const getItems: () => Promise<ItemProps[]> = () => {
-  return withLogs<ItemProps[]>(axios.get(itemUrl, config), 'getItems').then(items => items.map(deserializeItem));
+export const getItems: (page: number) => Promise<ItemProps[]> = (page) => {
+  return withLogs<ItemProps[]>(axios.get(`${itemsUrl}/${page}`, config), 'getItems').then(items => items.map(deserializeItem));
 }
 
 export const createItem: (item: ItemProps) => Promise<ItemProps[]> = item => {
