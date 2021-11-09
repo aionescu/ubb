@@ -6,10 +6,9 @@ interface ItemPropsExt extends ItemProps {
   onEdit: (id?: string) => void;
 }
 
-const Item: React.FC<ItemPropsExt> = ({ id, data: { packageName, latestVersion, uploadDate, isDeprecated }, onEdit }) => {
+const Item: React.FC<ItemPropsExt> = ({ _id, data: { packageName, latestVersion, uploadDate, isDeprecated }, onEdit }) => {
   return (
-    <IonItem onClick={() => onEdit(id)}>
-      <IonLabel>Package #{id}:</IonLabel>
+    <IonItem onClick={() => onEdit(_id)}>
       <IonLabel>{packageName}</IonLabel>
       <IonLabel>{latestVersion}</IonLabel>
       <IonLabel>{formatDate(uploadDate)}</IonLabel>
