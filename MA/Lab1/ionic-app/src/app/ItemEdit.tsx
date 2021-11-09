@@ -16,7 +16,7 @@ import {
 import { getLogger } from '../core';
 import { ItemContext } from './ItemProvider';
 import { RouteComponentProps } from 'react-router';
-import { ItemData, ItemProps } from './ItemProps';
+import { defaultItemData, ItemData, ItemProps } from './ItemProps';
 
 const log = getLogger('ItemEdit');
 
@@ -28,8 +28,6 @@ const parseNum = (str: string, num: number) => {
   const number = Number(str)
   return Number.isNaN(number) ? num : number
 }
-
-const defaultItemData: ItemData = { num: 0, str: "", date: new Date(Date.now()), bool: false };
 
 const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
   const { items, saving, savingError, saveItem } = useContext(ItemContext);
@@ -62,31 +60,31 @@ const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <IonLabel>Num:</IonLabel>
+        <IonLabel>Package Name:</IonLabel>
         <IonInput
-          value={Number.isNaN(data.num) ? "" : data.num}
-          onIonChange={e => setData({ ...data, num: parseNum(e.detail.value!, data.num) })}
+          value={data.packageName}
+          onIonChange={e => setData({ ...data, packageName: e.detail.value! })}
         />
 
-        <IonLabel>Str:</IonLabel>
+        <IonLabel>Latest Version:</IonLabel>
         <IonInput
-          value={data.str}
-          onIonChange={e => setData({ ...data, str: e.detail.value! })}
+          value={Number.isNaN(data.latestVersion) ? "" : data.latestVersion}
+          onIonChange={e => setData({ ...data, latestVersion: parseNum(e.detail.value!, data.latestVersion) })}
         />
 
-        <IonLabel>Date:</IonLabel>
+        <IonLabel>Upload Date:</IonLabel>
         <IonDatetime
           displayFormat="YYYY-MM-DD"
-          placeholder="Edit Date"
-          value={data.date.toString()}
-          onIonChange={e => setData({ ...data, date: new Date(e.detail.value!) })}>
+          placeholder="Edit Upload Date"
+          value={data.uploadDate.toString()}
+          onIonChange={e => setData({ ...data, uploadDate: new Date(e.detail.value!) })}>
         </IonDatetime>
 
-        <IonLabel>Bool:</IonLabel>
+        <IonLabel>Is Deprecated?</IonLabel>
         <br/>
         <IonCheckbox
-          checked={data.bool}
-          onIonChange={e => setData({ ...data, bool: e.detail.checked })}
+          checked={data.isDeprecated}
+          onIonChange={e => setData({ ...data, isDeprecated: e.detail.checked })}
         />
 
         <IonLoading isOpen={saving} />
