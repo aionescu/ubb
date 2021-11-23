@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { getLogger } from '../core';
 import { login as loginApi } from './AuthApi';
+import { Plugins } from '@capacitor/core';
+const { Storage } = Plugins;
 
 const log = getLogger('AuthProvider');
 
@@ -32,9 +34,15 @@ interface AuthProviderProps {
   children: PropTypes.ReactNodeLike,
 }
 
+export async function logout() {
+  await Storage.clear();
+  window.location.reload();
+}
+
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [state, setState] = useState<AuthState>(initialState);
   const { isAuthenticated, isAuthenticating, authenticationError, pendingAuthentication, token } = state;
+
   const login = useCallback<LoginFn>(loginCallback, []);
   useEffect(authenticationEffect, [pendingAuthentication]);
   const value = { isAuthenticated, login, isAuthenticating, authenticationError, token };
@@ -63,6 +71,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
 
     async function authenticate() {
+      const existingToken = await Storage.get({ key: "token" });
+
+      if (existingToken.value) {
+        setState({
+          ...state,
+          token: existingToken.value,
+          pendingAuthentication: false,
+          isAuthenticated: true,
+          isAuthenticating: false,
+        });
+        return
+      }
+
       if (!pendingAuthentication) {
         log('authenticate, !pendingAuthentication, return');
         return;
@@ -86,6 +107,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           isAuthenticated: true,
           isAuthenticating: false,
         });
+        await Storage.set({ key: "token", value: token });
+
       } catch (error) {
         if (canceled) {
           return;
