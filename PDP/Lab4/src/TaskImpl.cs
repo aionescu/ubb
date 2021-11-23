@@ -22,58 +22,34 @@ static class TaskImpl {
   }
 
   private static void StartClient(string host, int id) {
-    var hostName = host.Split('/')[0];
-    var ipAddr = Dns.GetHostEntry(hostName).AddressList[0];
-    var ipEndpoint = new IPEndPoint(ipAddr, Parser.Port);
+    var wrapper = SocketWrapper.New(host, id);
 
-    var client = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+    Connect(wrapper).Wait();
+    Send(wrapper, Parser.RequestString(wrapper.HostName, wrapper.Endpoint)).Wait();
+    Receive(wrapper).Wait();
 
-    var socketWrapper = new SocketWrapper {
-      Socket = client,
-      HostName = hostName,
-      Endpoint = host.Contains('/') ? host[host.IndexOf('/') ..] : "/",
-      IPEndpoint = ipEndpoint,
-      ID = id
-    };
+    Console.WriteLine($"Connection {id}: Content length: {Parser.ContentLength(wrapper.Response.ToString())}");
 
-    Connect(socketWrapper).Wait();
-    Send(socketWrapper, Parser.RequestString(socketWrapper.HostName, socketWrapper.Endpoint)).Wait();
-    Receive(socketWrapper).Wait();
-
-    Console.WriteLine($"Connection {id} > Content length: {Parser.GetContentLength(socketWrapper.Response.ToString())}");
-
-    client.Shutdown(SocketShutdown.Both);
-    client.Close();
+    wrapper.Socket.Shutdown(SocketShutdown.Both);
+    wrapper.Socket.Close();
   }
 
   private static async void StartAsyncClient(string host, int id) {
-    var hostName = host.Split('/')[0];
-    var ipAddr = Dns.GetHostEntry(hostName).AddressList[0];
-    var ipEndpoint = new IPEndPoint(ipAddr, Parser.Port);
+    var wrapper = SocketWrapper.New(host, id);
 
-    var client = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+    await ConnectAsync(wrapper);
+    await SendAsync(wrapper, Parser.RequestString(wrapper.HostName, wrapper.Endpoint));
+    await ReceiveAsync(wrapper);
 
-    var socketWrapper = new SocketWrapper {
-      Socket = client,
-      HostName = hostName,
-      Endpoint = host.Contains('/') ? host[host.IndexOf('/') ..] : "/",
-      IPEndpoint = ipEndpoint,
-      ID = id
-    };
+    Console.WriteLine($"Connection {id}: Content length: {Parser.ContentLength(wrapper.Response.ToString())}");
 
-    await ConnectAsync(socketWrapper);
-    await SendAsync(socketWrapper, Parser.RequestString(socketWrapper.HostName, socketWrapper.Endpoint));
-    await ReceiveAsync(socketWrapper);
-
-    Console.WriteLine($"Connection {id} > Content length: {Parser.GetContentLength(socketWrapper.Response.ToString())}");
-
-    client.Shutdown(SocketShutdown.Both);
-    client.Close();
+    wrapper.Socket.Shutdown(SocketShutdown.Both);
+    wrapper.Socket.Close();
   }
 
   private static async Task ConnectAsync(SocketWrapper wrapper) {
     wrapper.Socket.BeginConnect(wrapper.IPEndpoint, ConnectCallback, wrapper);
-    await Task.FromResult<object>(wrapper.ConnectDone.WaitOne());
+    await Task.FromResult(wrapper.ConnectDone.WaitOne());
   }
 
   private static Task Connect(SocketWrapper wrapper) {
@@ -90,7 +66,7 @@ static class TaskImpl {
 
     socket.EndConnect(result);
 
-    Console.WriteLine($"Connection {id} > Socket connected to {hostname} ({socket.RemoteEndPoint})");
+    Console.WriteLine($"Connection {id}: Socket connected to {hostname} ({socket.RemoteEndPoint})");
 
     wrapper.ConnectDone.Set();
   }
@@ -99,7 +75,7 @@ static class TaskImpl {
     var bytes = Encoding.ASCII.GetBytes(data);
 
     wrapper.Socket.BeginSend(bytes, 0, bytes.Length, 0, SendCallback, wrapper);
-    await Task.FromResult<object>(wrapper.SendDone.WaitOne());
+    await Task.FromResult(wrapper.SendDone.WaitOne());
   }
 
   private static Task Send(SocketWrapper wrapper, string data) {
@@ -116,14 +92,14 @@ static class TaskImpl {
 
     var sent = socket.EndSend(result);
 
-    Console.WriteLine($"Connection {id} > Sent {sent} bytes to server.");
+    Console.WriteLine($"Connection {id}: Sent {sent} bytes to server.");
 
     wrapper.SendDone.Set();
   }
 
   private static async Task ReceiveAsync(SocketWrapper wrapper) {
     wrapper.Socket.BeginReceive(wrapper.Buffer, 0, SocketWrapper.BufferSize, 0, ReceiveCallback, wrapper);
-    await Task.FromResult<object>(wrapper.ReceiveDone.WaitOne());
+    await Task.FromResult(wrapper.ReceiveDone.WaitOne());
   }
 
   private static Task Receive(SocketWrapper wrapper) {

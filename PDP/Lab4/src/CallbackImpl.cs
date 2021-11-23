@@ -16,23 +16,8 @@ static class CallbackImpl {
   }
 
   private static void StartClient(string host, int id, CountdownEvent cde) {
-    var hostName = host.Split('/')[0];
-    var hostEntry = Dns.GetHostEntry(hostName);
-    var ipAddr = hostEntry.AddressList[0];
-    var remoteEndpoint = new IPEndPoint(ipAddr, Parser.Port);
-
-    var client = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-
-    var requestSocket = new SocketWrapper {
-      Socket = client,
-      HostName = hostName,
-      Endpoint = host.Contains('/') ? host[host.IndexOf('/') ..] : "/",
-      IPEndpoint = remoteEndpoint,
-      ID = id,
-      CDE = cde
-    };
-
-    client.BeginConnect(remoteEndpoint, Connected, requestSocket);
+    var wrapper = SocketWrapper.New(host, id, cde);
+    wrapper.Socket.BeginConnect(wrapper.IPEndpoint, Connected, wrapper);
   }
 
   private static void Connected(IAsyncResult result) {
@@ -43,7 +28,7 @@ static class CallbackImpl {
 
     socket.EndConnect(result);
 
-    Console.WriteLine($"Connection {id} > Socket connected to {hostname} ({socket.RemoteEndPoint})");
+    Console.WriteLine($"Connection {id}: Socket connected to {hostname} ({socket.RemoteEndPoint})");
 
     var data = Encoding.ASCII.GetBytes(Parser.RequestString(wrapper.HostName, wrapper.Endpoint));
     socket.BeginSend(data, 0, data.Length, 0, Sent, wrapper);
@@ -55,7 +40,7 @@ static class CallbackImpl {
     var id = wrapper.ID;
 
     var sent = socket.EndSend(result);
-    Console.WriteLine($"Connection {id} > Sent {sent} bytes to server.");
+    Console.WriteLine($"Connection {id}: Sent {sent} bytes to server.");
 
     socket.BeginReceive(wrapper.Buffer, 0, SocketWrapper.BufferSize, 0, Receiving, wrapper);
   }
@@ -72,7 +57,7 @@ static class CallbackImpl {
       if (!Parser.ReceivedFullResponse(wrapper.Response.ToString()))
         socket.BeginReceive(wrapper.Buffer, 0, SocketWrapper.BufferSize, 0, Receiving, wrapper);
       else {
-        Console.WriteLine("Content length: {0}", Parser.GetContentLength(wrapper.Response.ToString()));
+        Console.WriteLine($"Connection {wrapper.ID}: Content length: {Parser.ContentLength(wrapper.Response.ToString())}");
 
         socket.Shutdown(SocketShutdown.Both);
         socket.Close();
