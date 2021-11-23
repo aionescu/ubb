@@ -10,7 +10,7 @@ static class Parser {
   public static string RequestString(string hostname, string endpoint) =>
     $"GET {endpoint} HTTP/1.1\r\nHost: {hostname}\r\nContent-Length: 0\r\n\r\n";
 
-  public static int GetContentLength(string content) {
+  public static int ContentLength(string content) {
     foreach (string respLine in content.Split('\r', '\n')) {
       var headDetails = respLine.Split(':');
 
@@ -21,7 +21,6 @@ static class Parser {
     throw new Exception("No Content-Length header received");
   }
 
-  public static bool ReceivedFullResponse(string content) {
-    return content.Contains("\r\n\r\n");
-  }
+  public static bool ReceivedFullResponse(string content) =>
+    content.Contains("\r\n\r\n");
 }

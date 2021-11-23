@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 
 List<string> hosts = new() {
-  "www.cs.ubbcluj.ro/~motogna/LFTC",
-  "www.cs.ubbcluj.ro/~rlupsa/edu/pdp/",
-  "www.cs.ubbcluj.ro/~forest"
+  "cs.ubbcluj.ro/~rlupsa/edu/pdp",
+  "math.ubbcluj.ro/~crivei/",
+  "haskell.org",
+  "cataas.com/cat/12",
 };
 
-// CallbackImpl.Run(hosts);
-// TaskImpl.Run(hosts, false);
-TaskImpl.Run(hosts, true);
+//CallbackImpl.Run(hosts);
+TaskImpl.Run(hosts, false);
+//TaskImpl.Run(hosts, true);
