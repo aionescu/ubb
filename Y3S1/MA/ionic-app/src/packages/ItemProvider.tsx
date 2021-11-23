@@ -6,6 +6,7 @@ import { createItem, getItems, newWebSocket, updateItem } from './ItemApi';
 import { useNetwork } from './Network';
 import { Plugins } from '@capacitor/core';
 import { AuthContext } from '../auth';
+import { useIonToast } from '@ionic/react';
 const { Storage } = Plugins;
 
 const log = getLogger('ItemProvider');
@@ -18,7 +19,8 @@ export interface ItemsState {
   fetchingError?: Error | null,
   saving: boolean,
   savingError?: Error | null,
-  saveItem?: SaveItemFn
+  saveItem?: SaveItemFn,
+  unsent: ItemProps[]
 }
 
 interface ActionProps {
@@ -28,7 +30,8 @@ interface ActionProps {
 
 const initialState: ItemsState = {
   fetching: false,
-  saving: false
+  saving: false,
+  unsent: []
 };
 
 const FETCH_ITEMS_STARTED = 'FETCH_ITEMS_STARTED';
@@ -66,6 +69,7 @@ const reducer: (state: ItemsState, action: ActionProps) => ItemsState =
       case SAVE_ITEM_FAILED:
         return { ...state, savingError: payload.error, saving: false };
       case BACK_ONLINE:
+        console.log("unsent", state.unsent);
         return { ...state, unsent: [] };
       default:
         return state;
@@ -84,17 +88,19 @@ function nextId(items: ItemProps[]) {
   return maxId + 1;
 }
 
-function sendItems(token: any, networkStatus: any) {
+export function sendItems(token: any, networkStatus: any) {
   if (!networkStatus.connected)
     return;
 
   (async () => {
     const keys = (await Storage.keys()).keys;
-
     if (keys.length === 0)
       return;
 
     for (const key of keys) {
+      if (key === "token")
+        continue;
+
       const item = await Storage.get({ key });
       const itemData = JSON.parse(item.value!);
       const itemProps: ItemProps = {
@@ -116,11 +122,12 @@ export const ItemProvider: React.FC<ItemProviderProps> = ({ children }) => {
   const { token } = useContext(AuthContext);
 
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { items, fetching, fetchingError, saving, savingError } = state;
+  const { items, fetching, fetchingError, saving, savingError, unsent } = state;
   const { networkStatus } = useNetwork();
+  const [present, dismiss] = useIonToast();
 
-  const saveItem = useCallback<SaveItemFn>(is => saveItemCallback(items!, networkStatus, is), [networkStatus, token]);
-  const value = { items, fetching, fetchingError, saving, savingError, saveItem };
+  const saveItem = useCallback<SaveItemFn>(is => saveItemCallback(items!, networkStatus, is), [networkStatus, token, items, saveItemCallback]);
+  const value = { items, fetching, fetchingError, saving, savingError, saveItem, unsent };
 
   useEffect(() => getItemsEffect(networkStatus), [networkStatus, token]);
   useEffect(wsEffect, [token]);
@@ -172,6 +179,12 @@ export const ItemProvider: React.FC<ItemProviderProps> = ({ children }) => {
 
       if (!networkStatus.connected) {
         log("Offline, can't save item.")
+        present({
+          message: "The change could not be sent to the server.",
+          duration: 3000,
+          position: "top"
+        });
+
         const itemId = item._id || nextId(items).toString();
 
         await Storage.set({
