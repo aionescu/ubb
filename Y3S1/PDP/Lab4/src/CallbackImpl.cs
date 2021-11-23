@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 
 static class CallbackImpl {
   public static void Run(List<string> hostnames) {
+    Directory.CreateDirectory("Downloads");
     CountdownEvent cde = new(hostnames.Count);
 
     for (var i = 0; i < hostnames.Count; ++i)
@@ -61,6 +63,7 @@ static class CallbackImpl {
         socket.Shutdown(SocketShutdown.Both);
         socket.Close();
 
+        File.WriteAllText($"Downloads/{wrapper.HostName}.html", wrapper.Response.ToString());
         wrapper.CDE.Signal();
       }
     } catch (Exception e) {
