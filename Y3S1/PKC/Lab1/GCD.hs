@@ -1,10 +1,7 @@
 #!/usr/bin/env runhaskell
-{-# OPTIONS_GHC -Wall -Wextra -Wincomplete-patterns -Wincomplete-uni-patterns #-}
-
-module Main(main) where
 
 import Data.List(nub, sort, transpose, foldl1')
-import Test.QuickCheck
+import System.Environment(getArgs)
 
 -- powerOf n f = (m, p) such that p ^ f * m = n
 powerOf :: Int -> Int -> (Int, Int)
@@ -34,13 +31,13 @@ gcd' = go . nub . sort
         fs' = ps : ((\x -> snd . powerOf x <$> fs) <$> ns)
         r = product $ zipWith (^) fs $ minimum <$> transpose fs'
 
-preludeGCD :: [Int] -> Int
-preludeGCD [] = 1
-preludeGCD ns = foldl1' gcd ns
-
-propGCD :: [Int] -> Bool
-propGCD ns = gcd' ns == preludeGCD ns
+gcdNaive :: [Int] -> Int
+gcdNaive [] = 1
+gcdNaive ns = foldl1' gcd ns
 
 main :: IO ()
 main = do
-  quickCheck propGCD
+  ns <- traverse readIO =<< getArgs
+
+  print $ gcdNaive ns
+  print $ gcd' ns
