@@ -1,5 +1,3 @@
-#!/usr/bin/env runhaskell
-
 import Data.List(nub, sort, transpose, foldl1')
 import System.Environment(getArgs)
 
