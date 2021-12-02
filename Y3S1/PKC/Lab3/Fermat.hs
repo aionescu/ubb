@@ -2,9 +2,9 @@
 {-# LANGUAGE ViewPatterns, BlockArguments, TypeApplications #-}
 
 import Control.Monad(when)
-import Data.List(sort)
-import System.Exit(exitFailure)
+import Data.Foldable(for_)
 import System.Environment(getArgs)
+import System.Exit(exitSuccess)
 
 sqrt' :: Integer -> Integer
 sqrt' =  floor . sqrt @Double . fromIntegral
@@ -14,36 +14,26 @@ isPerfSquare n = n == s * s
   where
     s = sqrt' n
 
-getFactors :: Integer -> Integer -> Integer -> IO (Integer, Integer)
-getFactors n t0 i = do
-  let t = t0 + i
-  let s² = t * t - n
-  putStrLn $ "t = t₀ + " <> show i <> " ⟹  t² - n = " <> show s²
-
-  if isPerfSquare s²
-  then pure (t, sqrt' s²)
-  else getFactors n t0 (i + 1)
-
 main :: IO ()
 main = do
-  [read -> n] <- getArgs
-  putStrLn $ "n = " <> show n
+  [read -> b, read -> n] <- getArgs
 
-  when (isPerfSquare n) do
-    putStrLn $ "Error: " <> show n <> " is a perfect square."
-    exitFailure
+  for_ [1 ..] \k -> do
+    let t₀ = sqrt' (k * n)
 
-  let t0 = sqrt' n
-  putStrLn $ "t₀ = " <> show t0 <> "\n"
+    putStrLn $ "k = " <> show k
+    putStrLn $ "t₀ = " <> show t₀
 
-  (t, s) <- getFactors n t0 1
+    for_ [1 .. b] \i -> do
+      let t = t₀ + i
+      let s² = t * t - k * n
 
-  putStrLn $ "\ns = " <> show s
-  putStrLn $ "t = " <> show t
+      putStrLn $ "t = t₀ + " <> show i <> " ⟹  t² - " <> show k <> " * n = " <> show s²
 
-  let [a, b] = sort [t - s, t + s]
-  putStrLn $ "\nn = " <> show a <> " * " <> show b
+      when (isPerfSquare s²) do
+        let s = sqrt' s²
 
-  when (a * b /= n) do
-    putStrLn "\nError: Sanity check failed."
-    exitFailure
+        putStrLn $ "\nn = 1/" <> show k <> " * " <> show (t - s) <> " * " <> show (t + s)
+        exitSuccess
+
+    putStrLn ""
