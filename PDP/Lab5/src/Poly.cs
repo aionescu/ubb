@@ -91,9 +91,9 @@ readonly record struct Poly<A>(params A[] Coefficients): INumber<Poly<A>> where 
     Poly<A> bLow = b[..mid];
     Poly<A> bHigh = b[mid..];
 
-    var z0 = KaratsubaPar(aLow, bLow);
-    var z1 = KaratsubaPar(aLow + aHigh, bLow + bHigh);
-    var z2 = KaratsubaPar(aHigh, bHigh);
+    var z0 = KaratsubaSeq(aLow, bLow);
+    var z1 = KaratsubaSeq(aLow + aHigh, bLow + bHigh);
+    var z2 = KaratsubaSeq(aHigh, bHigh);
 
     return (z2 << (2 * mid)) + ((z1 - z2 - z0) << mid) + z0;
   }
