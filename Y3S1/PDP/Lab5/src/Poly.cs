@@ -30,7 +30,7 @@ readonly record struct Poly<A>(params A[] Coefficients): INumber<Poly<A>> where 
     var c = p.Coefficients;
 
     var i = c.Length - 1;
-    while (i >= 0 && c[i] == A.FromInt32(0))
+    while (i >= 0 && c[i] == 0)
       --i;
 
     return i == -1 ? p : new(c.Take(i + 1).ToArray());
@@ -48,14 +48,14 @@ readonly record struct Poly<A>(params A[] Coefficients): INumber<Poly<A>> where 
     return new(c);
   }
 
-  public static Poly<A> FromInt32(int a) => new(new[] { A.FromInt32(a) });
+  public static implicit operator Poly<A>(int a) => new(new[] { (A)a });
 
   public static Poly<A> Random(int degree, int min = 1, int max = 100) {
     if (degree < 0)
       throw new ArgumentOutOfRangeException(nameof(degree), "Degree can't be negative.");
 
     var r = new Random();
-    return new(Enumerable.Range(0, degree + 1).Select(_ => A.FromInt32(r.Next(min, max + 1))).ToArray());
+    return new(Enumerable.Range(0, degree + 1).Select(_ => (A)r.Next(min, max + 1)).ToArray());
   }
 
   public static Poly<A> MulNaiveSeq(Poly<A> a, Poly<A> b) {

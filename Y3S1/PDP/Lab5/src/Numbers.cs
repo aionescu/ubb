@@ -13,7 +13,7 @@ interface INumber<A> where A: struct, INumber<A> {
   static abstract bool operator ==(A a, A b);
   static abstract bool operator !=(A a, A b);
 
-  static abstract A FromInt32(int a);
+  static abstract implicit operator A(int a);
 }
 
 interface IAtomicOps<A> where A: IAtomicOps<A> {
@@ -35,7 +35,7 @@ struct Int: INumber<Int>, IAtomicOps<Int> {
   public static bool operator ==(Int a, Int b) => a._value == b._value;
   public static bool operator !=(Int a, Int b) => a._value != b._value;
 
-  public static Int FromInt32(int a) => new(a);
+  public static implicit operator Int(int a) => new(a);
 
   public static Int AtomicAdd(ref Int a, Int b) => new(Interlocked.Add(ref a._value, b._value));
 
@@ -50,7 +50,7 @@ readonly record struct Double(double Value): INumber<Double> {
   public static Double operator -(Double a, Double b) => new(a.Value - b.Value);
   public static Double operator *(Double a, Double b) => new(a.Value * b.Value);
 
-  public static Double FromInt32(int a) => new(a);
+  public static implicit operator Double(int a) => new(a);
 
   public override string ToString() => Value.ToString();
 }
@@ -61,7 +61,7 @@ readonly record struct BigInt(BigInteger Value): INumber<BigInt> {
   public static BigInt operator -(BigInt a, BigInt b) => new(a.Value - b.Value);
   public static BigInt operator *(BigInt a, BigInt b) => new(a.Value * b.Value);
 
-  public static BigInt FromInt32(int a) => new(a);
+  public static implicit operator BigInt(int a) => new(a);
 
   public override string ToString() => Value.ToString();
 }
