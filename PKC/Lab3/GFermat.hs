@@ -7,7 +7,7 @@ import System.Environment(getArgs)
 import System.Exit(exitSuccess)
 
 sqrt' :: Integer -> Integer
-sqrt' =  floor . sqrt @Double . fromIntegral
+sqrt' = floor . sqrt @Double . fromIntegral
 
 isPerfSquare :: Integer -> Bool
 isPerfSquare n = n == s * s
