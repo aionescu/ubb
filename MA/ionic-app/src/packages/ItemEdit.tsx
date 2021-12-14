@@ -18,6 +18,7 @@ import { ItemContext } from './ItemProvider';
 import { RouteComponentProps } from 'react-router';
 import { defaultItemData, ItemData, ItemProps } from './ItemProps';
 import { MyMap } from '../components/MyMap';
+import { useMyLocation } from '../hooks/useMyLocation';
 
 const log = getLogger('ItemEdit');
 
@@ -35,6 +36,7 @@ const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
   const [data, setData] = useState(defaultItemData);
   const [item, setItem] = useState<ItemProps>();
   const [mapVisible, setMapVisible] = useState<boolean>(false);
+  const myLocation = useMyLocation();
 
   useEffect(() => {
     log('useEffect');
@@ -91,7 +93,12 @@ const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
         />
         <br/>
 
+        <IonButton onClick={() => {
+          let loc = myLocation.position?.coords;
+          setData({ ...data, latitude: loc?.latitude ?? 0, longitude: loc?.longitude ?? 0 });
+        }}>Use My Location</IonButton>
 
+        <br/>
         <IonButton onClick={() => setMapVisible(!mapVisible)}>Edit Location</IonButton>
 
         { mapVisible &&
