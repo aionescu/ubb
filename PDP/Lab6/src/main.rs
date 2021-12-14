@@ -1,5 +1,4 @@
-use std::sync::Barrier;
-use std::sync::Arc;
+use rand::Rng;
 use std::sync::Mutex;
 use core::sync::atomic::{AtomicBool, Ordering};
 use timed_proc_macro::timed;
@@ -13,9 +12,11 @@ struct Graph {
 }
 
 impl Graph {
-  pub fn random(node_count: usize) -> Graph {
+  pub fn random(node_count: usize, hamiltonian: bool) -> Graph {
+    let mut rng = thread_rng();
+
     let mut nodes = (0 .. node_count).collect::<Vec<_>>();
-    nodes.shuffle(&mut thread_rng());
+    nodes.shuffle(&mut rng);
 
     let mut edges = vec![vec![]; node_count];
 
@@ -23,78 +24,85 @@ impl Graph {
       edges[nodes[i]].push(nodes[i + 1]);
     }
 
-    edges[nodes[node_count - 1]].push(nodes[0]);
+    if hamiltonian {
+      edges[nodes[node_count - 1]].push(nodes[0]);
+
+      for _ in 0 .. node_count / 2 {
+        let mut i = rng.gen_range(0 .. node_count);
+        let mut j = rng.gen_range(0 .. node_count);
+
+        while i == j || edges[i].contains(&j) {
+          i = rng.gen_range(0 .. node_count);
+          j = rng.gen_range(0 .. node_count);
+        }
+
+        edges[i].push(j);
+      }
+    }
 
     Graph { edges }
   }
 
-  pub fn find_hamiltonian_cycle(&self) -> Option<Vec<usize>> {
-    let mut visited = vec![false; self.edges.len()];
-    let mut stack = vec![];
-    let mut current = 0;
+  pub fn find_hamiltonian_cycle_parallel(&self) -> Option<Vec<usize>> {
+    let nodes = self.edges.len();
 
-    stack.push(current);
-    visited[current] = true;
+    let done = AtomicBool::new(false);
+    let solution = Mutex::new(vec![]);
 
-    while let Some(next) = self.edges[current].iter().find(|&&x| !visited[x]) {
-      stack.push(*next);
-      visited[*next] = true;
-      current = *next;
-    }
+    (0 .. nodes).into_par_iter().map(|node| {
+      let mut path = vec![];
+      if self.visit_node(node, &done, &mut path) {
+        *solution.lock().unwrap() = path;
+      }
+    })
+    .collect::<Vec<_>>();
 
-    if visited[current] {
-      Some(stack)
+    let solution = solution.into_inner().unwrap();
+
+    if done.load(Ordering::SeqCst) && solution.len() == nodes {
+      Some(solution)
     } else {
       None
     }
   }
 
-  pub fn find_hamiltonian_cycle_parallel(&self) -> Vec<usize> {
-    let node_count = self.edges.len();
-
-    let done = AtomicBool::new(false);
-    let path = Mutex::new(vec![]);
-
-    (0 .. node_count).into_par_iter().for_each(|node| {
-      self.visit_node(node, &done, &path);
-    });
-
-    while !done.load(Ordering::SeqCst) {
-    }
-
-    path.into_inner().unwrap()
-  }
-
-  pub fn visit_node(&self, node: usize, done: &AtomicBool, path: &Mutex<Vec<usize>>) {
+  pub fn visit_node(&self, node: usize, done: &AtomicBool, path: &mut Vec<usize>) -> bool{
     if done.load(Ordering::SeqCst) {
-      return;
+      return false;
     }
 
-    let path_len = {
-      let mut path = path.lock().unwrap();
-      path.push(node);
-      path.len()
-    };
+    path.push(node);
 
-    if path_len != self.edges.len() {
-      let path_ = path.lock().unwrap().clone();
-
-      self.edges[node].iter().find(|x| !path_.contains(x)).map(|&x| {
-        self.visit_node(x, &done, &path);
-      });
+    if path.len() == self.edges.len() {
+      if self.edges[node].contains(&path[0]) {
+        done.store(true, Ordering::SeqCst);
+        return true;
+      } else {
+        return false;
+      }
     }
 
-    done.store(true, Ordering::SeqCst);
+    for adj in &self.edges[node] {
+      if path.contains(&adj) {
+        continue;
+      }
+
+      if self.visit_node(*adj, done, path) {
+        done.store(true, Ordering::SeqCst);
+        return true;
+      }
+
+      path.pop();
+    }
+
+    return false;
   }
 }
 
 #[timed]
 fn main() {
-  let g = Graph::random(10);
+  let g = Graph::random(10, true);
   println!("{:?}", g);
-
-  let h = g.find_hamiltonian_cycle().unwrap();
-  println!("{:?}", h);
 
   let h = g.find_hamiltonian_cycle_parallel();
   println!("{:?}", h);
