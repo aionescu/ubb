@@ -1,0 +1,19 @@
+[package]
+name = "timed-proc-macro"
+version = "0.1.0"
+authors = ["Alex Ionescu <alxi.2001@gmail.com>"]
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = { version = "1.0.64", features= ["full"] }
+quote = "1.0.9"
+
+[features]
+enabled = []
+
+default = ["enabled"]

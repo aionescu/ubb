@@ -14,7 +14,7 @@ static class Solver {
     if (sol.Count == g.NodeCount)
       return g.Edges[node].Contains(sol[0]);
 
-    if (threads == 0) {
+    if (threads < 2) {
       foreach (var adj in g.Edges[node]) {
         if (sol.Contains(adj))
           continue;

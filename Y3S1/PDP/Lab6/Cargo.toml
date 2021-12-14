@@ -1,0 +1,12 @@
+[package]
+name = "pdp-hamiltonian-parallel"
+version = "0.1.0"
+authors = ["Alex Ionescu <alxi.2001@gmail.com>"]
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+timed-proc-macro = { path = "timed-proc-macro" }
+rand = "0.8.4"
+rayon = "1.5.1"

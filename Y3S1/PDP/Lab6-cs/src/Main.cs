@@ -15,7 +15,7 @@ static A timed<A>(Func<A> f, [CallerArgumentExpression("f")] string? name = null
   return r;
 }
 
-var g = Graph.RandomHamiltonian(100);
+var g = Graph.RandomHamiltonian(200);
 g.Edges[^1].Clear();
 
 var sol = new List<int>();
