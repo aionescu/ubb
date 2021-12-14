@@ -3,13 +3,17 @@ export interface ItemData {
   latestVersion: number
   uploadDate: Date
   isDeprecated: boolean
+  latitude: number
+  longitude: number
 }
 
 export const defaultItemData: ItemData = {
   packageName: "",
   latestVersion: 0,
   uploadDate: new Date(Date.now()),
-  isDeprecated: false
+  isDeprecated: false,
+  latitude: 0,
+  longitude: 0
 }
 
 export const formatDate = (date: Date) => date.toLocaleDateString("en-CA")

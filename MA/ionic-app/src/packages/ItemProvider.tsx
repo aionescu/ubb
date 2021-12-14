@@ -6,7 +6,6 @@ import { createItem, getItems, newWebSocket, updateItem } from './ItemApi';
 import { useNetwork } from './Network';
 import { Plugins } from '@capacitor/core';
 import { AuthContext } from '../auth';
-import { useIonToast } from '@ionic/react';
 const { Storage } = Plugins;
 
 const log = getLogger('ItemProvider');
@@ -124,7 +123,6 @@ export const ItemProvider: React.FC<ItemProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { items, fetching, fetchingError, saving, savingError, unsent } = state;
   const { networkStatus } = useNetwork();
-  const [present, dismiss] = useIonToast();
 
   const saveItem = useCallback<SaveItemFn>(is => saveItemCallback(items!, networkStatus, is), [networkStatus, token, items, saveItemCallback]);
   const value = { items, fetching, fetchingError, saving, savingError, saveItem, unsent };
@@ -179,11 +177,6 @@ export const ItemProvider: React.FC<ItemProviderProps> = ({ children }) => {
 
       if (!networkStatus.connected) {
         log("Offline, can't save item.")
-        present({
-          message: "The change could not be sent to the server.",
-          duration: 3000,
-          position: "top"
-        });
 
         const itemId = item._id || nextId(items).toString();
 

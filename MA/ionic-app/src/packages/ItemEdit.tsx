@@ -17,6 +17,7 @@ import { getLogger } from '../core';
 import { ItemContext } from './ItemProvider';
 import { RouteComponentProps } from 'react-router';
 import { defaultItemData, ItemData, ItemProps } from './ItemProps';
+import { MyMap } from '../components/MyMap';
 
 const log = getLogger('ItemEdit');
 
@@ -33,6 +34,8 @@ const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
   const { items, saving, savingError, saveItem } = useContext(ItemContext);
   const [data, setData] = useState(defaultItemData);
   const [item, setItem] = useState<ItemProps>();
+  const [mapVisible, setMapVisible] = useState<boolean>(false);
+
   useEffect(() => {
     log('useEffect');
     const routeId = match.params.id || '';
@@ -86,6 +89,25 @@ const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
           checked={data.isDeprecated}
           onIonChange={e => setData({ ...data, isDeprecated: e.detail.checked })}
         />
+        <br/>
+
+
+        <IonButton onClick={() => setMapVisible(!mapVisible)}>Edit Location</IonButton>
+
+        { mapVisible &&
+          <MyMap
+            lat={data.latitude ?? 0}
+            lng={data.longitude ?? 0}
+            onMapClick={
+              (e: any) => {
+                console.log(e.latLng.lat())
+                console.log(e.latLng.lng())
+                setData({ ...data, latitude: e.latLng.lat(), longitude: e.latLng.lng() })
+              }
+            }
+            onMarkerClick={log('onMarker')}
+          />
+        }
 
         <IonLoading isOpen={saving} />
         {savingError && (
