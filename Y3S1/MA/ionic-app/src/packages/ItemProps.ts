@@ -5,6 +5,7 @@ export interface ItemData {
   isDeprecated: boolean
   latitude: number
   longitude: number
+  photoBase64: string
 }
 
 export const defaultItemData: ItemData = {
@@ -13,7 +14,8 @@ export const defaultItemData: ItemData = {
   uploadDate: new Date(Date.now()),
   isDeprecated: false,
   latitude: 0,
-  longitude: 0
+  longitude: 0,
+  photoBase64: ""
 }
 
 export const formatDate = (date: Date) => date.toLocaleDateString("en-CA")

@@ -6,7 +6,9 @@ import {
   IonContent,
   IonDatetime,
   IonHeader,
+  IonImg,
   IonInput,
+  IonItem,
   IonLabel,
   IonLoading,
   IonPage,
@@ -19,6 +21,7 @@ import { RouteComponentProps } from 'react-router';
 import { defaultItemData, ItemData, ItemProps } from './ItemProps';
 import { MyMap } from '../components/MyMap';
 import { useMyLocation } from '../hooks/useMyLocation';
+import { Photo, usePhotoGallery } from '../hooks/usePhotoGallery';
 
 const log = getLogger('ItemEdit');
 
@@ -35,8 +38,11 @@ const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
   const { items, saving, savingError, saveItem } = useContext(ItemContext);
   const [data, setData] = useState(defaultItemData);
   const [item, setItem] = useState<ItemProps>();
-  const [mapVisible, setMapVisible] = useState<boolean>(false);
+  const [photo, setPhoto] = useState<Photo | undefined>(undefined);
+  const [mapVisible, setMapVisible] = useState(false);
+  const [photoVisible, setPhotoVisible] = useState(false);
   const myLocation = useMyLocation();
+  const { photos, takePhoto, takePhotoBase64 } = usePhotoGallery();
 
   useEffect(() => {
     log('useEffect');
@@ -45,6 +51,7 @@ const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
     setItem(item);
     if (item) {
       setData(item.data);
+      setPhoto(photos.find(p => p.filepath.split(".")[0] === item._id));
     }
   }, [match.params.id, items]);
   const handleSave = () => {
@@ -98,8 +105,15 @@ const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
           setData({ ...data, latitude: loc?.latitude ?? 0, longitude: loc?.longitude ?? 0 });
         }}>Use My Location</IonButton>
 
-        <br/>
         <IonButton onClick={() => setMapVisible(!mapVisible)}>Edit Location</IonButton>
+        <br/>
+
+        <IonButton onClick={
+          async () => setData({ ...data, photoBase64: await takePhotoBase64() })
+        }>Take Photo</IonButton>
+
+        <IonButton onClick={() => setPhotoVisible(!photoVisible)}>View Photo</IonButton>
+        <br/>
 
         { mapVisible &&
           <MyMap
@@ -114,6 +128,12 @@ const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
             }
             onMarkerClick={log('onMarker')}
           />
+        }
+
+        { photoVisible &&
+          <IonItem>
+            <IonImg src={"data:image/jpeg;base64," + data.photoBase64}/>
+          </IonItem>
         }
 
         <IonLoading isOpen={saving} />
