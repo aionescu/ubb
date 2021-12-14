@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {createAnimation, IonModal, IonButton, IonContent, IonImg} from '@ionic/react';
 
-export const MyModal: React.FC = () => {
+export const PhotoModal: React.FC<{ base64Data: string}> = ({ base64Data }) => {
   const [showModal, setShowModal] = useState(false);
 
   const enterAnimation = (baseEl: any) => {
@@ -30,10 +30,10 @@ export const MyModal: React.FC = () => {
   return (
     <>
       <IonModal isOpen={showModal} enterAnimation={enterAnimation} leaveAnimation={leaveAnimation}>
-          <IonImg src={"https://i.pinimg.com/originals/ff/3b/cc/ff3bcc35c5a06b3aa0dc5a80929da3f7.jpg"}/>
-        <IonButton onClick={() => setShowModal(false)}>Close Modal</IonButton>
+          <IonImg src={"data:image/jpeg;base64," + base64Data}/>
+        <IonButton onClick={() => setShowModal(false)}>Close Photo</IonButton>
       </IonModal>
-      <IonButton onClick={() => setShowModal(true)}>Pat me</IonButton>
+      <IonButton onClick={() => setShowModal(true)} disabled={(base64Data ?? "") === ""}>View Photo</IonButton>
     </>
   );
 };

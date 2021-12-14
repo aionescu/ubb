@@ -22,6 +22,7 @@ import { defaultItemData, ItemData, ItemProps } from './ItemProps';
 import { MyMap } from '../components/MyMap';
 import { useMyLocation } from '../hooks/useMyLocation';
 import { Photo, usePhotoGallery } from '../hooks/usePhotoGallery';
+import { PhotoModal } from '../components/PhotoModal';
 
 const log = getLogger('ItemEdit');
 
@@ -39,9 +40,8 @@ const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
   const [data, setData] = useState(defaultItemData);
   const [item, setItem] = useState<ItemProps>();
   const [mapVisible, setMapVisible] = useState(false);
-  const [photoVisible, setPhotoVisible] = useState(false);
   const myLocation = useMyLocation();
-  const { photos, takePhoto, takePhotoBase64 } = usePhotoGallery();
+  const { takePhotoBase64 } = usePhotoGallery();
 
   useEffect(() => {
     log('useEffect');
@@ -110,7 +110,7 @@ const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
           async () => setData({ ...data, photoBase64: await takePhotoBase64(item?._id ?? "Unknown") })
         }>Take Photo</IonButton>
 
-        <IonButton onClick={() => setPhotoVisible(!photoVisible)}>View Photo</IonButton>
+        <PhotoModal base64Data={data.photoBase64}/>
         <br/>
 
         { mapVisible &&
@@ -126,12 +126,6 @@ const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
             }
             onMarkerClick={log('onMarker')}
           />
-        }
-
-        { photoVisible &&
-          <IonItem>
-            <IonImg src={"data:image/jpeg;base64," + data.photoBase64}/>
-          </IonItem>
         }
 
         <IonLoading isOpen={saving} />
