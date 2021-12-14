@@ -97,7 +97,7 @@ export function sendItems(token: any, networkStatus: any) {
       return;
 
     for (const key of keys) {
-      if (key === "token")
+      if (key === "token" || key.startsWith("photo_"))
         continue;
 
       const item = await Storage.get({ key });
