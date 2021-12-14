@@ -38,7 +38,6 @@ const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
   const { items, saving, savingError, saveItem } = useContext(ItemContext);
   const [data, setData] = useState(defaultItemData);
   const [item, setItem] = useState<ItemProps>();
-  const [photo, setPhoto] = useState<Photo | undefined>(undefined);
   const [mapVisible, setMapVisible] = useState(false);
   const [photoVisible, setPhotoVisible] = useState(false);
   const myLocation = useMyLocation();
@@ -51,7 +50,6 @@ const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
     setItem(item);
     if (item) {
       setData(item.data);
-      setPhoto(photos.find(p => p.filepath.split(".")[0] === item._id));
     }
   }, [match.params.id, items]);
   const handleSave = () => {
@@ -109,7 +107,7 @@ const ItemEdit: React.FC<ItemEditProps> = ({ history, match }) => {
         <br/>
 
         <IonButton onClick={
-          async () => setData({ ...data, photoBase64: await takePhotoBase64() })
+          async () => setData({ ...data, photoBase64: await takePhotoBase64(item?._id ?? "Unknown") })
         }>Take Photo</IonButton>
 
         <IonButton onClick={() => setPhotoVisible(!photoVisible)}>View Photo</IonButton>
