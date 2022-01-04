@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.aionescu.app.R
 import com.aionescu.app.core.Result
 import com.aionescu.app.core.TAG
+import com.aionescu.app.databinding.FragmentItemListBinding
 import com.aionescu.app.databinding.FragmentLoginBinding
 
 class LoginFragment : Fragment() {

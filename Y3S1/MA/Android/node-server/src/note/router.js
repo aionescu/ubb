@@ -31,6 +31,8 @@ const createNote = async (ctx, note, response) => {
   try {
     const userId = ctx.state.user._id;
     note.userId = userId;
+    note._id = "id" + Date.now();
+
     response.body = await noteStore.insert(note);
     response.status = 201; // created
     broadcast(userId, { type: 'created', payload: note });
