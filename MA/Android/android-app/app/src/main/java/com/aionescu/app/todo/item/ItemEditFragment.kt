@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.aionescu.app.core.TAG
 import com.aionescu.app.databinding.FragmentItemEditBinding
-import com.aionescu.app.todo.data.Item
 
 class ItemEditFragment : Fragment() {
     companion object {
@@ -20,7 +19,6 @@ class ItemEditFragment : Fragment() {
 
     private lateinit var viewModel: ItemEditViewModel
     private var itemId: String? = null
-    private var item: Item? = null
 
     private var _binding: FragmentItemEditBinding? = null
 
@@ -46,11 +44,7 @@ class ItemEditFragment : Fragment() {
         setupViewModel()
         binding.fab.setOnClickListener {
             Log.v(TAG, "save item")
-            val i = item
-            if (i != null) {
-                i.text = binding.itemText.text.toString()
-                viewModel.saveOrUpdateItem(i)
-            }
+            viewModel.saveOrUpdateItem(binding.itemText.text.toString())
         }
         binding.itemText.setText(itemId)
     }
@@ -63,6 +57,10 @@ class ItemEditFragment : Fragment() {
 
     private fun setupViewModel() {
         viewModel = ViewModelProvider(this).get(ItemEditViewModel::class.java)
+        viewModel.item.observe(viewLifecycleOwner, { item ->
+            Log.v(TAG, "update items")
+            binding.itemText.setText(item.text)
+        })
         viewModel.fetching.observe(viewLifecycleOwner, { fetching ->
             Log.v(TAG, "update fetching")
             binding.progress.visibility = if (fetching) View.VISIBLE else View.GONE
@@ -84,16 +82,8 @@ class ItemEditFragment : Fragment() {
             }
         })
         val id = itemId
-        if (id == null) {
-            item = Item("", "")
-        } else {
-            viewModel.getItemById(id).observe(viewLifecycleOwner, {
-                Log.v(TAG, "update items")
-                if (it != null) {
-                    item = it
-                    binding.itemText.setText(it.text)
-                }
-            })
+        if (id != null) {
+            viewModel.loadItem(id)
         }
     }
 }
