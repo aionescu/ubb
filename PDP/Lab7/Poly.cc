@@ -1,41 +1,39 @@
 #include <chrono>
-#include <cstddef>
 #include <climits>
+#include <cstddef>
 #include <cstdint>
-#include <iostream>
 #include <ctime>
-#include <vector>
+#include <iostream>
 #include <mpi.h>
+#include <vector>
 
 // https://stackoverflow.com/a/40808411/13253480
 #if SIZE_MAX == UCHAR_MAX
-  #define MPI_USIZE MPI_UNSIGNED_CHAR
+#define MPI_USIZE MPI_UNSIGNED_CHAR
 #elif SIZE_MAX == USHRT_MAX
-  #define MPI_USIZE MPI_UNSIGNED_SHORT
+#define MPI_USIZE MPI_UNSIGNED_SHORT
 #elif SIZE_MAX == UINT_MAX
-  #define MPI_USIZE MPI_UNSIGNED
+#define MPI_USIZE MPI_UNSIGNED
 #elif SIZE_MAX == ULONG_MAX
-  #define MPI_USIZE MPI_UNSIGNED_LONG
+#define MPI_USIZE MPI_UNSIGNED_LONG
 #elif SIZE_MAX == ULLONG_MAX
-  #define MPI_USIZE MPI_UNSIGNED_LONG_LONG
+#define MPI_USIZE MPI_UNSIGNED_LONG_LONG
 #else
-  #error "Unsupported std::size_t size"
+#error "Unsupported std::size_t size"
 #endif
 
 typedef std::size_t usize;
 
-int randInt(int min, int max) {
-  return min + rand() % (max - min + 1);
-}
+int randInt(int min, int max) { return min + rand() % (max - min + 1); }
 
 class Poly: public std::vector<int> {
 private:
-  Poly(const std::vector<int>::const_iterator& start, const std::vector<int>::const_iterator& end): std::vector<int>(start, end) { }
+  Poly(const std::vector<int>::const_iterator &start, const std::vector<int>::const_iterator &end): std::vector<int>(start, end) {}
 
 public:
-  Poly(): std::vector<int>() { }
+  Poly(): std::vector<int>() {}
 
-  Poly(usize n): std::vector<int>(n) { }
+  Poly(usize n): std::vector<int>(n) {}
 
   static Poly random(usize size, int min = -100, int max = 100) {
     Poly a{size};
@@ -50,7 +48,7 @@ public:
     return size() - 1;
   }
 
-  bool operator ==(const Poly &b) const {
+  bool operator==(const Poly &b) const {
     if (size() != b.size())
       return false;
 
@@ -61,7 +59,7 @@ public:
     return true;
   }
 
-  Poly operator +(const Poly &b) const {
+  Poly operator+(const Poly &b) const {
     Poly c{std::max(size(), b.size())};
 
     for (usize i = 0; i < size(); ++i)
@@ -73,7 +71,11 @@ public:
     return c;
   }
 
-  Poly operator -() const {
+  Poly& operator+=(const Poly& b) {
+    return *this = *this + b;
+  }
+
+  Poly operator-() const {
     Poly c{size()};
 
     for (usize i = 0; i < size(); ++i)
@@ -82,7 +84,7 @@ public:
     return c;
   }
 
-  Poly operator -(const Poly &b) {
+  Poly operator-(const Poly &b) {
     auto c = *this + (-b);
 
     auto last = c.size() - 1;
@@ -97,7 +99,7 @@ public:
     return c;
   }
 
-  Poly operator <<(usize offset) const {
+  Poly operator<<(usize offset) const {
     Poly c{size() + offset};
 
     for (usize i = 0; i < size(); ++i)
@@ -117,14 +119,20 @@ public:
   }
 
   Poly fstHalf(usize mid) const {
+    if (mid >= size())
+      return *this;
+
     return Poly{begin(), begin() + mid};
   }
 
   Poly sndHalf(usize mid) const {
+    if (mid >= size())
+      return {0};
+
     return Poly{begin() + mid, end()};
   }
 
-  Poly karatsubaSeq(const Poly &b, usize threshold = 100) const {
+  Poly karatsubaSeq(const Poly &b, usize threshold = 10) const {
     if (degree() <= threshold || b.degree() <= threshold)
       return mulNaiveSeq(b);
 
@@ -144,7 +152,7 @@ public:
   }
 };
 
-std::ostream& operator <<(std::ostream &os, const Poly &a) {
+std::ostream &operator<<(std::ostream &os, const Poly &a) {
   os << '[';
 
   for (usize i = 0; i < a.size(); ++i)
@@ -153,13 +161,14 @@ std::ostream& operator <<(std::ostream &os, const Poly &a) {
   return os << "]";
 }
 
-template <typename F>
-void timed(std::string label, F f) {
+template <typename F> void timed(std::string label, F f) {
   auto start = std::chrono::high_resolution_clock::now();
   f();
   auto end = std::chrono::high_resolution_clock::now();
 
-  auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+  auto elapsed =
+      std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
+          .count();
   std::cout << label << " took " << elapsed << "ms\n";
 }
 
@@ -223,17 +232,81 @@ void naiveMaster(usize nProc) {
   }
 
   if (c != a.mulNaiveSeq(b))
-    std::cout << "Naive: Mismatch\n";
+    std::cout << "Naive MPI: Mismatch\n";
 }
 
-void runNaive(usize nProc, usize rank) {
+void runNaiveMPI(usize nProc, usize rank) {
   if (rank == 0)
     timed("Naive MPI", [&] { naiveMaster(nProc); });
   else
     naiveWorker(nProc, rank);
 }
 
-int main(int, char**) {
+void karatsubaWorker(usize nProc, usize rank) {
+  usize polySize;
+  MPI_Bcast(&polySize, 1, MPI_USIZE, 0, MPI_COMM_WORLD);
+
+  Poly a{polySize};
+  MPI_Bcast(a.data(), polySize, MPI_INT, 0, MPI_COMM_WORLD);
+
+  auto elemsPerProc = polySize / nProc;
+  auto extraElems = polySize % nProc;
+  auto elemsMe = elemsPerProc + (rank < extraElems);
+  auto fstElem = rank * elemsPerProc + std::min(rank, extraElems);
+
+  Poly b{elemsMe};
+  MPI_Recv(b.data(), b.size(), MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+  auto c = a.karatsubaSeq(b << fstElem);
+  auto cSize = c.size();
+
+  MPI_Ssend(&cSize, 1, MPI_USIZE, 0, 1, MPI_COMM_WORLD);
+  MPI_Ssend(c.data(), c.size(), MPI_INT, 0, 2, MPI_COMM_WORLD);
+}
+
+void karatsubaMaster(usize nProc) {
+  auto a = Poly::random(POLY_SIZE, 1, 1000);
+  auto b = Poly::random(POLY_SIZE, 1, 1000);
+
+  usize polySize = a.size();
+  MPI_Bcast(&polySize, 1, MPI_USIZE, 0, MPI_COMM_WORLD);
+  MPI_Bcast(a.data(), polySize, MPI_INT, 0, MPI_COMM_WORLD);
+
+  auto elemsPerProc = polySize / nProc;
+  auto extraElems = polySize % nProc;
+
+  for (usize i = 1; i < nProc; ++i) {
+    auto elemsMe = elemsPerProc + (i < extraElems);
+    auto fstElem = i * elemsPerProc + std::min(i, extraElems);
+
+    MPI_Ssend(&b[fstElem], elemsMe, MPI_INT, i, 0, MPI_COMM_WORLD);
+  }
+
+  auto b_ = b.fstHalf(elemsPerProc + (extraElems > 0));
+  auto c = a.karatsubaSeq(b_);
+
+  for (usize i = 1; i < nProc; ++i) {
+    usize cSize;
+    MPI_Recv(&cSize, 1, MPI_USIZE, i, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+    Poly cTmp{cSize};
+    MPI_Recv(cTmp.data(), cSize, MPI_INT, i, 2, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+    c += cTmp;
+  }
+
+  if (c != a.karatsubaSeq(b))
+    std::cout << "Karatsuba MPI: Mismatch\n";
+}
+
+void runKaratsubaMPI(usize nProc, usize rank) {
+  if (rank == 0)
+    timed("Karatsuba MPI", [&] { karatsubaMaster(nProc); });
+  else
+    karatsubaWorker(nProc, rank);
+}
+
+int main(int, char **) {
   std::srand(std::time(0));
   std::cout << std::boolalpha;
 
@@ -244,7 +317,8 @@ int main(int, char**) {
   usize nProc = (usize)nProcI, rank = (usize)rankI;
 
   runSequential(rank);
-  runNaive(nProc, rank);
+  runNaiveMPI(nProc, rank);
+  runKaratsubaMPI(nProc, rank);
 
   MPI_Finalize();
 }
