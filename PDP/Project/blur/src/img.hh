@@ -1,5 +1,5 @@
-#ifndef IMG_HPP
-#define IMG_HPP
+#ifndef IMG_HH
+#define IMG_HH
 
 #include "../stb/stb_image.h"
 #include "../stb/stb_image_write.h"

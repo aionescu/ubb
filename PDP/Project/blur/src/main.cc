@@ -1,9 +1,9 @@
 #include <iostream>
 
 #ifdef USE_MPI
-#include "blur_mpi.hpp"
+#include "blur_mpi.hh"
 #else
-#include "blur_mt.hpp"
+#include "blur_mt.hh"
 #endif
 
 int main(int argc, char** argv) {

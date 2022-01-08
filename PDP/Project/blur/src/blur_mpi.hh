@@ -1,11 +1,11 @@
-#ifndef BLUR_MPI_HPP
-#define BLUR_MPI_HPP
+#ifndef BLUR_MPI_HH
+#define BLUR_MPI_HH
 
 #include <algorithm>
 #include <iostream>
 #include <cstdint>
 #include <mpi.h>
-#include "img.hpp"
+#include "img.hh"
 
 void blur_mpi_worker(int nproc, int rank, int radius) {
   Img img;
