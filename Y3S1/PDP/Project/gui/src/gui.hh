@@ -4,17 +4,15 @@
 #include <chrono>
 #include <iostream>
 #include <qwidget.h>
-#include <QTabWidget>
-#include <QPushButton>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
 #include <QFileDialog>
-#include <QMessageBox>
-#include <QSlider>
+#include <QHBoxLayout>
 #include <QLabel>
+#include <QMessageBox>
 #include <QProcess>
+#include <QPushButton>
+#include <QSlider>
 #include <QStringList>
-#include <QTemporaryFile>
+#include <QVBoxLayout>
 
 const QFont FONT{"Fira Code", 14};
 const QString OUT_PATH{"__blurred.png"};
