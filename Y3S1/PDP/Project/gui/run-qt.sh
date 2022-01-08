@@ -11,4 +11,4 @@ make qmake_all
 make
 ./$PROJECT_NAME
 
-rm -rf $PROJECT_NAME
+rm -f $PROJECT_NAME

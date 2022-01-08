@@ -16,23 +16,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-  Observer.cc \
-  Domain.cc \
-  Repo.cc \
-  Services.cc \
-  Test.cc \
-  Model.cc \
-  GUI.cc \
-  Main.cc
+  src/main.cc
 
 HEADERS += \
-  Observer.hh \
-  Domain.hh \
-  Repo.hh \
-  Services.hh \
-  Test.hh \
-  Model.hh \
-  GUI.hh
+  src/gui.hh
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
