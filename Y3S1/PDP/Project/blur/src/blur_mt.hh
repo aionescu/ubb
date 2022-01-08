@@ -1,5 +1,5 @@
-#ifndef BLUR_MT_HPP
-#define BLUR_MT_HPP
+#ifndef BLUR_MT_HH
+#define BLUR_MT_HH
 
 #include <algorithm>
 #include <iostream>
@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <thread>
-#include "img.hpp"
+#include "img.hh"
 
 struct ThreadData {
   int id;
