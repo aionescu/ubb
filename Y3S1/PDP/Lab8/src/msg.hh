@@ -2,6 +2,7 @@
 #define MSG_HH
 
 #include <iostream>
+#include <mpi.h>
 
 enum MsgTag {
   CLOSE,
@@ -26,6 +27,16 @@ std::ostream &operator <<(std::ostream &os, Msg msg) {
     default:
       throw std::runtime_error{"Invalid message tag"};
   }
+}
+
+void mpi_send_msg(Msg msg, int dest, int tag) {
+  MPI_Bsend(&msg, sizeof(Msg), MPI_BYTE, dest, tag, MPI_COMM_WORLD);
+}
+
+Msg mpi_recv_msg(int source, int tag) {
+  Msg msg;
+  MPI_Recv(&msg, sizeof(Msg), MPI_BYTE, source, tag, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+  return msg;
 }
 
 #endif
