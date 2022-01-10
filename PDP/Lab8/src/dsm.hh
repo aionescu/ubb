@@ -4,8 +4,19 @@
 #include <map>
 #include <set>
 #include <mutex>
-#include <thread>
-#include "mpi.hh"
+#include "msg.hh"
+
+int mpi_nproc() {
+  int nproc;
+  MPI_Comm_size(MPI_COMM_WORLD, &nproc);
+  return nproc;
+}
+
+int mpi_rank() {
+  int rank;
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  return rank;
+}
 
 template <typename T>
 std::ostream &operator <<(std::ostream &os, const std::set<T> &set) {
@@ -62,7 +73,7 @@ private:
   }
 
   void _send_to_subscribers(char var, Msg msg) {
-    std::cout << _rank << " > Sending " << msg << " to " << _subs[var] << std::endl;
+    std::cout << _rank << " > Send: " << msg << " to " << _subs[var] << std::endl;
 
     for (int i = 0; i < _nproc; ++i)
       if (_rank != i && _subs[var].count(i))
@@ -70,7 +81,7 @@ private:
   }
 
   void _send_to_all(Msg msg) {
-    std::cout << _rank << " > Sending " << msg << " to all" << std::endl;
+    std::cout << _rank << " > Send: " << msg << " to all" << std::endl;
 
     for (int i = 0; i < _nproc; ++i)
       if (_rank != i || msg.tag == CLOSE)

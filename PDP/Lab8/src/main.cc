@@ -1,3 +1,4 @@
+#include <thread>
 #include <vector>
 #include "dsm.hh"
 
@@ -6,7 +7,7 @@ void listen(Dsm *dsm) {
     auto msg = mpi_recv_msg(MPI_ANY_SOURCE, MPI_ANY_TAG);
 
     dsm->sync_msg(msg);
-    std::cout << mpi_rank() << " > Received " << msg << std::endl;
+    std::cout << mpi_rank() << " > Recv: " << msg << std::endl;
 
     if (msg.tag == CLOSE)
       break;
@@ -50,6 +51,6 @@ int main(int argc, char **argv) {
   actor.join();
   listener.join();
 
-  std::cout << rank << "> Vars: " << dsm.vars() << ", Subs: " << dsm.subs() << std::endl;
+  std::cout << rank << " > Vars: " << dsm.vars() << ", Subs: " << dsm.subs() << std::endl;
   MPI_Finalize();
 }
