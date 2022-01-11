@@ -67,6 +67,7 @@ class SpecialEventEditFragment : Fragment() {
             if(title.isEmpty()){
                 Toast.makeText(activity, "Title cannot be empty!", Toast.LENGTH_LONG).show()
                 animateTitleView()
+                animateNumberOfPeopleView()
                 return@setOnClickListener
             }
 
@@ -75,6 +76,7 @@ class SpecialEventEditFragment : Fragment() {
             if(! onlyDigits || Integer.parseInt(numberOfPeopleString) == 0){
 
                 Toast.makeText(activity, "Invalid number of people - it must contain only digits and be greater than 0!", Toast.LENGTH_LONG).show()
+                animateTitleView()
                 animateNumberOfPeopleView()
             }
             else{
@@ -116,7 +118,7 @@ class SpecialEventEditFragment : Fragment() {
     private fun animateNumberOfPeopleView() {
         ValueAnimator.ofFloat(0f, 200f, 0f).apply {
             duration = 500
-            repeatCount = 3
+            repeatCount = 1
             start()
             addUpdateListener {
                 binding.specialEventNumberOfPeople.translationX = it.animatedValue as Float
