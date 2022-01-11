@@ -4,6 +4,8 @@
 #include <map>
 #include <set>
 #include <mutex>
+#include <thread>
+#include <chrono>
 #include "msg.hh"
 
 int mpi_nproc() {
@@ -88,6 +90,10 @@ private:
         mpi_send_msg(msg, i, 0);
   }
 
+  void _sleep() {
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+  }
+
 public:
   const std::map<char, std::set<int>> &subs() const {
     return _subs;
@@ -103,6 +109,7 @@ public:
 
     _vars[var] = val;
     _send_to_subscribers(var, {UPDATE, var, val});
+    _sleep();
   }
 
   void compare_exchange(char var, int expected, int val) {
@@ -118,10 +125,12 @@ public:
     _subs[var].insert(_rank);
 
     _send_to_all({SUBSCRIBE, var, _rank});
+    _sleep();
   }
 
   void close() {
     _send_to_all({CLOSE, 0, 0});
+    _sleep();
   }
 
   void sync_msg(Msg msg) {
