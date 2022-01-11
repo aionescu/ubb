@@ -1,0 +1,76 @@
+cabal-version: 3.6
+
+name: rabin
+version: 0.0.0.0
+build-type: Simple
+
+executable rabin
+  main-is: Main.hs
+
+  -- other-modules:
+
+  hs-source-dirs: src
+
+  build-depends:
+    base >=4.15 && <5
+    , containers ^>= 0.6.2
+    , parsec ^>= 3.1.14
+    , mtl ^>= 2.2.2
+    , transformers ^>= 0.5.6
+    , extra ^>= 1.7.10
+
+  ghc-options:
+    -threaded
+    -rtsopts
+    -with-rtsopts=-N
+    -Wall
+    -Wincomplete-uni-patterns
+    -Wprepositive-qualified-module
+    -Wmissing-deriving-strategies
+    -- -Wunused-packages
+    -Wno-star-is-type
+
+  default-extensions:
+    ApplicativeDo
+    BangPatterns
+    BlockArguments
+    ConstraintKinds
+    DataKinds
+    DefaultSignatures
+    DeriveAnyClass
+    DeriveFoldable
+    DeriveFunctor
+    DeriveGeneric
+    DeriveLift
+    DeriveTraversable
+    DerivingStrategies
+    EmptyCase
+    ExistentialQuantification
+    FlexibleContexts
+    FlexibleInstances
+    FunctionalDependencies
+    GADTs
+    GeneralizedNewtypeDeriving
+    ImportQualifiedPost
+    InstanceSigs
+    KindSignatures
+    LambdaCase
+    MultiParamTypeClasses
+    MultiWayIf
+    NamedFieldPuns
+    OverloadedLists
+    OverloadedStrings
+    PatternSynonyms
+    RankNTypes
+    RecordWildCards
+    RecursiveDo
+    ScopedTypeVariables
+    StandaloneDeriving
+    TupleSections
+    TypeApplications
+    TypeFamilies
+    TypeFamilyDependencies
+    TypeOperators
+    ViewPatterns
+
+  default-language: Haskell2010
