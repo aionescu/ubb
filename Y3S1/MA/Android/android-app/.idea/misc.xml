@@ -22,6 +22,12 @@
         <entry key="..\:/Users/cosmi/Downloads/Lab 4 Mobile/Lab4/app/src/main/res/menu/menu_main.xml" value="0.13020833333333334" />
         <entry key="..\:/Users/cosmi/Downloads/WinRAR ZIP archive nou/Lab4/app/src/main/res/layout/activity_main.xml" value="0.17300724637681159" />
         <entry key="..\:/Users/cosmi/Downloads/WinRAR ZIP archive nou/Lab4/app/src/main/res/layout/content_main.xml" value="0.17300724637681159" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.37135416666666665" />
+        <entry key="app/src/main/res/layout/content_main.xml" value="0.37135416666666665" />
+        <entry key="app/src/main/res/layout/fragment_login.xml" value="0.37135416666666665" />
+        <entry key="app/src/main/res/layout/fragment_special_event_edit.xml" value="0.37135416666666665" />
+        <entry key="app/src/main/res/layout/fragment_special_event_list.xml" value="0.37135416666666665" />
+        <entry key="app/src/main/res/layout/view_special_event.xml" value="0.37135416666666665" />
       </map>
     </option>
   </component>

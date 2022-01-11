@@ -69,7 +69,7 @@ class SpecialEventsRepository(private val specialEventDao: SpecialEventDao) {
             .build()
 
         val inputData = Data.Builder()
-            .putString("operation", "save")
+            .putString("operation", operation)
             .putString("id", specialEvent._id)
             .putString("title", specialEvent.title)
             .putInt("numberOfPeople", specialEvent.numberOfPeople)

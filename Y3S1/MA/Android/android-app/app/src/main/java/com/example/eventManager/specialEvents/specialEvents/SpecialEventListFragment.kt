@@ -5,6 +5,11 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +20,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.eventManager.MainActivity
@@ -26,8 +32,7 @@ import com.example.eventManager.databinding.FragmentSpecialEventListBinding
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
-class SpecialEventListFragment : Fragment() {
-
+class SpecialEventListFragment : Fragment(), SensorEventListener {
     private lateinit var specialEventsListAdapter: SpecialEventsListAdapter
     private lateinit var specialEventModel: SpecialEventListViewModel
 
@@ -37,18 +42,22 @@ class SpecialEventListFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    val CHANNEL_ID = "CHANNEL_ID"
+    private lateinit var sensorManager: SensorManager
+    private var temp: Sensor? = null
+
     var onStart = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         Log.i(TAG, "onCreateView")
         _binding = FragmentSpecialEventListBinding.inflate(inflater, container, false)
-        return binding.root
 
+        sensorManager = requireActivity().getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        temp = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)
+
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -96,5 +105,28 @@ class SpecialEventListFragment : Fragment() {
         })
 
         specialEventModel.refresh()
+    }
+
+    override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
+        Log.d(TAG, "onAccuracyChanged $accuracy");
+    }
+
+    override fun onSensorChanged(event: SensorEvent) {
+        val temp = event.values[0]
+
+        binding.temp.editableText.clear()
+        binding.temp.editableText.append("${temp}°C")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        temp?.also {
+            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        sensorManager.unregisterListener(this)
     }
 }
