@@ -3,33 +3,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/ItemListFragment">
+    app:startDestination="@id/SpecialEventListFragment">
+
+    <fragment
+        android:id="@+id/SpecialEventListFragment"
+        android:name="com.example.eventManager.specialEvents.specialEvents.SpecialEventListFragment"
+        android:label="@string/list_special_events_label"
+        tools:layout="@layout/fragment_special_event_list">
+
+        <action
+            android:id="@+id/action_SpecialEventListFragment_to_SpecialEventEditFragment"
+            app:destination="@id/SpecialEventEditFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/SpecialEventEditFragment"
+        android:name="com.example.eventManager.specialEvents.specialEvent.SpecialEventEditFragment"
+        android:label="@string/edit_special_event_label"
+        tools:layout="@layout/fragment_special_event_edit">
+
+        <action
+            android:id="@+id/action_SpecialEventEditFragment_to_SpecialEventListFragment"
+            app:destination="@id/SpecialEventListFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/FragmentLogin"
-        android:name="com.aionescu.app.auth.login.LoginFragment"
+        android:name="com.example.eventManager.auth.login.LoginFragment"
         android:label="@string/login"
         tools:layout="@layout/fragment_login" />
-
-    <fragment
-        android:id="@+id/ItemListFragment"
-        android:name="com.aionescu.app.todo.items.ItemListFragment"
-        android:label="@string/item_list_fragment_label"
-        tools:layout="@layout/fragment_item_list" >
-
-        <action
-            android:id="@+id/action_ItemListFragment_to_ItemEditFragment"
-            app:destination="@id/ItemEditFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/ItemEditFragment"
-        android:name="com.aionescu.app.todo.item.ItemEditFragment"
-        android:label="@string/item_edit_fragment_label"
-        tools:layout="@layout/fragment_item_edit" >
-
-        <action
-            android:id="@+id/action_ItemEditFragment_to_ItemListFragment"
-            app:destination="@id/ItemListFragment" />
-    </fragment>
 </navigation>

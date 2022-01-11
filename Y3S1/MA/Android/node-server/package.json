@@ -1,5 +1,5 @@
 {
-  "name": "node-server",
+  "name": "xnote-koa-server",
   "version": "1.0.0",
   "description": "",
   "main": "src/index.js",

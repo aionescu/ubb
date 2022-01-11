@@ -3,14 +3,25 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.3494791666666667" />
-        <entry key="app/src/main/res/layout/content_main.xml" value="0.3494791666666667" />
-        <entry key="app/src/main/res/layout/fragment_first.xml" value="0.3494791666666667" />
-        <entry key="app/src/main/res/layout/fragment_item_edit.xml" value="0.18854166666666666" />
-        <entry key="app/src/main/res/layout/fragment_item_list.xml" value="0.18854166666666666" />
-        <entry key="app/src/main/res/layout/fragment_login.xml" value="0.3072916666666667" />
-        <entry key="app/src/main/res/layout/fragment_second.xml" value="0.3494791666666667" />
-        <entry key="app/src/main/res/layout/view_item.xml" value="0.18854166666666666" />
+        <entry key="..\:/CS/An 3/MA/Lab4/app/src/main/res/layout/activity_main.xml" value="0.1793478260869565" />
+        <entry key="..\:/CS/An 3/MA/Lab4/app/src/main/res/layout/content_main.xml" value="0.1793478260869565" />
+        <entry key="..\:/CS/An 3/MA/Lab4/app/src/main/res/layout/fragment_expense_edit.xml" value="0.1793478260869565" />
+        <entry key="..\:/CS/An 3/MA/Lab4/app/src/main/res/layout/fragment_expense_list.xml" value="0.1793478260869565" />
+        <entry key="..\:/CS/An 3/MA/Lab4/app/src/main/res/layout/fragment_first.xml" value="0.1793478260869565" />
+        <entry key="..\:/CS/An 3/MA/Lab4/app/src/main/res/layout/fragment_login.xml" value="0.2441123188405797" />
+        <entry key="..\:/CS/An 3/MA/Lab4/app/src/main/res/layout/view_expense.xml" value="0.25416666666666665" />
+        <entry key="..\:/CS/An 3/MA/Lab4/app/src/main/res/layout/view_item.xml" value="0.1793478260869565" />
+        <entry key="..\:/Users/cosmi/Desktop/Facultate/Sem 5/Mobile/Labs/Homework - Android/Lab4/app/src/main/res/layout/fragment_expense_edit.xml" value="0.13020833333333334" />
+        <entry key="..\:/Users/cosmi/Desktop/Facultate/Sem 5/Mobile/Labs/Homework - Android/Lab4/app/src/main/res/layout/fragment_expense_list.xml" value="0.13020833333333334" />
+        <entry key="..\:/Users/cosmi/Desktop/Facultate/Sem 5/Mobile/Labs/Homework - Android/Lab4/app/src/main/res/layout/fragment_special_event_edit.xml" value="0.13020833333333334" />
+        <entry key="..\:/Users/cosmi/Desktop/Facultate/Sem 5/Mobile/Labs/Homework - Android/Lab4/app/src/main/res/layout/view_expense.xml" value="0.13020833333333334" />
+        <entry key="..\:/Users/cosmi/Desktop/Facultate/Sem 5/Mobile/Labs/Homework - Android/Lab5_6/app/src/main/res/layout/view_special_event.xml" value="0.11458333333333333" />
+        <entry key="..\:/Users/cosmi/Downloads/Lab 4 Mobile/Lab4/app/src/main/res/layout/activity_main.xml" value="0.13020833333333334" />
+        <entry key="..\:/Users/cosmi/Downloads/Lab 4 Mobile/Lab4/app/src/main/res/layout/content_main.xml" value="0.152" />
+        <entry key="..\:/Users/cosmi/Downloads/Lab 4 Mobile/Lab4/app/src/main/res/layout/fragment_login.xml" value="0.13020833333333334" />
+        <entry key="..\:/Users/cosmi/Downloads/Lab 4 Mobile/Lab4/app/src/main/res/menu/menu_main.xml" value="0.13020833333333334" />
+        <entry key="..\:/Users/cosmi/Downloads/WinRAR ZIP archive nou/Lab4/app/src/main/res/layout/activity_main.xml" value="0.17300724637681159" />
+        <entry key="..\:/Users/cosmi/Downloads/WinRAR ZIP archive nou/Lab4/app/src/main/res/layout/content_main.xml" value="0.17300724637681159" />
       </map>
     </option>
   </component>
@@ -19,12 +30,5 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
-  </component>
-  <component name="VisualizationToolProject">
-    <option name="state">
-      <ProjectState>
-        <option name="scale" value="0.3494791666666667" />
-      </ProjectState>
-    </option>
   </component>
 </project>
