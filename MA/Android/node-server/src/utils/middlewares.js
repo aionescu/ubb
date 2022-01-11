@@ -10,5 +10,10 @@ export const exceptionHandler = async (ctx, next) => {
 export const timingLogger = async (ctx, next) => {
   const start = Date.now();
   await next();
-  console.log(`${ctx.method} ${ctx.url} => ${ctx.response.status}, ${Date.now() - start}ms @ ${new Date(start)}`);
+  const end = Date.now();
+
+  const d = new Date(start);
+  const hour = `${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}.${d.getMilliseconds()}`;
+
+  console.log(`${ctx.method} ${ctx.url} => ${ctx.response.status}, ${end - start}ms @ ${hour}`);
 };
