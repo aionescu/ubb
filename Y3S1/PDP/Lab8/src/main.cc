@@ -16,6 +16,8 @@ void listen(Dsm *dsm) {
 
 void actor_0(Dsm *dsm) {
   dsm->subscribe('a');
+  dsm->subscribe('b');
+  dsm->update('b', 50);
 }
 
 void actor_1(Dsm *dsm) {
