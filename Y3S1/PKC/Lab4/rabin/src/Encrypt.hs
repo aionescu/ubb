@@ -1,4 +1,4 @@
-module Rabin where
+module Encrypt where
 
 import Data.Binary
 import Data.List.Split(chunksOf)

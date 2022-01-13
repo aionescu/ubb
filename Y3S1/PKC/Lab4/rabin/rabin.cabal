@@ -10,7 +10,7 @@ executable rabin
   other-modules:
     Math
     KeyGen
-    Rabin
+    Encrypt
     Opts
 
   hs-source-dirs: src
