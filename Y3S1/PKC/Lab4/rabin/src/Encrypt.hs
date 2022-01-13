@@ -47,7 +47,7 @@ chunks k d s
 toBlocks :: Bytes -> [Block]
 toBlocks bs = chunks blockSize 0 (padding : bs)
   where
-    extra = length bs % blockSize
+    extra = (length bs + 1) % blockSize
     padding
       | extra == 0 = 0
       | otherwise = fromIntegral $ blockSize - extra
@@ -59,7 +59,7 @@ ofBlocks bs
 
 removePadding :: Bytes -> Bytes
 removePadding [] = error "removePadding: Empty list"
-removePadding (padding : bs) = reverse $ drop (fromIntegral padding - 1) $ reverse bs
+removePadding (padding : bs) = reverse $ drop (fromIntegral padding) $ reverse bs
 
 addRedundancy :: Block -> Block
 addRedundancy b = take redundancySize b <> b
