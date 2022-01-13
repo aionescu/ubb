@@ -2,3 +2,15 @@ cradle:
   cabal:
     - path: "src/Main.hs"
       component: "rabin:exe:rabin"
+
+    - path: "src/Math.hs"
+      component: "rabin:exe:rabin"
+
+    - path: "src/KeyGen.hs"
+      component: "rabin:exe:rabin"
+
+    - path: "src/Rabin.hs"
+      component: "rabin:exe:rabin"
+
+    - path: "src/Opts.hs"
+      component: "rabin:exe:rabin"
