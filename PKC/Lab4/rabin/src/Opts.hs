@@ -4,6 +4,7 @@ import Options.Generic
 
 data Opts
   = GenKey FilePath
+  | ShowKey FilePath
   | Encrypt FilePath FilePath
   | Decrypt FilePath FilePath
   deriving stock Generic
