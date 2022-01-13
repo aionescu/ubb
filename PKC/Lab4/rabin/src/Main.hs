@@ -6,7 +6,7 @@ import System.Directory.Extra (createDirectoryIfMissing)
 import System.FilePath(takeDirectory, (<.>), dropExtension, takeExtension)
 
 import KeyGen
-import Rabin
+import Encrypt
 import Opts
 
 (~<.>) :: FilePath -> String -> FilePath
