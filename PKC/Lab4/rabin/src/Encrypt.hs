@@ -16,13 +16,16 @@ type Block = [Byte]
 -- Assuming 256-bit p and q
 
 blockSize :: Int
-blockSize = 32
+blockSize = 61
 
 redundancySize :: Int
-redundancySize = 31
+redundancySize = 2
 
 paddedSize :: Int
-paddedSize = 64
+paddedSize = blockSize + redundancySize
+
+cipherSize :: Int
+cipherSize = 64
 
 toNumber :: Bytes -> Integer
 toNumber = foldl' (\i b -> (i `shiftL` 8) + fromIntegral b) 0
@@ -51,25 +54,25 @@ toBlocks bs = chunks blockSize 0 (padding : bs)
 
 ofBlocks :: Bytes -> [Block]
 ofBlocks bs
-  | length bs % paddedSize /= 0 = error "ofBlocks: Invalid block size"
-  | otherwise = chunksOf paddedSize bs
+  | length bs % cipherSize /= 0 = error "ofBlocks: Invalid block size"
+  | otherwise = chunksOf cipherSize bs
 
 removePadding :: Bytes -> Bytes
 removePadding [] = error "removePadding: Empty list"
 removePadding (padding : bs) = reverse $ drop (fromIntegral padding - 1) $ reverse bs
 
 addRedundancy :: Block -> Block
-addRedundancy b = 0 : take redundancySize b <> b
+addRedundancy b = take redundancySize b <> b
 
 checkRedundancy :: Block -> Maybe Block
 checkRedundancy b
   | b0 == take redundancySize b' = Just b'
   | otherwise = Nothing
   where
-    (b0, b') = splitAt redundancySize $ tail b
+    (b0, b') = splitAt redundancySize b
 
 encryptBlock :: Integer -> Block -> Block
-encryptBlock n b = ofNumber paddedSize $ encryptRaw n $ toNumber $ addRedundancy b
+encryptBlock n b = ofNumber cipherSize $ encryptRaw n $ toNumber $ addRedundancy b
 
 decryptBlock :: Integer -> Integer -> Block -> Block
 decryptBlock p q b =
