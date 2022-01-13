@@ -3,11 +3,15 @@ module Main(main) where
 import Data.Bifunctor(bimap)
 import Data.ByteString.Lazy qualified as B
 import System.Directory.Extra (createDirectoryIfMissing)
-import System.FilePath(takeDirectory, (<.>))
+import System.FilePath(takeDirectory, (<.>), dropExtension, takeExtension)
 
 import KeyGen
 import Rabin
 import Opts
+
+(~<.>) :: FilePath -> String -> FilePath
+path ~<.> ext = dropExtension path <.> ext <.> takeExtension path
+infixr 7 ~<.>
 
 runGenKey :: FilePath -> IO ()
 runGenKey path = do
@@ -24,18 +28,18 @@ runGenKey path = do
 
 runEncrypt :: FilePath -> String -> IO ()
 runEncrypt pubKey' msg' = do
-  msg <- B.unpack <$> B.readFile (msg' <.> "txt")
+  msg <- B.unpack <$> B.readFile msg'
   pubKey <- toNumber . B.unpack <$> B.readFile (pubKey' <.> "pub")
 
-  B.writeFile (msg' <.> "cipher") $ B.pack $ encryptBytes pubKey msg
+  B.writeFile (msg' <.> "enc") $ B.pack $ encryptBytes pubKey msg
 
 runDecrypt :: FilePath -> String -> IO ()
 runDecrypt privKey' cipher' = do
-  cipher <- B.unpack <$> B.readFile (cipher' <.> "cipher")
+  cipher <- B.unpack <$> B.readFile (cipher' <.> "enc")
   privKey <- B.unpack <$> B.readFile (privKey' <.> "key")
 
   let (p, q) = bimap toNumber toNumber $ splitAt 32 privKey
-  B.writeFile (cipher' <.> "plain") $ B.pack $ decryptBytes p q cipher
+  B.writeFile (cipher' ~<.> "dec") $ B.pack $ decryptBytes p q cipher
 
 main :: IO ()
 main =

@@ -1,8 +1,6 @@
 module Rabin where
 
 import Data.Binary
-import Data.ByteString.Lazy qualified as B
-import Data.ByteString.Lazy.UTF8 qualified as B
 import Data.List.Split(chunksOf)
 
 import Math
@@ -25,12 +23,6 @@ redundancySize = 31
 
 paddedSize :: Int
 paddedSize = 64
-
-ofString :: String -> Bytes
-ofString = B.unpack . B.fromString
-
-toString :: Bytes -> String
-toString = B.toString . B.pack
 
 toNumber :: Bytes -> Integer
 toNumber = foldl' (\i b -> (i `shiftL` 8) + fromIntegral b) 0
@@ -91,9 +83,3 @@ encryptBytes n bs = foldMap (encryptBlock n) $ toBlocks bs
 
 decryptBytes :: Integer -> Integer -> Bytes -> Bytes
 decryptBytes p q bs = removePadding $ foldMap (decryptBlock p q) $ ofBlocks bs
-
-encryptString :: Integer -> String -> Bytes
-encryptString n = encryptBytes n . ofString
-
-decryptString :: Integer -> Integer -> Bytes -> String
-decryptString p q = toString . decryptBytes p q
