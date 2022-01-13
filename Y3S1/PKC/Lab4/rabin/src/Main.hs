@@ -26,24 +26,40 @@ runGenKey path = do
   B.writeFile (path <> ".key") $ B.pack privKey
   B.writeFile (path <> ".pub") $ B.pack pubKey
 
-runEncrypt :: FilePath -> String -> IO ()
-runEncrypt pubKey' msg' = do
-  msg <- B.unpack <$> B.readFile msg'
-  pubKey <- toNumber . B.unpack <$> B.readFile (pubKey' <.> "pub")
+loadPubKey :: FilePath -> IO Integer
+loadPubKey path = toNumber . B.unpack <$> B.readFile (path <.> "pub")
 
-  B.writeFile (msg' <.> "enc") $ B.pack $ encryptBytes pubKey msg
+loadPrivKey :: FilePath -> IO (Integer, Integer)
+loadPrivKey path =
+  bimap toNumber toNumber . splitAt 32 . B.unpack <$> B.readFile (path <.> "key")
+
+runShowKey :: FilePath -> IO ()
+runShowKey path = do
+  (p, q) <- loadPrivKey path
+  n <- loadPubKey path
+
+  putStrLn $ "p = " <> show p
+  putStrLn $ "q = " <> show q
+  putStrLn $ "n = " <> show n
+
+runEncrypt :: FilePath -> String -> IO ()
+runEncrypt key msg = do
+  bytes <- B.unpack <$> B.readFile msg
+  n <- loadPubKey key
+
+  B.writeFile (msg <.> "enc") $ B.pack $ encryptBytes n bytes
 
 runDecrypt :: FilePath -> String -> IO ()
-runDecrypt privKey' cipher' = do
-  cipher <- B.unpack <$> B.readFile (cipher' <.> "enc")
-  privKey <- B.unpack <$> B.readFile (privKey' <.> "key")
+runDecrypt key cipher = do
+  blocks <- B.unpack <$> B.readFile (cipher <.> "enc")
+  (p, q) <- loadPrivKey key
 
-  let (p, q) = bimap toNumber toNumber $ splitAt 32 privKey
-  B.writeFile (cipher' ~<.> "dec") $ B.pack $ decryptBytes p q cipher
+  B.writeFile (cipher ~<.> "dec") $ B.pack $ decryptBytes p q blocks
 
 main :: IO ()
 main =
   getOpts >>= \case
     GenKey path -> runGenKey path
+    ShowKey path -> runShowKey path
     Encrypt pubKey msg -> runEncrypt pubKey msg
     Decrypt privKey msg -> runDecrypt privKey msg
