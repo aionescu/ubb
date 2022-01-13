@@ -49,7 +49,9 @@ chineseRemainder residues modulii =
 
 pow :: Integer -> Integer -> Integer -> Integer
 pow _ 0 _ = 1
-pow b e m = t * pow (b * b % m) (shiftR e 1) m % m
+pow b e m
+  | e < 0 = error "pow: Negative exponent"
+  | otherwise = t * pow (b * b % m) (shiftR e 1) m % m
   where
     t = if testBit e 0 then b % m else 1
 
