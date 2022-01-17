@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+
+<head>
+  <title>Add</title>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+  <style type="text/css">
+    p {
+      font-size: large;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 75px;
+      color: rgb(55, 55, 243);
+    }
+
+    .submit {
+      margin-top: 10px;
+      margin-left: auto;
+      margin-right: auto;
+      width: 15%;
+      margin-bottom: 10px;
+    }
+
+    #data-table {
+      font-family: Arial, Helvetica, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    #data-table td,
+    #data-table th {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+
+    #data-table tr {
+      background-color: #f2f2f2;
+    }
+
+    #data-table tr:hover {
+      background-color: #ddd;
+    }
+
+    #data-table th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: #060746;
+      color: white;
+    }
+
+    label {
+      font-size: larger;
+    }
+
+    div.settings {
+      display: grid;
+      grid-template-columns: max-content max-content;
+      grid-gap: 5px;
+    }
+  </style>
+
+  <script type="text/javascript">
+    let data = []
+    let page = 0
+    let maxPage = 0
+
+    function toTableRow(uri) {
+      return `<tr><td>${uri.id}</td><td>${uri.uri}</td><td>${uri.description}</td><td>${uri.category}</td></tr>`
+    }
+
+    function renderTable() {
+      const paged = data.slice(page * 4, (page + 1) * 4)
+      const html = paged.map(toTableRow).join()
+
+      $("#table-body").empty()
+      $("#table-body").append(html)
+    }
+
+    function prevPage() {
+      if (page > 0) {
+        --page
+        renderTable()
+      }
+    }
+
+    function nextPage() {
+      if (page < maxPage) {
+        ++page
+        renderTable()
+      }
+    }
+
+    $(() => {
+      $.ajax({
+        url: "../server/uris.php",
+        type: "GET",
+        success: result => {
+          if (result === "notloggedin") {
+            window.alert("Not logged in.")
+            window.location = "../index.html"
+          } else {
+            data = result
+            page = 0
+            maxPage = Math.ceil(result.length / 4) - 1
+            renderTable()
+          }
+        }
+      });
+    });
+  </script>
+</head>
+
+<body>
+  <h1>View</h1>
+
+  <table id="data-table">
+    <tr>
+      <th>ID</th>
+      <th>URI</th>
+      <th>Description</th>
+      <th>Category</th>
+    </tr>
+
+    <tbody id="table-body">
+    </tbody>
+  </table>
+
+  <button onclick="prevPage()">&lt;</button>
+  <button onclick="nextPage()">&gt;</button>
+</body>
+
+</html>

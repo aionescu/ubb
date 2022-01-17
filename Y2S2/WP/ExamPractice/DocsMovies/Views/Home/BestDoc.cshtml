@@ -1,0 +1,30 @@
+﻿@{
+    ViewData["Title"] = "Best Document";
+    var doc = ViewData["doc"] as Document;
+    var count = (int)ViewData["count"];
+}
+
+<style>
+  table, th, td {
+    border: 1px solid black;
+  }
+
+  table {
+    border-collapse: collapse;
+  }
+</style>
+
+<table>
+  <tr>
+    <th>Id</th>
+    <th>Name</th>
+    <th>Contents</th>
+    <th>Author Count</th>
+  </tr>
+  <tr>
+    <td>@doc.Id</td>
+    <td>@doc.Name</td>
+    <td>@doc.Contents</td>
+    <td>@count</td>
+  </tr>
+</table>

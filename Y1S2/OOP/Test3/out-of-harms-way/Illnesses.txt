@@ -1,0 +1,3 @@
+Category1 | Name1 | Symptom 1.1, Symptom 1.2
+Category12 | Name12 | Symptom 12.1, Symptom 12.2, Symptom 12.3
+Category123 | Name123 | Symptom 123.1, Symptom 123.2, Symptom 123.3, Symptom 123.4

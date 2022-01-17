@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>URI Collection</title>
+
+  <style>
+    body {
+      text-align: center;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 100px;
+      color: rgb(55, 55, 243);
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    button {
+      margin-bottom: 10px;
+      width: 275px;
+      height: 50px;
+      background-color: darkcyan;
+      font-size: 25px;
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+    const getCookie = name => document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || ""
+
+    if (!getCookie("userID"))
+      window.location = "client/login.html"
+  </script>
+  <h1>URI Collection</h1>
+  <ul>
+    <li>
+      <button onclick="window.location = `client/add.html`">
+        Add
+      </button>
+    </li>
+    <li>
+      <button onclick="window.location = `client/update.html`">
+        Update
+      </button>
+    </li>
+    <li>
+      <button onclick="window.location = `client/delete.html`">
+        Delete
+      </button>
+    </li>
+    <li>
+      <button onclick="window.location = `client/view.html`">
+        View
+      </button>
+    </li>
+    <li>
+      <button onclick="window.location = `client/login.html`">
+        Login
+      </button>
+    </li>
+  </ul>
+</body>
+</html>

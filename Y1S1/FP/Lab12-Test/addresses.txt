@@ -1,0 +1,6 @@
+1,theodor mihali,12,20
+2,dorobantilor,50,100
+3,soporului,40,45
+4,heltai gaspar,100,120
+5,aleea baisoara,8,16
+6,calea floresti,425,512

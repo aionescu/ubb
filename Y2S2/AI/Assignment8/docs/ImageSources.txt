@@ -1,0 +1,2 @@
+https://github.com/NVlabs/ffhq-dataset
+https://www.kaggle.com/prasunroy/natural-images

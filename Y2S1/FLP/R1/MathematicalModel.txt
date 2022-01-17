@@ -1,0 +1,27 @@
+// a) Determine the lowest common multiple of the elements from a list.
+
+max(x, y) =
+  { x, x > y
+    y, otherwise
+  }
+
+lcm'(x, y, c) =
+  { c, c % x == 0 and c % y == 0
+    lcm'(x, y, c + 1), otherwise
+  }
+
+lcm(x, y) = lcm'(x, y, max(x, y))
+
+lcmList(l1l2..ln) =
+  { 0, n == 0
+    l1, n == 1
+    lcm(l1, lcmList(l2..ln)), otherwise
+  }
+
+// b) Substitute in a list, all occurrence of a value e with a value e1.
+
+replace(l1..ln, e, e1) =
+  { ∅, n == 0
+    e1 ∪ replace(l2..ln, e, e1), l1 == e
+    l1 ∪ replace(l2..ln, e, e1), otherwise
+  }

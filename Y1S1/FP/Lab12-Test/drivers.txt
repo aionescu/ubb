@@ -1,0 +1,6 @@
+ion,10,21
+vasile,50,102
+popa,1,4
+ionut,100,100
+dan,5,10
+marius,40,60

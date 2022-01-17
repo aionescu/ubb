@@ -1,0 +1,10 @@
+@{
+    ViewData["Title"] = "Filter Books by Topics";
+}
+
+<form action="/Home/FilterBooks" method="POST">
+  <label for="topics">Topics:</label>
+  <input type="text" name="topics"/>
+
+  <input type="submit" value="Filter Books"/>
+</form>

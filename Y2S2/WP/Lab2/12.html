@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Squared Box</title>
+
+    <style>
+      body {
+        background-image: url(https://cdn.wallpapersafari.com/31/48/iCIzLa.jpg);
+      }
+
+      .line-top {
+        width: 600px;
+        height: 30px;
+
+        position: absolute;
+        top: 0px;
+        left: 0px;
+
+        background: linear-gradient(to right, rgba(0, 0, 0, 0) 0% 5%, black 5% 95%, rgba(0, 0, 0, 0) 5% 100%);
+      }
+
+      .line-left {
+        width: 30px;
+        height: 600px;
+
+        position: absolute;
+        top: 0px;
+        left: 0px;
+
+        background-color: red;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0% 5%, red 5% 95%, rgba(0, 0, 0, 0) 5% 100%);
+      }
+
+      .line-right {
+        width: 30px;
+        height: 600px;
+
+        position: absolute;
+        top: 0px;
+        left: 570px;
+
+        background-color: yellow;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0) 0% 5%, yellow 5% 95%, rgba(0, 0, 0, 0) 5% 100%);
+      }
+
+      .line-bottom {
+        width: 600px;
+        height: 30px;
+
+        position: absolute;
+        top: 570px;
+        left: 0px;
+
+        background-color: blue;
+        background: linear-gradient(to left, rgba(0, 0, 0, 0) 0% 5%, blue 5% 95%, rgba(0, 0, 0, 0) 5% 100%);
+      }
+    </style>
+  </head>
+  <body>
+    <div class ="line-top"></div>
+    <div class ="line-left"></div>
+    <div class ="line-right"></div>
+    <div class ="line-bottom"></div>
+  </body>
+</html>

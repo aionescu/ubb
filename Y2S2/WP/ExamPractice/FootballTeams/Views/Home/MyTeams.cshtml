@@ -1,0 +1,26 @@
+@{
+    ViewData["Title"] = "My Teams";
+    var teams = ViewData["teams"] as List<Team>;
+}
+
+<style>
+  table, th, td {
+    border: 1px solid black;
+  }
+
+  table {
+    border-collapse: collapse;
+  }
+</style>
+
+<table>
+  <tr>
+    <th>Name</th>
+  </tr>
+
+  @foreach (var team in teams) {
+    <tr>
+      <td>@team.Name</td>
+    </tr>
+  }
+</table>

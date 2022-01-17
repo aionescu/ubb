@@ -1,0 +1,43 @@
+Current vertex: A
+Stack on entry: ['A']
+
+Current vertex: B
+Stack on entry: ['A', 'B']
+
+Current vertex: C
+Stack on entry: ['A', 'B', 'C']
+
+Current vertex: D
+Stack on entry: ['A', 'B', 'C', 'D']
+
+Current vertex: E
+Stack on entry: ['A', 'B', 'C', 'D', 'E']
+
+Current vertex: F
+Stack on entry: ['A', 'B', 'C', 'D', 'E', 'F']
+
+Sorted list so far: ['F']
+Stack on exit: ['A', 'B', 'C', 'D', 'E']
+
+Current vertex: G
+Stack on entry: ['A', 'B', 'C', 'D', 'E', 'G']
+
+Sorted list so far: ['G', 'F']
+Stack on exit: ['A', 'B', 'C', 'D', 'E']
+
+Sorted list so far: ['E', 'G', 'F']
+Stack on exit: ['A', 'B', 'C', 'D']
+
+Sorted list so far: ['D', 'E', 'G', 'F']
+Stack on exit: ['A', 'B', 'C']
+
+Sorted list so far: ['C', 'D', 'E', 'G', 'F']
+Stack on exit: ['A', 'B']
+
+Sorted list so far: ['B', 'C', 'D', 'E', 'G', 'F']
+Stack on exit: ['A']
+
+Sorted list so far: ['A', 'B', 'C', 'D', 'E', 'G', 'F']
+Stack on exit: []
+
+Topological sorting: ['A', 'B', 'C', 'D', 'E', 'G', 'F']

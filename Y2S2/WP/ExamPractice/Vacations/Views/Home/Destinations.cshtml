@@ -1,0 +1,103 @@
+@{
+    ViewData["Title"] = "Destinations";
+    var dests = ViewData["dests"] as VacationDestination[];
+}
+
+<style>
+  table, th, td {
+    border: 1px solid black;
+  }
+
+  table {
+    border-collapse: collapse;
+  }
+</style>
+
+<input type="text" id="filter" onpaste="filter();" oninput="filter();"/>
+
+<table id="tbl">
+  <tr>
+    <th>ID</th>
+    <th>Destination</th>
+    <th>Country</th>
+    <th>Price</th>
+  </tr>
+
+  @foreach (var dest in dests) {
+    <tr>
+      <td>@dest.ID</td>
+      <td>@dest.Destination</td>
+      <td>@dest.Country</td>
+      <td>@dest.Price</td>
+    </tr>
+  }
+</table>
+
+<button onclick="showBest()">Top Destinations</button>
+
+<div id="best"></div>
+
+@section Scripts {
+  <script>
+    const allDests = @Json.Serialize(dests)
+    const stats = []
+
+    function filter() {
+      const text = $("#filter").val()
+
+      $.ajax({
+        url: "/Home/GetDestinations",
+        type: "GET",
+        data: { filter: text },
+        success: dests => updateTbl(text, dests)
+      })
+    }
+
+    function updateTbl(filter, dests) {
+      if (filter !== "")
+        dests.forEach(d => stats[d.id] = (stats[d.id] || 0) + 1)
+
+      const rows = dests.map(d => `
+        <tr>
+          <td>${d.id}</td>
+          <td>${d.destination}</td>
+          <td>${d.country}</td>
+          <td>${d.price}</td>
+        </tr>
+      `).join("\n")
+
+      $("#tbl").html(`
+        <tr>
+          <th>ID</th>
+          <th>Destination</th>
+          <th>Country</th>
+          <th>Price</th>
+        </tr>
+        ${rows}`)
+    }
+
+    function showBest() {
+      const dests = allDests.sort((a, b) => stats[b.id] - stats[a.id]).slice(0, 3)
+
+      const rows = dests.map(d => `
+        <tr>
+          <td>${d.id}</td>
+          <td>${d.destination}</td>
+          <td>${d.country}</td>
+          <td>${d.price}</td>
+          <td>${stats[d.id]}</td>
+        </tr>
+      `).join("\n")
+
+      $("#best").html(`
+        <tr>
+          <th>ID</th>
+          <th>Destination</th>
+          <th>Country</th>
+          <th>Price</th>
+          <th>Count</th>
+        </tr>
+        ${rows}`)
+    }
+  </script>
+}

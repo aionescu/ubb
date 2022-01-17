@@ -1,0 +1,51 @@
+Current vertex: A
+Queue: [(2, 'D'), (8, 'B'), (6, 'C')]
+Distances: {'A': 0, 'B': 8, 'C': 6, 'D': 2}
+Previous: {'B': 'A', 'C': 'A', 'D': 'A'}
+
+Current vertex: D
+Queue: [(3, 'F'), (8, 'B'), (6, 'C')]
+Distances: {'A': 0, 'B': 8, 'C': 6, 'D': 2, 'F': 3}
+Previous: {'B': 'A', 'C': 'A', 'D': 'A', 'F': 'D'}
+
+Current vertex: F
+Queue: [(4, 'E'), (5, 'C'), (6, 'C'), (8, 'B')]
+Distances: {'A': 0, 'B': 8, 'C': 5, 'D': 2, 'F': 3, 'E': 4}
+Previous: {'B': 'A', 'C': 'F', 'D': 'A', 'F': 'D', 'E': 'F'}
+
+Current vertex: E
+Queue: [(5, 'C'), (8, 'B'), (6, 'C')]
+Distances: {'A': 0, 'B': 8, 'C': 5, 'D': 2, 'F': 3, 'E': 4}
+Previous: {'B': 'A', 'C': 'F', 'D': 'A', 'F': 'D', 'E': 'F'}
+
+Current vertex: C
+Queue: [(6, 'C'), (8, 'B')]
+Distances: {'A': 0, 'B': 8, 'C': 5, 'D': 2, 'F': 3, 'E': 4}
+Previous: {'B': 'A', 'C': 'F', 'D': 'A', 'F': 'D', 'E': 'F'}
+
+Current vertex: C
+Queue: [(8, 'B')]
+Distances: {'A': 0, 'B': 8, 'C': 5, 'D': 2, 'F': 3, 'E': 4}
+Previous: {'B': 'A', 'C': 'F', 'D': 'A', 'F': 'D', 'E': 'F'}
+
+Current vertex: B
+Queue: []
+Distances: {'A': 0, 'B': 8, 'C': 5, 'D': 2, 'F': 3, 'E': 4}
+Previous: {'B': 'A', 'C': 'F', 'D': 'A', 'F': 'D', 'E': 'F'}
+
+Path from A to B is: [0, 1]
+Distance: 8
+
+Path from A to C is: [0, 3, 5, 2]
+Distance: 5
+
+Path from A to D is: [0, 3]
+Distance: 2
+
+Path from A to E is: [0, 3, 5, 4]
+Distance: 4
+
+Path from A to F is: [0, 3, 5]
+Distance: 3
+
+There is no path from A to G
