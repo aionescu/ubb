@@ -1,0 +1,13 @@
+let 1a: Int = read Int;
+let b: Int = a $ 3;
+let c: Int = read Int;
+
+if a < b {
+  a = b;
+}
+
+if a < c {
+  a = c;
+}
+
+print(a);

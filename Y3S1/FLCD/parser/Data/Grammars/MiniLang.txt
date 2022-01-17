@@ -1,0 +1,36 @@
+primType -> "Bool" | "Int" | "Float" | "Char" | "String";
+array -> "[" primType "]";
+type -> primType | array;
+
+readExpr -> "read" primType;
+boolLit -> "false" | "true";
+atomExpr -> ID | CONST | boolLit | readExpr | "(" expr ")";
+
+factor -> atomExpr "." "length" | atomExpr;
+mulOp -> "*" | "/" | "%";
+term -> factor mulOp term | factor;
+addOp -> "+" | "-";
+cmpTerm -> term addOp cmpTerm | term;
+cmpOp -> "==" | "!=" | "<" | ">" | "<=" | ">=";
+logicTerm -> cmpTerm cmpOp logicTerm | cmpTerm;
+logicOp -> "&&" | "||";
+arrayTerm -> logicTerm logicOp arrayTerm | logicTerm;
+arrayTerms -> arrayTerm "," arrayTerms | arrayTerm | ϵ;
+expr -> arrayTerm | "[" arrayTerms "]";
+
+printStmt -> "print" expr;
+typeSig -> ":" type | ϵ;
+declStmt -> "let" ID typeSig "=" expr;
+assignStmt -> ID "=" expr;
+simpleStmt -> printStmt | declStmt | assignStmt;
+stmtWithComma -> simpleStmt ";";
+elseBlock -> "else" compStmt | ϵ;
+ifStmt -> "if" expr compStmt elseBlock;
+whileStmt -> "while" expr compStmt;
+forStmt -> "for" ID "in" expr compStmt;
+compStmt -> "{" stmts "}";
+stmt -> stmtWithComma | ifStmt | whileStmt | forStmt | compStmt;
+stmts -> stmt stmts | stmt;
+
+program -> stmts;
+program

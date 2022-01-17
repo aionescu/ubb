@@ -1,0 +1,25 @@
+primType = "Bool" | "Int" | "Float" | "Char" | "String"
+array = "[" type "]"
+type = primType | array
+
+readExpr = "read" primType
+boolLit = "false" | "true"
+atomExpr = id | boolLit | floatLit | intLit | charLit | stringLit | readExpr | "(" expr ")"
+factor = atomExpr ["." "length"]
+term = factor [("*" | "/" | "%") factor]
+cmpTerm = term [("+" | "-") term]
+logicTerm = cmpTerm [("==" | "!=" | "<" | ">" | "<=" | ">=") cmpTerm]
+arrayTerm = logicTerm [("&&" | "||") logicTerm]
+expr = arrayTerm | "[" [arrayTerm {"," arrayTerm} [","]] "]"
+
+printStmt = "print" expr
+declStmt = "let" id [":" type] "=" expr
+assignStmt = id "=" expr
+simpleStmt = (printStmt | declStmt | assignStmt) ";"
+ifStmt = "if" expr compStmt ["else" compStmt]
+whileStmt = "while" expr compStmt
+forStmt = "for" id "in" expr compStmt
+compStmt = "{" {stmt} "}"
+stmt = simpleStmt | ifStmt | whileStmt | forStmt | compStmt
+
+program = {stmt}

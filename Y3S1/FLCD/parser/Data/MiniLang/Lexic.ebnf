@@ -1,0 +1,16 @@
+operator = "+" | "-" | "*" | "/" | "%" | "=" | "==" | "!=" | "<" | ">" | "<=" | ">=" | "&&" | "||"
+separator = "{" | "}" | "[" | "]" | "(" | ")" | "," | ";" | ":" | "." | "'" | "\"" | "--"
+reserved = "let" | "if" | "else" | "while" | "for" | "in" | "read" | "print" | "length" | "false" | "true" | "Bool" | "Int" | "Float" | "Char" | "String"
+
+zero = "0"
+nonZero = "1" | "2" | ... | "9"
+digit = zero | nonZero
+intLit = zero | ["+"|"-"] nonZero {digit}
+floatLit = ["+"|"-"] digit {digit} "." {digit}
+
+letter = "A" | "B" | ... | "Z" | "a" | "b" | ... | "z"
+char = letter | digit
+charLit = "'" char "'"
+stringLit = "\"" {char} "\""
+
+id = ("_" | letter) {"_" | letter | digit}

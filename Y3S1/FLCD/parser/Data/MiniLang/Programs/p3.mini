@@ -1,0 +1,8 @@
+let arr: [Int] = [read Int, read Int, read Int, read Int];
+let sum = 0;
+
+for i in arr {
+  sum = sum + i;
+}
+
+print sum / arr.length;
