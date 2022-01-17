@@ -1,0 +1,40 @@
+<div class="login-wrapper">
+  <mat-card class="login-card">
+    <mat-card-title style="margin-bottom: 20px">Upload Paper</mat-card-title>
+    <form class="login-form" [formGroup]="uploadForm">
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Name</mat-label>
+        <input formControlName="name" required matInput>
+        <div *ngIf="name.invalid && (name.dirty || name.touched)"
+             class="alert alert-danger">
+          <div class="error" *ngIf="name.errors.minLength">
+            Name must be at least 3 characters long.
+          </div>
+          <div class="error" *ngIf="name.errors.pattern">
+            Name must be made up of letters and numbers.
+          </div>
+        </div>
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Topic</mat-label>
+        <input formControlName="subject" required matInput>
+        <div *ngIf="subject.invalid && (subject.dirty || subject.touched)"
+             class="alert alert-danger">
+          <div class="error" *ngIf="subject.errors.minLength">
+            Topic must be at least 3 characters long.
+          </div>
+          <div class="error" *ngIf="subject.errors.pattern">
+            Topic must be made up of letters and numbers.
+          </div>
+        </div>
+      </mat-form-field>
+
+      <div class="buttons-wrapper">
+        <input type="file" class="file-upload" (change)="handleFileInput($event)">
+        <button mat-raised-button class="account-button" color="primary" (click)="uploadPaper(name.value, subject.value)">Upload</button>
+      </div>
+    </form>
+  </mat-card>
+</div>

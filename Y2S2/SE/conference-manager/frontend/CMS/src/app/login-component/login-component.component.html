@@ -1,0 +1,29 @@
+<div class="login-wrapper">
+  <mat-card class="login-card">
+    <mat-card-title style="margin-bottom: 20px">Login</mat-card-title>
+    <form class="login-form" [formGroup]="loginForm">
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Email</mat-label>
+        <input formControlName="email" required matInput>
+        <div *ngIf="email.invalid && (email.dirty || email.touched)"
+             class="alert alert-danger">
+        </div>
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Password</mat-label>
+        <input type="password" formControlName="password" required matInput>
+        <div *ngIf="pass_word.invalid && (pass_word.dirty || pass_word.touched)"
+             class="alert alert-danger">
+        </div>
+      </mat-form-field>
+
+      <div class="buttons-wrapper">
+        <button mat-raised-button class="sign-in-button" color="primary" (click)="login(email.value, pass_word.value)">Sign in</button>
+        <button mat-raised-button class="account-button" color="primary" routerLink="/register">Create new account</button>
+        <button mat-raised-button class="account-button" color="primary" (click)="hello()">Button</button>
+      </div>
+    </form>
+  </mat-card>
+</div>

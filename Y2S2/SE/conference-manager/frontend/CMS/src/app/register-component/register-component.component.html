@@ -1,0 +1,63 @@
+<div class="login-wrapper">
+  <mat-card class="login-card">
+    <mat-card-title style="margin-bottom: 20px">Register</mat-card-title>
+    <form class="login-form" [formGroup]="registerForm">
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Email</mat-label>
+        <input formControlName="email" required matInput>
+        <div *ngIf="email.invalid && (email.dirty || email.touched)"
+             class="alert alert-danger">
+          <div class="error" *ngIf="email.errors.pattern">
+            Invalid email.
+          </div>
+        </div>
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Password</mat-label>
+        <input type="password" formControlName="password" required matInput>
+        <div *ngIf="pass_word.invalid && (pass_word.dirty || pass_word.touched)"
+             class="alert alert-danger">
+          <div class="error" *ngIf="pass_word.errors.minLength">
+            Password must be at least 8 characters long.
+          </div>
+          <div class="error" *ngIf="pass_word.errors.pattern">
+            Incorrect password format.
+          </div>
+        </div>
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Re-enter password</mat-label>
+        <input type="password" formControlName="repassword" required matInput>
+        <div *ngIf="repassword.invalid && (repassword.dirty || repassword.touched)"
+             class="alert alert-danger">
+          <div class="error" *ngIf="repassword.errors.minLength">
+            Password must be at least 8 characters long.
+          </div>
+          <div class="error" *ngIf="repassword.errors.pattern">
+            Incorrect password format.
+          </div>
+        </div>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Role</mat-label>
+        <mat-select name="food" class="role-select" formControlName="role" required>
+          <mat-option value="Author">Author</mat-option>
+          <mat-option value="PcMember">PC Member</mat-option>
+          <mat-option value="Chair">Chair</mat-option>
+          <mat-option value="Admin">Admin</mat-option>
+        </mat-select>
+        <div *ngIf="repassword.invalid && (repassword.dirty || repassword.touched)"
+             class="alert alert-danger">
+        </div>
+      </mat-form-field>
+
+      <div class="buttons-wrapper">
+        <button mat-raised-button class="account-button" color="primary" (click)="register(email.value, pass_word.value, repassword.value, role.value)">Create new account</button>
+      </div>
+    </form>
+  </mat-card>
+</div>
