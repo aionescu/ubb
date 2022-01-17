@@ -1,0 +1,16 @@
+<mat-toolbar color="primary">
+  <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span>Conference Management</span>
+  <span routerLink="/login" style="margin-left: 20px; font-size: 16px; cursor: pointer">Login</span>
+  <span routerLink="/register" style="margin-left: 20px; font-size: 16px; cursor: pointer">Register</span>
+  <span routerLink="/add-conference" style="margin-left: 20px; font-size: 16px; cursor: pointer">Add Conference</span>
+  <button style="font-size: 16px; cursor: pointer" mat-button [matMenuTriggerFor]="menu">Authors</button>
+  <mat-menu #menu="matMenu">
+    <button routerLink="/upload" mat-menu-item>Upload</button>
+    <button mat-menu-item>Item 2</button>
+  </mat-menu>
+</mat-toolbar>
+
+<router-outlet></router-outlet>

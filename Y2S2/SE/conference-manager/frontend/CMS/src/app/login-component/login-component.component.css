@@ -1,0 +1,32 @@
+.login-form {
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.example-full-width {
+  width: 100%;
+}
+
+.sign-in-button {
+  display: inline-block;
+}
+
+.account-button {
+  display: inline-block;
+}
+
+.login-card {
+  max-width: 500px;
+}
+
+.login-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+.buttons-wrapper {
+  display: flex;
+  justify-content: space-evenly;
+}
