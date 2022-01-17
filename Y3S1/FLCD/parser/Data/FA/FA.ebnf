@@ -1,0 +1,6 @@
+state = {"A" | "B" | ... | "Z"}+
+initial = "->" state
+final = state "->"
+transition = state "-[" {ANY_CHAR}+ "]->" state
+stmt = initial | final | transition
+fa = {stmt}+

@@ -1,0 +1,28 @@
+cradle:
+  cabal:
+    - path: "src/Main.hs"
+      component: "parser:exe:parser"
+
+    - path: "src/Scanner/ST.hs"
+      component: "parser:exe:parser"
+
+    - path: "src/Scanner/Core.hs"
+      component: "parser:exe:parser"
+
+    - path: "src/FA/Core.hs"
+      component: "parser:exe:parser"
+
+    - path: "src/FA/Parser.hs"
+      component: "parser:exe:parser"
+
+    - path: "src/Grammar/Core.hs"
+      component: "parser:exe:parser"
+
+    - path: "src/Grammar/Parser.hs"
+      component: "parser:exe:parser"
+
+    - path: "src/Parsing/RecursiveDescent.hs"
+      component: "parser:exe:parser"
+
+    - path: "src/Parsing/Output.hs"
+      component: "parser:exe:parser"
