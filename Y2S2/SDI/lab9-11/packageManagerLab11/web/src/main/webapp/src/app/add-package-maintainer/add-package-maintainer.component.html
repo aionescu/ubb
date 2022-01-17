@@ -1,0 +1,22 @@
+<div class="content-container">
+	<div class="form-container">
+		<h1>Add Package Maintainer</h1>
+		<div>
+      <div class="input-group">
+				<span>Maintainer ID</span>
+				<input class="maintainerID" placeholder="Maintainer ID" [(ngModel)]="packageMaintainer.maintainerID">
+			</div>
+			<div class="input-group">
+				<span>Package Name</span>
+				<input class="packageName" placeholder="Package Name" [(ngModel)]="packageMaintainer.packageName">
+			</div>
+      <div class="input-group">
+				<span>Importance</span>
+				<input class="importance" placeholder="Importance" [(ngModel)]="packageMaintainer.importance">
+			</div>
+			<div class="actions">
+				<button class="add-package-maintainer" (click)="onAdd()">Add Package Maintainer</button>
+			</div>
+		</div>
+	</div>
+</div>

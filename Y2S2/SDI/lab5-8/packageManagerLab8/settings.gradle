@@ -1,0 +1,5 @@
+rootProject.name = 'packageManagerLab8'
+include 'client'
+include 'core'
+include 'web'
+

@@ -1,0 +1,61 @@
+allprojects {
+
+    group 'org.example'
+    version '1.0-SNAPSHOT'
+
+    apply plugin: 'java'
+
+    sourceCompatibility = JavaVersion.VERSION_11
+
+    repositories {
+        mavenCentral()
+    }
+
+    ext {
+        springVersion = '5.1.5.RELEASE'
+        postgresqlVersion = '42.2.5'
+        dbcpVersion = '2.2.0'
+
+        slf4jVersion = '1.7.25'
+        log4jVersion = '2.10.0'
+
+        springDataVersion = '2.1.6.RELEASE'
+        hibernateVersion = '5.4.2.Final'
+        hikariVersion = '2.7.7'
+        jaxbapiVersion = '2.3.0'
+    }
+
+
+    dependencies {
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+
+        compile group: 'org.springframework', name: 'spring-context', version: "$springVersion"
+
+//        compile group: 'org.apache.commons', name: 'commons-dbcp2', version: "$dbcpVersion"
+
+        //logging
+        compile group: 'org.slf4j', name: 'slf4j-api', version: "$slf4jVersion"
+        testCompile group: 'org.slf4j', name: 'slf4j-simple', version: "$slf4jVersion"
+
+        compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: "$log4jVersion"
+        compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: "$log4jVersion"
+        compile group: 'org.apache.logging.log4j', name: 'log4j-1.2-api', version: "$log4jVersion"
+
+
+        //jpa
+        compile group: 'org.springframework', name: 'spring-context-support', version: "$springVersion"
+        compile group: 'org.springframework', name: 'spring-orm', version: "$springVersion"
+        compile group: 'org.springframework.data', name: 'spring-data-jpa', version: "$springDataVersion"
+
+        compile group: 'org.hibernate', name: 'hibernate-core', version:"$hibernateVersion"
+
+        compile group: 'org.postgresql', name: 'postgresql', version: "$postgresqlVersion"
+
+        compile group: 'com.zaxxer', name: 'HikariCP', version: "$hikariVersion"
+
+        compile group: 'javax.xml.bind', name: 'jaxb-api', version: "$jaxbapiVersion"
+
+
+
+    }
+}

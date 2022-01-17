@@ -1,0 +1,22 @@
+<div class="content-container">
+	<div class="form-container">
+		<h1>Add Package Version</h1>
+		<div>
+      <div class="input-group">
+				<span>Package ID</span>
+				<input class="packageID" placeholder="Package ID" [(ngModel)]="packageVersion.packageID">
+			</div>
+			<div class="input-group">
+				<span>Version Number</span>
+				<input class="versionNumber" placeholder="Version Number" [(ngModel)]="packageVersion.versionNumber">
+			</div>
+      <div class="input-group">
+				<span>Release Date</span>
+				<input class="startingDate" placeholder="Release Date" [(ngModel)]="packageVersion.startingDate">
+			</div>
+			<div class="actions">
+				<button class="add-package-maintainer" (click)="onAdd()">Add Package Version</button>
+			</div>
+		</div>
+	</div>
+</div>

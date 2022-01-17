@@ -1,0 +1,25 @@
+{
+    "name": "xi-vscode",
+    "displayName": "Xi Syntax Highlighting",
+    "description": "Xi Syntax Highlighting",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.50.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "xi",
+            "aliases": ["Xi", "xi"],
+            "extensions": [".xi"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "xi",
+            "scopeName": "source.xi",
+            "path": "./syntaxes/xi.tmLanguage.json"
+        }]
+    }
+}

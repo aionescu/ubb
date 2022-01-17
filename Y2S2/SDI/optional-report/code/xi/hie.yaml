@@ -1,0 +1,16 @@
+cradle:
+  cabal:
+    - path: "src/Language/Xi/Syntax.hs"
+      component: "xi:exe:xi"
+
+    - path: "src/Language/Xi/Parser.hs"
+      component: "xi:exe:xi"
+
+    - path: "src/Language/Xi/TypeChecker.hs"
+      component: "xi:exe:xi"
+
+    - path: "src/Language/Xi/Eval.hs"
+      component: "xi:exe:xi"
+
+    - path: "src/Main.hs"
+      component: "xi:exe:xi"

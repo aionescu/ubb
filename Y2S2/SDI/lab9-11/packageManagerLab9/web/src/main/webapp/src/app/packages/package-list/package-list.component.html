@@ -1,0 +1,15 @@
+<h2>Packages</h2>
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Source Repo</th>
+    <th>License</th>
+  </tr>
+  <tr *ngFor="let package of packages">
+    <td>{{package.name}}</td>
+    <td>{{package.description}}</td>
+    <td><a href="{{package.sourceRepo}}">{{package.sourceRepo}}</a></td>
+    <td>{{package.license}}</td>
+  </tr>
+</table>

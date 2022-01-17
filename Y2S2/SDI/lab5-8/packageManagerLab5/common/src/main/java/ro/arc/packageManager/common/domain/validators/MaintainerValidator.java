@@ -1,0 +1,20 @@
+package ro.arc.packageManager.common.domain.validators;
+
+
+import ro.arc.packageManager.common.domain.Maintainer;
+
+public class MaintainerValidator implements Validator<Maintainer> {
+
+    @Override
+    public void validate(Maintainer entity) throws ValidatorException {
+        Validate.notNull(entity.getUserName(), "userName");
+        Validate.validIdentifier(entity.getUserName(), "userName");
+
+        Validate.notNull(entity.getFullName(), "fullName");
+        Validate.notBlank(entity.getFullName(), "fullName");
+
+        Validate.notNull(entity.getEmail(), "email");
+        Validate.validEmail(entity.getEmail(), "email");
+    }
+}
+

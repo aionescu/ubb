@@ -1,0 +1,45 @@
+h2 {
+  font-family: "Fira Code";
+}
+
+table, th, td {
+  font-family: "Fira Code";
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+th, td {
+  font-family: "Fira Code";
+  padding: 10px;
+}
+
+h3 {
+  font-family: "Fira Code";
+  font-size: 1.2em;
+  color: #999;
+  margin-bottom: 0;
+}
+
+form {
+  margin-bottom: 10px;
+}
+
+form select {
+  font-family: "Fira Code";
+  padding: 5px 10px;
+  text-decoration: none;
+  margin-top: 10px;
+  display: inline-block;
+  background-color: #eee;
+  border-radius: 4px;
+}
+
+form input {
+  font-family: "Fira Code";
+  padding: 5px 10px;
+  text-decoration: none;
+  margin-top: 10px;
+  display: inline-block;
+  background-color: #eee;
+  border-radius: 4px;
+}

@@ -1,0 +1,41 @@
+<h2>Package Maintainers</h2>
+
+<h3>Maintainer ID</h3>
+<form>
+  <input placeholder="Maintainer ID" #maintainerID>
+  <input type="submit" value="Load" (click)="loadPackageMaintainers(maintainerID.value)">
+</form>
+
+<h3>Filter</h3>
+<form>
+  <select id="filter-field" #filterField>
+    <option value="packageName">Package Name</option>
+    <option value="importance">Importance</option>
+  </select>
+  <input placeholder="Search Term" #searchTerm>
+  <input type="submit" value="Filter" (click)="filter(filterField.options[filterField.selectedIndex].value, searchTerm.value)">
+</form>
+
+<h3>Sort</h3>
+<form>
+  <select id="sort-field" #sortField>
+    <option value="packageName">Package Name</option>
+    <option value="importance">Importance</option>
+  </select>
+  <select id="sort-order" #sortOrder>
+    <option value="ascending">Ascending</option>
+    <option value="descending">Descending</option>
+  </select>
+  <input type="submit" value="Sort" (click)="sort(sortField.options[sortField.selectedIndex].value, sortOrder.options[sortOrder.selectedIndex].value)">
+</form>
+
+<table>
+  <tr>
+    <th>Package Name</th>
+    <th>Importance</th>
+  </tr>
+  <tr *ngFor="let packageMaintainer of packageMaintainers">
+    <td>{{packageMaintainer.packageName}}</td>
+    <td>{{packageMaintainer.importance}}</td>
+  </tr>
+</table>

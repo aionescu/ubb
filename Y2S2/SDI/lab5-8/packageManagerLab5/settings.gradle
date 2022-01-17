@@ -1,0 +1,5 @@
+rootProject.name = 'packageManager'
+include 'client'
+include 'server'
+include 'common'
+

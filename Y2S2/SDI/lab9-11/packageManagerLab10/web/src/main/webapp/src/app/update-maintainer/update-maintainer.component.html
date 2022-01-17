@@ -1,0 +1,26 @@
+<div class="content-container">
+	<div class="form-container">
+		<h1>Update maintainer</h1>
+		<div>
+      <div class="input-group">
+				<span>ID</span>
+				<input class="id" placeholder="ID" [(ngModel)]="maintainer.id">
+			</div>
+			<div class="input-group">
+				<span>Username</span>
+				<input class="userName" placeholder="Username" [(ngModel)]="maintainer.userName">
+			</div>
+      <div class="input-group">
+				<span>Full Name</span>
+				<input class="fullName" placeholder="Full Name" [(ngModel)]="maintainer.fullName">
+			</div>
+      <div class="input-group">
+				<span>Email</span>
+				<input class="email" placeholder="Email" [(ngModel)]="maintainer.email">
+			</div>
+			<div class="actions">
+				<button class="update-maintainer" (click)="onUpdate()">Update maintainer</button>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,41 @@
+<h2>Maintainers</h2>
+
+<h3>Filter</h3>
+<form>
+  <select id="filter-field" #filterField>
+    <option value="userName">Username</option>
+    <option value="fullName">Full Name</option>
+    <option value="email">Email</option>
+  </select>
+  <input placeholder="Search Term" #searchTerm>
+  <input type="submit" value="Filter" (click)="filter(filterField.options[filterField.selectedIndex].value, searchTerm.value)">
+</form>
+
+<h3>Sort</h3>
+<form>
+  <select id="sort-field" #sortField>
+    <option value="userName">Username</option>
+    <option value="fullName">Full Name</option>
+    <option value="email">Email</option>
+  </select>
+  <select id="sort-order" #sortOrder>
+    <option value="ascending">Ascending</option>
+    <option value="descending">Descending</option>
+  </select>
+  <input type="submit" value="Sort" (click)="sort(sortField.options[sortField.selectedIndex].value, sortOrder.options[sortOrder.selectedIndex].value)">
+</form>
+
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Username</th>
+    <th>Full Name</th>
+    <th>Email</th>
+  </tr>
+  <tr *ngFor="let maintainer of maintainers">
+    <td>{{maintainer.id}}</td>
+    <td>{{maintainer.userName}}</td>
+    <td>{{maintainer.fullName}}</td>
+    <td><a href="mailto:{{maintainer.email}}">{{maintainer.email}}</a></td>
+  </tr>
+</table>
