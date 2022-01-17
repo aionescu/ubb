@@ -2,21 +2,16 @@
 #define BLUR_MPI_HH
 
 #include <algorithm>
-#include <iostream>
-#include <cstdint>
 #include <mpi.h>
 #include "img.hh"
 
 void blur_mpi_worker(int nproc, int rank, int radius) {
-  Img img;
+  int width, height;
+  MPI_Bcast(&width, 1, MPI_INT, 0, MPI_COMM_WORLD);
+  MPI_Bcast(&height, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
-  MPI_Bcast(&img.width, 1, MPI_INT, 0, MPI_COMM_WORLD);
-  MPI_Bcast(&img.height, 1, MPI_INT, 0, MPI_COMM_WORLD);
-
-  img.pixels = new std::uint8_t[img.width * img.height * CHANNELS];
-  MPI_Bcast(img.pixels, img.width * img.height * CHANNELS, MPI_BYTE, 0, MPI_COMM_WORLD);
-
-  auto [width, height, pixels] = img;
+  auto src_pixels = new byte[width * height * CHANNELS];
+  MPI_Bcast(src_pixels, width * height * CHANNELS, MPI_BYTE, 0, MPI_COMM_WORLD);
 
   auto base_lines = height / nproc;
   auto extra_lines = height % nproc;
@@ -28,44 +23,44 @@ void blur_mpi_worker(int nproc, int rank, int radius) {
   auto diameter = radius * 2 + 1;
   auto area = diameter * diameter;
 
-  auto buffer = new uint8_t[lines_me * width * CHANNELS];
+  auto dest_pixels = new byte[lines_me * width * CHANNELS];
 
   for (int y = first_line; y < last_line; ++y) {
     for (int x = 0; x < width; ++x) {
       int r = 0, g = 0, b = 0;
 
-      for (int i = -radius; i <= radius; ++i) {
-        for (int j = -radius; j <= radius; ++j) {
-          int xi = x + i;
-          int yj = y + j;
+      auto up_bound = std::max(0, y - radius);
+      auto down_bound = std::min(height - 1, y + radius);
+      auto left_bound = std::max(0, x - radius);
+      auto right_bound = std::min(width - 1, x + radius);
 
-          if (xi < 0 || xi >= width || yj < 0 || yj >= height)
-            continue;
-
-          int index = (yj * width + xi) * 3;
-          r += pixels[index + 0];
-          g += pixels[index + 1];
-          b += pixels[index + 2];
+      for (int yj = up_bound; yj <= down_bound; ++yj)
+        for (int xi = left_bound; xi <= right_bound; ++xi) {
+          int index = (yj * width + xi) * CHANNELS;
+          r += src_pixels[index];
+          g += src_pixels[index + 1];
+          b += src_pixels[index + 2];
         }
-      }
 
-      int index = ((y - first_line) * width + x) * 3;
-      buffer[index + 0] = r / area;
-      buffer[index + 1] = g / area;
-      buffer[index + 2] = b / area;
+      int index = ((y - first_line) * width + x) * CHANNELS;
+      dest_pixels[index] = r / area;
+      dest_pixels[index + 1] = g / area;
+      dest_pixels[index + 2] = b / area;
     }
   }
 
-  MPI_Ssend(buffer, lines_me * width * CHANNELS, MPI_BYTE, 0, 0, MPI_COMM_WORLD);
+  MPI_Ssend(dest_pixels, lines_me * width * CHANNELS, MPI_BYTE, 0, 0, MPI_COMM_WORLD);
+
+  delete[] dest_pixels;
+  delete[] src_pixels;
 }
 
 void blur_mpi_master(int nproc, const char *in_path, const char *out_path, int radius) {
-  auto img = load_img(in_path);
-  auto [width, height, pixels] = img;
+  auto [width, height, src_pixels] = load_img(in_path);
 
   MPI_Bcast(&width, 1, MPI_INT, 0, MPI_COMM_WORLD);
   MPI_Bcast(&height, 1, MPI_INT, 0, MPI_COMM_WORLD);
-  MPI_Bcast(pixels, width * height * CHANNELS, MPI_BYTE, 0, MPI_COMM_WORLD);
+  MPI_Bcast(src_pixels, width * height * CHANNELS, MPI_BYTE, 0, MPI_COMM_WORLD);
 
   auto base_lines = height / nproc;
   auto extra_lines = height % nproc;
@@ -75,31 +70,29 @@ void blur_mpi_master(int nproc, const char *in_path, const char *out_path, int r
   auto diameter = radius * 2 + 1;
   auto area = diameter * diameter;
 
-  Img new_img{width, height, new uint8_t[width * height * CHANNELS]};
+  auto dest_pixels = new byte[width * height * CHANNELS];
 
   for (int y = 0; y < lines_me; ++y) {
     for (int x = 0; x < width; ++x) {
       int r = 0, g = 0, b = 0;
 
-      for (int i = -radius; i <= radius; ++i) {
-        for (int j = -radius; j <= radius; ++j) {
-          int xi = x + i;
-          int yj = y + j;
+      auto up_bound = std::max(0, y - radius);
+      auto down_bound = std::min(height - 1, y + radius);
+      auto left_bound = std::max(0, x - radius);
+      auto right_bound = std::min(width - 1, x + radius);
 
-          if (xi < 0 || xi >= width || yj < 0 || yj >= height)
-            continue;
-
-          int index = (yj * width + xi) * 3;
-          r += pixels[index + 0];
-          g += pixels[index + 1];
-          b += pixels[index + 2];
+      for (int yj = up_bound; yj <= down_bound; ++yj)
+        for (int xi = left_bound; xi <= right_bound; ++xi) {
+          int index = (yj * width + xi) * CHANNELS;
+          r += src_pixels[index];
+          g += src_pixels[index + 1];
+          b += src_pixels[index + 2];
         }
-      }
 
-      int index = (y * width + x) * 3;
-      new_img.pixels[index + 0] = r / area;
-      new_img.pixels[index + 1] = g / area;
-      new_img.pixels[index + 2] = b / area;
+      int index = (y * width + x) * CHANNELS;
+      dest_pixels[index + 0] = r / area;
+      dest_pixels[index + 1] = g / area;
+      dest_pixels[index + 2] = b / area;
     }
   }
 
@@ -107,10 +100,10 @@ void blur_mpi_master(int nproc, const char *in_path, const char *out_path, int r
     auto lines_i = base_lines + (i < extra_lines);
     auto first_line = i * base_lines + std::min(i, extra_lines);
 
-    MPI_Recv(new_img.pixels + (first_line * width * CHANNELS), lines_i * width * CHANNELS, MPI_BYTE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    MPI_Recv(dest_pixels + (first_line * width * CHANNELS), lines_i * width * CHANNELS, MPI_BYTE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
   }
 
-  write_img(out_path, new_img);
+  write_img({width, height, dest_pixels}, out_path);
 }
 
 void blur(const char *in_path, const char *out_path, int radius) {
