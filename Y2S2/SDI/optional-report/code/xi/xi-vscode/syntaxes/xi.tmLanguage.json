@@ -1,0 +1,73 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Xi",
+	"patterns": [
+		{ "include": "#keywords" },
+		{ "include": "#numbers" },
+		{ "include": "#bools" },
+		{ "include": "#types" },
+		{ "include": "#logicOps" },
+		{ "include": "#comments" },
+		{ "include": "#strings" }
+	],
+	"repository": {
+		"keywords": {
+			"patterns": [{
+				"name": "keyword.control.xi",
+				"match": "\\b(if|then|else|print|let|rec|in|ref|type|not)\\b"
+			}]
+    },
+    "numbers": {
+      "patterns": [{
+        "name": "constant.numeric.xi",
+        "match": "\\b-?[0-9]+\\b"
+      }]
+    },
+    "bools": {
+      "patterns": [{
+        "name": "constant.language.xi",
+        "match": "\\b(True|False)\\b"
+      }]
+    },
+    "types": {
+      "patterns": [{
+        "name": "entity.name.type",
+        "match": "\\b[A-Z][a-zA-Z0-9']*\\b"
+      }]
+    },
+    "logicOps": {
+      "patterns": [{
+        "name": "keyword.operator.xi",
+        "match": "\\b(and|or|as)\\b"
+      }]
+    },
+    "comments": {
+      "patterns": [{
+        "name": "comment.double-dash.xi",
+        "match": "--.*$"
+      }, {
+        "name": "comment.number-sign.xi",
+        "match": "^#.*$"
+      }, {
+        "name": "comment.block.xi",
+        "begin": "{-",
+        "beginCaptures": { "0": { "name": "punctuation.definition.comment.xi" }},
+        "end": "-}",
+        "endCaptues": { "0": { "name": "punctuation.definition.comment.xi" }},
+        "patterns": [{ "include": "#comments" }]
+      }]
+    },
+		"strings": {
+			"name": "string.quoted.double.xi",
+			"begin": "\"",
+			"end": "\"",
+			"patterns": [
+				{
+					"name": "constant.character.escape.xi",
+					"match": "\\\\."
+				}
+			]
+		}
+	},
+	"scopeName": "source.xi"
+}

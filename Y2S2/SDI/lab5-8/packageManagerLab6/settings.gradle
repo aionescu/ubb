@@ -1,0 +1,5 @@
+rootProject.name = 'packageManagerLab6'
+include 'common'
+include 'client'
+include 'server'
+

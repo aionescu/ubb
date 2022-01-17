@@ -1,0 +1,18 @@
+<div class="content-container">
+	<div class="form-container">
+		<h1>Delete Package Maintainer</h1>
+		<div>
+			<div class="input-group">
+				<span>Maintainer ID</span>
+				<input class="maintainerID" placeholder="Maintainer ID" [(ngModel)]="packageMaintainer.maintainerID">
+			</div>
+      <div class="input-group">
+				<span>Package ID</span>
+				<input class="packageID" placeholder="Package ID" [(ngModel)]="packageMaintainer.packageID">
+			</div>
+      <div class="actions">
+				<button class="delete-package-maintainer" (click)="onDelete()">Delete Package Maintainer</button>
+			</div>
+		</div>
+	</div>
+</div>

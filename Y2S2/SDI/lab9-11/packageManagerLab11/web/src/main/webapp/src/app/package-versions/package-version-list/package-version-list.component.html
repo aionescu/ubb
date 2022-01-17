@@ -1,0 +1,43 @@
+<h2>Package Versions</h2>
+
+<h3>Package ID</h3>
+<form>
+  <input placeholder="Package ID" #packageID>
+  <input type="submit" value="Load" (click)="loadPackageVersions(packageID.value)">
+</form>
+
+<h3>Filter</h3>
+<form>
+  <select id="filter-field" #filterField>
+    <option value="versionNumber">Version Number</option>
+    <option value="startingDate">Release Date</option>
+  </select>
+  <input placeholder="Search Term" #searchTerm>
+  <input type="submit" value="Filter" (click)="filter(filterField.options[filterField.selectedIndex].value, searchTerm.value)">
+</form>
+
+<h3>Sort</h3>
+<form>
+  <select id="sort-field" #sortField>
+    <option value="versionNumber">Version Number</option>
+    <option value="startingDate">Release Date</option>
+  </select>
+  <select id="sort-order" #sortOrder>
+    <option value="ascending">Ascending</option>
+    <option value="descending">Descending</option>
+  </select>
+  <input type="submit" value="Sort" (click)="sort(sortField.options[sortField.selectedIndex].value, sortOrder.options[sortOrder.selectedIndex].value)">
+</form>
+
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Version Number</th>
+    <th>Release Date</th>
+  </tr>
+  <tr *ngFor="let packageVersion of packageVersions">
+    <td>{{packageVersion.id}}</td>
+    <td>{{packageVersion.versionNumber}}</td>
+    <td>{{packageVersion.startingDate}}</td>
+  </tr>
+</table>

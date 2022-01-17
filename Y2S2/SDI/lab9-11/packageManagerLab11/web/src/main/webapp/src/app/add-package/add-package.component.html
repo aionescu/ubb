@@ -1,0 +1,26 @@
+<div class="content-container">
+	<div class="form-container">
+		<h1>Add package</h1>
+		<div>
+			<div class="input-group">
+				<span>Name</span>
+				<input class="name" placeholder="Name" [(ngModel)]="package.name">
+			</div>
+      <div class="input-group">
+				<span>Description</span>
+				<input class="description" placeholder="Description" [(ngModel)]="package.description">
+			</div>
+      <div class="input-group">
+				<span>Source Repo</span>
+				<input class="sourceRepo" placeholder="Source Repo" [(ngModel)]="package.sourceRepo">
+			</div>
+      <div class="input-group">
+				<span>License</span>
+				<input class="license" placeholder="License" [(ngModel)]="package.license">
+			</div>
+			<div class="actions">
+				<button class="add-package" (click)="onAdd()">Add package</button>
+			</div>
+		</div>
+	</div>
+</div>

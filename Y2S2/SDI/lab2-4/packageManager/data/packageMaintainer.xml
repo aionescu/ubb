@@ -1,0 +1,410 @@
+<repo>
+    <PackageMaintainer id="1">
+        <maintainerID>1</maintainerID>
+        <packageID>1</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="2">
+        <maintainerID>2</maintainerID>
+        <packageID>2</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="3">
+        <maintainerID>15</maintainerID>
+        <packageID>74</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="4">
+        <maintainerID>79</maintainerID>
+        <packageID>9</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="5">
+        <maintainerID>89</maintainerID>
+        <packageID>7</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="6">
+        <maintainerID>1</maintainerID>
+        <packageID>99</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="7">
+        <maintainerID>0</maintainerID>
+        <packageID>80</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="8">
+        <maintainerID>42</maintainerID>
+        <packageID>52</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="9">
+        <maintainerID>62</maintainerID>
+        <packageID>98</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="10">
+        <maintainerID>77</maintainerID>
+        <packageID>74</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="11">
+        <maintainerID>15</maintainerID>
+        <packageID>58</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="12">
+        <maintainerID>80</maintainerID>
+        <packageID>89</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="13">
+        <maintainerID>22</maintainerID>
+        <packageID>79</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="14">
+        <maintainerID>74</maintainerID>
+        <packageID>99</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="15">
+        <maintainerID>67</maintainerID>
+        <packageID>60</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="16">
+        <maintainerID>88</maintainerID>
+        <packageID>38</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="17">
+        <maintainerID>26</maintainerID>
+        <packageID>45</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="18">
+        <maintainerID>87</maintainerID>
+        <packageID>32</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="19">
+        <maintainerID>41</maintainerID>
+        <packageID>2</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="20">
+        <maintainerID>15</maintainerID>
+        <packageID>32</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="21">
+        <maintainerID>20</maintainerID>
+        <packageID>43</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="22">
+        <maintainerID>56</maintainerID>
+        <packageID>20</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="23">
+        <maintainerID>6</maintainerID>
+        <packageID>3</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="24">
+        <maintainerID>9</maintainerID>
+        <packageID>62</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="25">
+        <maintainerID>17</maintainerID>
+        <packageID>95</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="26">
+        <maintainerID>69</maintainerID>
+        <packageID>69</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="27">
+        <maintainerID>87</maintainerID>
+        <packageID>17</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="28">
+        <maintainerID>15</maintainerID>
+        <packageID>84</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="29">
+        <maintainerID>51</maintainerID>
+        <packageID>30</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="30">
+        <maintainerID>99</maintainerID>
+        <packageID>98</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="31">
+        <maintainerID>35</maintainerID>
+        <packageID>38</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="32">
+        <maintainerID>96</maintainerID>
+        <packageID>79</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="33">
+        <maintainerID>28</maintainerID>
+        <packageID>80</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="34">
+        <maintainerID>61</maintainerID>
+        <packageID>27</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="35">
+        <maintainerID>53</maintainerID>
+        <packageID>6</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="36">
+        <maintainerID>7</maintainerID>
+        <packageID>17</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="37">
+        <maintainerID>89</maintainerID>
+        <packageID>11</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="38">
+        <maintainerID>8</maintainerID>
+        <packageID>22</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="39">
+        <maintainerID>74</maintainerID>
+        <packageID>47</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="40">
+        <maintainerID>61</maintainerID>
+        <packageID>40</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="41">
+        <maintainerID>7</maintainerID>
+        <packageID>48</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="42">
+        <maintainerID>23</maintainerID>
+        <packageID>45</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="43">
+        <maintainerID>78</maintainerID>
+        <packageID>43</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="44">
+        <maintainerID>41</maintainerID>
+        <packageID>89</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="45">
+        <maintainerID>89</maintainerID>
+        <packageID>11</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="46">
+        <maintainerID>59</maintainerID>
+        <packageID>49</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="47">
+        <maintainerID>96</maintainerID>
+        <packageID>66</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="48">
+        <maintainerID>98</maintainerID>
+        <packageID>74</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="49">
+        <maintainerID>78</maintainerID>
+        <packageID>97</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="50">
+        <maintainerID>71</maintainerID>
+        <packageID>74</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="51">
+        <maintainerID>1</maintainerID>
+        <packageID>11</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="52">
+        <maintainerID>3</maintainerID>
+        <packageID>46</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="53">
+        <maintainerID>19</maintainerID>
+        <packageID>93</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="54">
+        <maintainerID>45</maintainerID>
+        <packageID>37</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="55">
+        <maintainerID>64</maintainerID>
+        <packageID>9</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="56">
+        <maintainerID>31</maintainerID>
+        <packageID>57</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="57">
+        <maintainerID>15</maintainerID>
+        <packageID>89</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="58">
+        <maintainerID>7</maintainerID>
+        <packageID>8</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="59">
+        <maintainerID>45</maintainerID>
+        <packageID>32</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="60">
+        <maintainerID>32</maintainerID>
+        <packageID>18</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="61">
+        <maintainerID>81</maintainerID>
+        <packageID>84</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="62">
+        <maintainerID>78</maintainerID>
+        <packageID>10</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="63">
+        <maintainerID>33</maintainerID>
+        <packageID>35</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="64">
+        <maintainerID>84</maintainerID>
+        <packageID>39</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="65">
+        <maintainerID>22</maintainerID>
+        <packageID>55</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="66">
+        <maintainerID>62</maintainerID>
+        <packageID>49</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="67">
+        <maintainerID>46</maintainerID>
+        <packageID>16</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="68">
+        <maintainerID>59</maintainerID>
+        <packageID>53</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="69">
+        <maintainerID>15</maintainerID>
+        <packageID>62</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="70">
+        <maintainerID>59</maintainerID>
+        <packageID>30</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="71">
+        <maintainerID>93</maintainerID>
+        <packageID>29</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="72">
+        <maintainerID>42</maintainerID>
+        <packageID>18</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="73">
+        <maintainerID>66</maintainerID>
+        <packageID>70</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="74">
+        <maintainerID>24</maintainerID>
+        <packageID>1</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="75">
+        <maintainerID>34</maintainerID>
+        <packageID>63</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="76">
+        <maintainerID>14</maintainerID>
+        <packageID>76</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="77">
+        <maintainerID>33</maintainerID>
+        <packageID>46</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="78">
+        <maintainerID>32</maintainerID>
+        <packageID>11</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="79">
+        <maintainerID>9</maintainerID>
+        <packageID>34</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="80">
+        <maintainerID>13</maintainerID>
+        <packageID>89</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="81">
+        <maintainerID>65</maintainerID>
+        <packageID>24</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="82">
+        <maintainerID>67</maintainerID>
+        <packageID>49</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="83">
+        <maintainerID>48</maintainerID>
+        <packageID>6</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="84">
+        <maintainerID>64</maintainerID>
+        <packageID>38</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="85">
+        <maintainerID>37</maintainerID>
+        <packageID>42</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="86">
+        <maintainerID>73</maintainerID>
+        <packageID>75</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="87">
+        <maintainerID>3</maintainerID>
+        <packageID>74</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="88">
+        <maintainerID>47</maintainerID>
+        <packageID>50</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="89">
+        <maintainerID>40</maintainerID>
+        <packageID>55</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="90">
+        <maintainerID>72</maintainerID>
+        <packageID>20</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="91">
+        <maintainerID>62</maintainerID>
+        <packageID>88</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="92">
+        <maintainerID>47</maintainerID>
+        <packageID>79</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="93">
+        <maintainerID>5</maintainerID>
+        <packageID>97</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="94">
+        <maintainerID>92</maintainerID>
+        <packageID>94</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="95">
+        <maintainerID>10</maintainerID>
+        <packageID>97</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="96">
+        <maintainerID>78</maintainerID>
+        <packageID>37</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="97">
+        <maintainerID>30</maintainerID>
+        <packageID>82</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="98">
+        <maintainerID>45</maintainerID>
+        <packageID>17</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="99">
+        <maintainerID>80</maintainerID>
+        <packageID>28</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="100">
+        <maintainerID>68</maintainerID>
+        <packageID>59</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="101">
+        <maintainerID>56</maintainerID>
+        <packageID>93</packageID>
+    </PackageMaintainer>
+    <PackageMaintainer id="102">
+        <maintainerID>0</maintainerID>
+        <packageID>26</packageID>
+    </PackageMaintainer>
+</repo>
