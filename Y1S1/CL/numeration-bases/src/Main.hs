@@ -1,10 +1,9 @@
 module Main where
 
 import Control.Monad(forever)
-import Data.Char(toLower)
-import Data.Maybe(fromMaybe)
+import Data.Char(toUpper)
 import System.Exit(exitSuccess)
-import System.IO(hSetBuffering, stdout, BufferMode(NoBuffering))
+import System.IO(BufferMode(NoBuffering), hSetBuffering, stdout)
 
 import Parser
 
@@ -23,19 +22,12 @@ helpText = "\
 handleCmd :: IO ()
 handleCmd = do
   putStr "> "
-  str <- getLine
+  input <- (toUpper <$>) <$> getLine
 
-  if (toLower <$> str) == "exit"
-  then exitSuccess
-  else
-    let
-      res = parse str
-      output =
-        case res of
-          Left err -> err
-          Right cmd -> cmd
-    in
-      putStrLn output
+  case input of
+    "" -> pure ()
+    "EXIT" -> exitSuccess
+    _ -> putStrLn $ either id id $ parse input
 
 main :: IO ()
 main = do

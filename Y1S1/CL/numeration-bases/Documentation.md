@@ -56,4 +56,4 @@ More details on the used algorithms can be found in the specifications and comme
 
 A compiled executable is also distributed along with the source code.
 
-In order to build the source code, you will need to install [the Haskell platform](https://www.haskell.org/platform/), then simply run `stack build` in the project's directory.
+In order to build the source code, you will need to install [the Haskell platform](https://www.haskell.org/platform/), then simply run `cabal build` in the project's directory.

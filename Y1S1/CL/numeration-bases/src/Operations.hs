@@ -9,138 +9,101 @@ type Digits = String
 type Base = Int
 
 -- Helper functions
-digits :: String
-digits = "0123456789ABCDEF"
+hexDigits :: String
+hexDigits = "0123456789ABCDEF"
 
 indexOf :: Eq a => [a] -> a -> Int
 indexOf xs x = fromJust $ elemIndex x xs
 
 toBase10 :: Digit -> Int
-toBase10 = indexOf digits
+toBase10 = indexOf hexDigits
 
 toDigit :: Int -> Digit
-toDigit = (digits !!)
+toDigit = (hexDigits !!)
 
 isZero :: Digits -> Bool
 isZero = all (== '0')
 
-skip0 :: Digits -> Digits
-skip0 [] = []
-skip0 "0" = "0"
-skip0 ('0' : ds) = skip0 ds
-skip0 ds = ds
+drop0 :: Digits -> Digits
+drop0 l =
+  case dropWhile (== '0') l of
+    [] -> "0"
+    xs -> xs
 
-skipTail0 :: Digits -> Digits
-skipTail0 = reverse . skip0 . reverse
+dropTail0 :: Digits -> Digits
+dropTail0 = reverse . drop0 . reverse
 
 showDigits :: Base -> Digits -> String
-showDigits base digits =
-  let digits' = skip0 $ reverse digits
-  in digits' ++ "(" ++ show base ++ ")"
+showDigits base digits = digits' <> "(" <> show base <> ")"
+  where
+    digits' = drop0 $ reverse digits
 
 -- This function performs the addition of 2 numbers in the specified base.
--- Parameters:
---   base: The base in which to perform the operation.
---   x: The first operand.
---   y: The second operand.
--- Returns: The result of adding the 2 operands.
 add :: Base -> Digits -> Digits -> Digits
-add base x y = loop 0 x y
+add base = go 0
   where
-    step carry a b =
-      let i = carry + toBase10 a + toBase10 b
-      in i `quotRem` base
+    step c a b = (c + toBase10 a + toBase10 b) `quotRem` base
 
-    loop carry (a : as) (b : bs) =
-      let (quot, rem) = step carry a b
-      in toDigit rem : (loop quot as bs)
-
-    loop carry [] (b : bs) =
-      let (quot, rem) = step carry '0' b
-      in toDigit rem : (loop quot [] bs)
-
-    loop carry (a : as) [] =
-      let (quot, rem) = step carry a '0'
-      in toDigit rem : (loop quot as [])
-
-    loop 0 [] [] = []
-    loop carry [] [] = [toDigit carry]
+    go 0 [] [] = []
+    go c [] [] = [toDigit c]
+    go c (a : as) (b : bs) = toDigit r : go q as bs
+      where
+        (q, r) = step c a b
+    go c [] (b : bs) = toDigit r : go q [] bs
+      where
+        (q, r) = step c '0' b
+    go c (a : as) [] = toDigit r : go q as []
+      where
+        (q, r) = step c a '0'
 
 -- This function performs the subtraction of 2 numbers in the specified base.
--- Parameters:
---   base: The base in which to perform the operation.
---   x: The first operand.
---   y: The second operand.
--- Returns: The result of subtracting the second operand from the first.
 sub :: Base -> Digits -> Digits -> Digits
-sub base x y = loop x y
+sub base = go
   where
     prevDigit = toDigit . subtract 1 . toBase10
-    borrow (a : as) =
-      if a == '0'
-      then toDigit (base - 1) : borrow as
-      else prevDigit a : as
 
-    loop (a : as) (b : bs) =
-      if a < b
-      then
-        let d = toDigit (toBase10 a + base - toBase10 b)
-        in d : loop (borrow as) bs
-      else
-        let d = toDigit (toBase10 a - toBase10 b)
-        in d : loop as bs
+    borrow [] = error "Cannot borrow from 0"
+    borrow ('0' : as) = toDigit (base - 1) : borrow as
+    borrow (a : as) = prevDigit a : as
 
-    loop [] (b : bs) = error "Cannot subtract a larger number from a smaller one."
-    loop as@(_ : _) [] = as
-
-    loop [] [] = []
+    go [] [] = []
+    go as@(_ : _) [] = as
+    go [] (_ : _) = error "Cannot subtract a larger number from a smaller one."
+    go (a : as) (b : bs)
+      | a < b = toDigit (base + toBase10 a - toBase10 b) : go (borrow as) bs
+      | otherwise = toDigit (toBase10 a - toBase10 b) : go as bs
 
 -- This function performs the multiplication of 2 numbers in the specified base.
--- Parameters:
---   base: The base in which to perform the operation.
---   x: The first operand.
---   y: The second operand. Must be a single digit.
--- Returns: The result of multiplying the 2 operands.
 mul :: Base -> Digits -> Digit -> Digits
-mul base x y = loop 0 x
+mul base x y = go 0 x
   where
-    b = y
-    step carry a b =
-      let i = carry + toBase10 a * toBase10 b
-      in i `quotRem` base
+    step c a b = (c + toBase10 a * toBase10 b) `quotRem` base
 
-    loop carry (a : as) =
-      let (quot, rem) = step carry a b
-      in toDigit rem : (loop quot as)
+    go 0 [] = []
+    go c [] = [toDigit c]
+    go c (a : as) = toDigit r : go q as
+      where
+        (q, r) = step c a y
 
-    loop 0 [] = []
-    loop carry [] = [toDigit carry]
-
--- This function performs the division of 2 numbers in the specified base.
--- Parameters:
---   base: The base in which to perform the operation.
---   x: The first operand.
---   y: The second operand. Must be a single digit.
--- Returns: A tuple containing the quotient and the remainder of the division of the 2 operands.
+-- This function performs the division of 2 numbers in the specified base,
+-- computing both the quotient and the remainder.
 divMod' :: Base -> Digits -> Digit -> (Digits, Digit)
-divMod' base x y = loop [] 0 (reverse x)
+divMod' base x y = go [] 0 $ reverse x
   where
     b = toBase10 y
-    loop acc carry (a : as) =
-      let
-        a' = toBase10 a + base * carry
-        (i, carry') = a' `quotRem` b
-      in
-        loop (toDigit i : acc) carry' as
 
-    loop acc carry [] = (acc, toDigit carry)
+    go acc c [] = (acc, toDigit c)
+    go acc c (a : as) = go (toDigit q : acc) r as
+      where
+        (q, r) = (toBase10 a + base * c) `quotRem` b
 
-data Op = Add | Sub | Mul | DivMod deriving Eq
+type Op = Char
 
 eval :: Op -> Base -> Digits -> Digits -> String
-eval Add b x y = showDigits b $ add b x y
-eval Sub b x y = showDigits b $ sub b x y
-eval Mul b x [y] = showDigits b $ mul b x y
-eval DivMod b x [y] =
-  let (quot, rem) = divMod' b x y
-  in "q = " ++ showDigits b quot ++ ", r = " ++ showDigits b [rem]
+eval '+' b x y = showDigits b $ add b x y
+eval '-' b x y = showDigits b $ sub b x y
+eval '*' b x [y] = showDigits b $ mul b x y
+eval '/' b x [y] = "q = " <> showDigits b q <> ", r = " <> showDigits b [r]
+  where
+    (q, r) = divMod' b x y
+eval _ _ _ _ = error "Unsupported operation"
