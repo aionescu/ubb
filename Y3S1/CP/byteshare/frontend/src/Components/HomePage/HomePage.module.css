@@ -1,0 +1,37 @@
+.container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 25%;
+    transform: translateY(-75%);
+}
+.title {
+    font-size: 15rem;
+    margin: 0;
+    padding: 0;
+}
+.subtitle {
+    font-size: 1.5rem;
+    font-weight: lighter;
+    font-style: italic;
+}
+.get_started_button {
+    height: 4rem;
+    width: 15rem;
+    background-color: var(--main-fg-color-light);
+    color: var(--main-bg-color);
+    font-weight: bold;
+    font-size: 2rem;
+    border-radius: 15px;
+}
+.enter_as_guest_button {
+    height: 4rem;
+    width: 15rem;
+    background-color: var(--main-fg-color-light);
+    color: var(--main-bg-color);
+    font-weight: bold;
+    font-size: 1.7rem;
+    border-radius: 15px;
+}
+

@@ -1,0 +1,8 @@
+:root {
+    --main-bg-color: rgb(0, 0, 0);
+    --secondary-bg-color: rgb(35, 35, 35);
+    --main-fg-color: rgb(112, 11, 151);
+    --main-fg-color-light: rgb(142, 5, 194);
+    --main-fg-color-dark: rgb(62, 6, 95);
+    --main-font-color: rgb(255, 255, 255);
+}

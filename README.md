@@ -27,6 +27,7 @@ Labs & university projects written during my bachelor's degree @ Babes-Bolyai Un
   * [Web Programming](Y2S2/WP)
 * [Year 3, Semester 1](Y3S1)
   * [Affective Computing](Y3S1/AC)
+  * [Collective Project](Y3S1/CP)
   * [Formal Languages & Compiler Design](Y3S1/FLCD)
   * [Mobile Apps](Y3S1/MA)
   * [Parallel & Distributed Programming](Y3S1/PDP)
