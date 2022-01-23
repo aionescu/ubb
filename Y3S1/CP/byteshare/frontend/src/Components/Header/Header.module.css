@@ -1,0 +1,15 @@
+.header {
+    margin: 0;
+}
+
+.title {
+    margin: 0;
+    font-size: 64px;
+    color: white;
+}
+
+.logoutButton {
+    margin: 0;
+    font-size: 20px;
+    color: white;
+}

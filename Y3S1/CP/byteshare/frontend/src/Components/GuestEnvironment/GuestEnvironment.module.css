@@ -1,0 +1,12 @@
+.CodeContainer {
+    display: flex;
+    justify-content: center;
+    min-height: 100%;
+}
+
+.download_file_button {
+    background-color: var(--main-bg-color) !important;
+    font-size: 1rem !important;
+    /*border: 1px solid var(--main-font-color);*/
+    border-radius: 0 !important;
+}

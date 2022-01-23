@@ -1,0 +1,11 @@
+.tabs {
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+.rename_modal {
+    top: 30%;
+    left: 30%;
+}
