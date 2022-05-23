@@ -32,6 +32,9 @@ Labs & university projects written during my bachelor's degree @ Babes-Bolyai Un
   * [Mobile Apps](Y3S1/MA)
   * [Parallel & Distributed Programming](Y3S1/PDP)
   * [Public-Key Cryptography](Y3S1/PKC)
+* [Year 3, Semester 2](Y3S2)
+  * [Computer Graphics](Y3S2/CG)
+  * [Numerical Calculus](Y3S2/NC)
 
 ## License
 
