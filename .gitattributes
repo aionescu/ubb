@@ -1,6 +1,0 @@
-# Auto detect text files and perform LF normalization
-* text=auto
-
-# Tell GitHub's Linguist to ignore files in these directories when detecting repo language
-# More info at https://github.com/github/linguist/blob/master/docs/overrides.md
-Y3S2/CG/include/* linguist-vendored

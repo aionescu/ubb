@@ -1,0 +1,6 @@
+# C++
+*.gch
+coverage-cc-html/
+
+# Qt
+qt-build-output/
